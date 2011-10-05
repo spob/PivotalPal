@@ -1,0 +1,12 @@
+<% title "List Logons" %>
+
+<%= paginate @logons %>
+<table>
+  <tr>
+    <th>User</th>
+    <th>Logged On At</th>
+    <th>IP Address</th>
+  </tr>
+
+<%= render @logons %>
+</table>

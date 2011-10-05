@@ -1,0 +1,27 @@
+<% title "Super User List User" %>
+
+
+<%= form_tag(super_users_path, :method => :get, :name => 'search') do -%>
+    <strong>Show Users:</strong> <%= radio_button_tag "show_users", "ALL", cookies[:super_users_search_show_users] == 'ALL',
+                   html_options = {:onchange => 'document.search.submit();'} %>All&nbsp;&nbsp;
+    <%= radio_button_tag "show_users", "CONFIRMED", cookies[:super_users_search_show_users] == 'CONFIRMED',
+                   html_options = {:onchange => 'document.search.submit();'} %>Confirmed Users Only&nbsp;&nbsp;
+    <%= radio_button_tag "show_users", "UNCONFIRMED", cookies[:super_users_search_show_users] == 'UNCONFIRMED',
+                   html_options = {:onchange => 'document.search.submit();'} %>Unconfirmed UsersOnly
+<% end %>
+
+<%= paginate @users %>
+<table>
+  <tr>
+    <th>Email</th>
+    <th>Name</th>
+    <th>Tenant</th>
+    <th>Hired At</th>
+    <th>Member Since</th>
+    <th>Last Logged On At</th>
+    <th>Confirmed</th>
+    <th>Action</th>
+  </tr>
+
+  <%= render :partial => 'super_users/user', :collection => @users %>
+</table>

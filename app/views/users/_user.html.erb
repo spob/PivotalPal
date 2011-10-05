@@ -1,0 +1,12 @@
+<tr>
+  <td><%= user.email %></td>
+  <td><%= user.full_name %></td>
+  <td><%= user.manager.try(:full_name) %></td>
+  <td><%= l user.hired_at if user.hired_at %></td>
+  <td><%= l user.created_at %></td>
+  <td><%= l(user.logons.latest.first.created_at) unless user.logons.empty? %></td>
+  <td><%= "Y" if user.confirmed_at %></td>
+  <td>
+    <%= link_to 'Edit', edit_user_path(user) %>
+  </td>
+</tr>

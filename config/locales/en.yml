@@ -1,0 +1,61 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+en:
+  general:
+    created: "%{entity} was successfully created."
+    updated: "%{entity} %{identifier} was successfully updated."
+    deleted: "%{entity} %{identifier} was successfully deleted."
+    confirm_nag: "Are you sure?"
+
+  user:
+    entity_name: User
+    tenant_taken: is already taken
+    bad_tenant_name: must be letters and numbers with no spaces
+
+  password:
+    updated: You have successfully changed your password.
+    must_change_password: You must select a new password.
+
+  category:
+    entity_name: Category
+
+  periodic_job:
+    one_time_job_scheduled: Job schedule to run one time
+    run_now: Job scheduled to run immediately
+    executed_pending_jobs: Executed pending jobs
+    no_executed_pending_jobs: No pending jobs found to execute
+
+  profile:
+    updated: You have successfully updated your profile.
+
+  # Date/Time formatting
+  date:
+    formats:
+      default: "%b %d, %Y"
+      short: "%e %b"
+      long: "%B %e, %Y"
+      only_day: "%e"
+
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    order: [ :year, :month, :day ]
+
+  time:
+    formats:
+      default: "%b %d, %Y %I:%M%p"
+      w_timezone: "%b %d, %Y %I:%M%p %Z"
+      time: "%H:%M"
+      short: "%d %b %H:%M"
+      long: "%b %d, %Y %I:%M:%S%p"
+      only_second: "%S"
+
+      datetime:
+        formats:
+          default: "%Y-%m-%dT%H:%M:%S%Z"
+
+      am: 'am'
+      pm: 'pm'
+
