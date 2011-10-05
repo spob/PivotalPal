@@ -1,4 +1,4 @@
-Timeout::Application.routes.draw do
+PivotalPal::Application.routes.draw do
   get "profile/edit"
 
   get "profile/update"

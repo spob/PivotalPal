@@ -7,7 +7,7 @@ require File.expand_path('../../lib/task_server_logger', __FILE__)
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
-module Timeout
+module PivotalPal
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers

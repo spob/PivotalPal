@@ -4,4 +4,4 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
-Timeout::Application.load_tasks
+PivotalPal::Application.load_tasks
