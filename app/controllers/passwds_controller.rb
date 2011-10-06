@@ -1,4 +1,4 @@
-class PasswordsController < ApplicationController
+class PasswdsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :fetch_user
 

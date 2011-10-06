@@ -13,7 +13,7 @@
         Signed in as <%= current_user.email %>. Not you?
         <%= link_to "Sign out", destroy_user_session_path %>
 
-        | <%= link_to "Change Password", edit_password_path(current_user) %>
+        | <%= link_to "Change Password", edit_passwd_path(current_user) %>
         | <%= link_to "Edit Profile", edit_profile_path(current_user) %> |
 
         <% if current_user.role? ROLE_ADMIN %>

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PasswordsControllerTest < ActionController::TestCase
+class PasswdsControllerTest < ActionController::TestCase
   include Devise::TestHelpers
 
   def self.should_require_login

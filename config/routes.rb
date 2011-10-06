@@ -8,7 +8,7 @@ PivotalPal::Application.routes.draw do
   resources :categories
   resources :logons, :only => [:index]
   resources :org_users, :only => [:new, :create, :index]
-  resources :passwords, :only => [:edit, :update]
+  resources :passwds, :only => [:edit, :update]
   resources :periodic_jobs, :only => [:index] do
     member do
       post :rerun
