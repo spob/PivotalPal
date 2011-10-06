@@ -86,6 +86,8 @@ class User < ActiveRecord::Base
     if self.confirmed_at && self.confirmed_at_changed? && tenant.nil?
       self.tenant = Tenant.create!(:name => self.company_name)
       self.company_name = nil
+      # set the user to be the admin for that org
+      self.roles_mask = 2**ROLES.index(ROLE_ADMIN)
     end
   end
 

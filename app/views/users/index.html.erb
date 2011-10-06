@@ -1,6 +1,6 @@
 <% title "List Users in the #{current_user.tenant.name} Organization" %>
 
-<%= link_to "Create User", new_org_user_path %>
+<%= link_to "Invite User", new_org_user_path %>
 
 <%= form_tag(users_path, :method => :get, :name => 'search') do -%>
     <strong>Show Users:</strong> <%= radio_button_tag "show_users", "ALL", cookies[:users_search_show_users] == 'ALL',
