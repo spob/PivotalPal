@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110415013138) do
+ActiveRecord::Schema.define(:version => 20111007021101) do
 
   create_table "categories", :force => true do |t|
     t.string   "name",       :null => false
@@ -84,8 +85,7 @@ ActiveRecord::Schema.define(:version => 20110415013138) do
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
-    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
-    t.string   "password_salt",                       :default => "", :null => false
+    t.string   "encrypted_password",   :limit => 128, :default => ""
     t.string   "reset_password_token"
     t.string   "remember_token"
     t.datetime "remember_created_at"
@@ -112,10 +112,17 @@ ActiveRecord::Schema.define(:version => 20110415013138) do
     t.integer  "direct_reports_count",                :default => 0
     t.string   "temporary_password"
     t.date     "hired_at"
+    t.string   "invitation_token",     :limit => 60
+    t.datetime "invitation_sent_at"
+    t.integer  "invitation_limit"
+    t.integer  "invited_by_id"
+    t.string   "invited_by_type"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["invitation_token"], :name => "index_users_on_invitation_token"
+  add_index "users", ["invited_by_id"], :name => "index_users_on_invited_by_id"
   add_index "users", ["manager_id"], :name => "users_manager_id_fk"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["tenant_id"], :name => "users_tenant_id_fk"

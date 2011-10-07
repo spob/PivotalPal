@@ -12,6 +12,7 @@ en:
     entity_name: User
     tenant_taken: is already taken
     bad_tenant_name: must be letters and numbers with no spaces
+    invited: "User was successfully invited."
 
   password:
     updated: You have successfully changed your password.

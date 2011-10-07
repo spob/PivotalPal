@@ -30,13 +30,14 @@ class OrgUsersController < ApplicationController
     @user.tenant = current_user.tenant
 
     respond_to do |format|
-      if @user.save
-        format.html { redirect_to(users_path, :notice => t('general.created', :entity => t('user.entity_name'))) }
-        format.xml { render :xml => @user, :status => :created, :location => @user }
-      else
-        format.html { render :action => "new" }
-        format.xml { render :xml => @user.errors, :status => :unprocessable_entity }
+      User.invite!(:email => @user.email,
+                   :first_name => @user.first_name, :last_name => @user.last_name) do |u|
+        u.tenant = @user.tenant
+        u.roles = @user.roles
       end
+      #if @user.save
+      format.html { redirect_to(users_path, :notice => t('user.invited')) }
+      format.xml { render :xml => @user, :status => :created, :location => @user }
     end
   end
 end

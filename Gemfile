@@ -7,8 +7,9 @@ gem 'rails', '~> 3.0.0'
 
 gem 'mysql2', '~> 0.2.0'
 gem 'kaminari'
-gem 'devise'
-gem "cancan"
+gem 'devise',           '~> 1.2.0'
+gem 'devise_invitable', '~> 0.4.0'
+gem 'cancan'
 gem 'foreigner'
 gem 'meta_where'
 gem 'mail'
