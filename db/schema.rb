@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111008014223) do
+ActiveRecord::Schema.define(:version => 20111007021101) do
 
   create_table "logons", :force => true do |t|
     t.integer  "user_id",    :null => false

@@ -1,5 +1,6 @@
 <tr>
   <td><%= project.name %></td>
+  <td><%= link_to project.project_identifier, "https://www.pivotaltracker.com/projects/#{project.project_identifier}", :target => "_blank" %></td>
   <td>
     <%= link_to 'Show', project %>
     <% if can? :update, project %>

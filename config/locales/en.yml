@@ -20,6 +20,7 @@ en:
 
   project:
     entity_name: Project
+    project_identifier: Pivotal Project ID
 
   periodic_job:
     one_time_job_scheduled: Job schedule to run one time
