@@ -10,6 +10,8 @@
   <%= render @projects %>
 </table>
 
-<br />
+<br/>
 
-<%= link_to 'New Project', new_project_path %>
+<% if current_user.role? ROLE_ADMIN %>
+    <%= link_to 'New Project', new_project_path %>
+<% end %>

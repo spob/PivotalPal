@@ -9,6 +9,6 @@ class Tenant < ActiveRecord::Base
   private
 
   def seed_new_tenant
-    self.projects.create!(:name => 'Default')
+#    self.projects.create!(:name => 'Default')
   end
 end
