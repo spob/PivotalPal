@@ -1,4 +1,8 @@
 PivotalPal::Application.routes.draw do
+  get "tenants/edit"
+
+  get "tenants/update"
+
   get "profile/edit"
 
   get "profile/update"
@@ -20,6 +24,7 @@ PivotalPal::Application.routes.draw do
   resources :profile, :only => [:edit, :update]
   resources :projects
   resources :super_users, :only => [:index, :edit, :update]
+  resources :tenants, :only => [:edit, :update]
   resources :users, :except => [:destroy, :create] do
     member do
       post :create_new

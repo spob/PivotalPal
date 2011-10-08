@@ -32,6 +32,7 @@ en:
 
   tenant:
     api_key: Pivotal API Key
+    updated: You have successfully updated your company information
 
   # Date/Time formatting
   date:

@@ -29,6 +29,9 @@
             <% if can? :read, Logon %>
                 | <%= link_to_unless_current "Logons", logons_path %>
             <% end %>
+            <% if can? :update, current_user.tenant %>
+                | <%= link_to_unless_current "Company Info", edit_tenant_path(current_user.tenant) %>
+            <% end %>
             | <%= link_to_unless_current "Jobs", periodic_jobs_path %>
         <% end %>
     <% else %>
