@@ -9,7 +9,6 @@ class UserTest < ActiveSupport::TestCase
 
     should validate_uniqueness_of :email
     should belong_to :tenant
-    should belong_to :manager
     should have_many :logons
     should have_many :direct_reports
 

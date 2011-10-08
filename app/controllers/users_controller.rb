@@ -30,8 +30,6 @@ class UsersController < ApplicationController
       @user.email = params[:user][:email]
       @user.first_name = params[:user][:first_name]
       @user.last_name = params[:user][:last_name]
-      @user.manager_id = params[:user][:manager_id]
-      @user.hired_at = params[:user][:hired_at]
       @user.roles = params[:user][:roles]
       if @user.save
         format.html { redirect_to(users_path,

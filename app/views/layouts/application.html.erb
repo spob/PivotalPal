@@ -27,7 +27,7 @@
                 <%= link_to_unless_current "All Users", super_users_path %>
             <% end %>
             <% if can? :read, Logon %>
-                <%= link_to_unless_current "Logons", logons_path %>
+                | <%= link_to_unless_current "Logons", logons_path %>
             <% end %>
             | <%= link_to_unless_current "Jobs", periodic_jobs_path %>
         <% end %>

@@ -15,8 +15,8 @@ en:
     invited: "User was successfully invited."
 
   password:
-    updated: You have successfully changed your password.
-    must_change_password: You must select a new password.
+    updated: You have successfully changed your password
+    must_change_password: You must select a new password
 
   project:
     entity_name: Project
@@ -28,7 +28,10 @@ en:
     no_executed_pending_jobs: No pending jobs found to execute
 
   profile:
-    updated: You have successfully updated your profile.
+    updated: You have successfully updated your profile
+
+  tenant:
+    api_key: Pivotal API Key
 
   # Date/Time formatting
   date:

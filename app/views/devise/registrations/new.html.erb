@@ -19,7 +19,10 @@
   <%= f.text_field :last_name, :size => 25 %></p>
 
   <p><%= f.label :company_name %>*<br />
-  <%= f.text_field :company_name, :size => 70 %></p>
+  <%= f.text_field :company_name, :size => 50 %></p>
+
+  <p><%= f.label :api_key, t('tenant.api_key') %><br />
+  <%= f.text_field :api_key, :size => 32 %></p>
 
   <p><%= f.submit "Sign up" %></p>
 <% end %>

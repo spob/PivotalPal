@@ -11,9 +11,7 @@ class User < ActiveRecord::Base
   before_update :create_logon, :create_tenant
 
   belongs_to :tenant, :counter_cache => true
-  belongs_to :manager, :class_name => "User"
   has_many :logons
-  has_many :direct_reports, :class_name => "User", :foreign_key => "manager_id"
 
   validates_uniqueness_of :email
   validates_length_of :first_name, :maximum => 25, :allow_blank => true
@@ -30,7 +28,7 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :first_name, :last_name, :company_name,
-                  :hired_at
+                  :hired_at, :api_key
 
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0 "} }
   scope :unconfirmed, where(:confirmed_at => nil)
@@ -84,8 +82,9 @@ class User < ActiveRecord::Base
 
   def create_tenant
     if self.confirmed_at && self.confirmed_at_changed? && tenant.nil?
-      self.tenant = Tenant.create!(:name => self.company_name)
+      self.tenant = Tenant.create!(:name => self.company_name, :api_key => self.api_key)
       self.company_name = nil
+      self.api_key = nil
       # set the user to be the admin for that org
       self.roles_mask = 2**ROLES.index(ROLE_ADMIN)
     end
@@ -106,5 +105,6 @@ class User < ActiveRecord::Base
 
   def strip_company_name
     self.company_name = self.company_name.try(:strip)
+    self.api_key = self.api_key.try(:strip)
   end
 end

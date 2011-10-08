@@ -29,17 +29,6 @@
       <br/>
       <%= f.text_field :last_name %>
     </div>
-    <!--<div class="field">-->
-      <!--<%= f.label :manager %>-->
-      <!--<br/>-->
-      <!-- <%= f.collection_select(:manager_id, User.where(:tenant_id => current_user.tenant).where(:id ^ @user).order(:last_name, :first_name), :id,
-                              :full_name, {:include_blank => 'None...'}) %> -->
-    <!--</div>-->
-    <!--<div class="field">-->
-      <!--<%= f.label :hired_at %>-->
-      <!--<br/>-->
-      <!--<%= f.text_field :hired_at %>-->
-    <!--</div>-->
     <div class="field">
       <%= f.label :roles %>
       <% for role in User::ROLES.find_all { |r| r != "superuser" } %>

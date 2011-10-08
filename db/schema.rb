@@ -38,21 +38,6 @@ ActiveRecord::Schema.define(:version => 20111008014223) do
   add_index "periodic_jobs", ["last_run_at"], :name => "index_periodic_jobs_on_last_run_at"
   add_index "periodic_jobs", ["next_run_at"], :name => "index_periodic_jobs_on_next_run_at"
 
-  create_table "pools", :force => true do |t|
-    t.string   "name",                 :limit => 20, :null => false
-    t.boolean  "unlimited",                          :null => false
-    t.integer  "increase_rate"
-    t.string   "increase_type"
-    t.integer  "increase_day_number"
-    t.float    "maximum_accrual_rate"
-    t.integer  "accrual_day_number"
-    t.integer  "tenant_id",                          :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "pools", ["tenant_id", "name"], :name => "index_pools_on_tenant_id_and_name", :unique => true
-
   create_table "projects", :force => true do |t|
     t.string   "name",       :null => false
     t.datetime "created_at"
@@ -74,11 +59,11 @@ ActiveRecord::Schema.define(:version => 20111008014223) do
 
   create_table "tenants", :force => true do |t|
     t.string   "name",           :limit => 50,                :null => false
+    t.string   "api_key",        :limit => 32
     t.integer  "users_count",                  :default => 0
     t.integer  "projects_count",               :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "pools_count",                  :default => 0
   end
 
   add_index "tenants", ["name"], :name => "index_tenants_on_name", :unique => true
@@ -107,10 +92,9 @@ ActiveRecord::Schema.define(:version => 20111008014223) do
     t.string   "first_name"
     t.string   "last_name",                                           :null => false
     t.string   "company_name"
+    t.string   "api_key"
     t.integer  "roles_mask"
-    t.integer  "manager_id"
     t.string   "temporary_password"
-    t.date     "hired_at"
     t.string   "invitation_token",     :limit => 60
     t.datetime "invitation_sent_at"
     t.integer  "invitation_limit"
@@ -122,18 +106,14 @@ ActiveRecord::Schema.define(:version => 20111008014223) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["invitation_token"], :name => "index_users_on_invitation_token"
   add_index "users", ["invited_by_id"], :name => "index_users_on_invited_by_id"
-  add_index "users", ["manager_id"], :name => "users_manager_id_fk"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["tenant_id"], :name => "users_tenant_id_fk"
   add_index "users", ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
 
   add_foreign_key "logons", "users", :name => "logons_user_id_fk", :dependent => :delete
 
-  add_foreign_key "pools", "tenants", :name => "pools_tenant_id_fk", :dependent => :delete
-
   add_foreign_key "projects", "tenants", :name => "projects_tenant_id_fk", :dependent => :delete
 
   add_foreign_key "users", "tenants", :name => "users_tenant_id_fk", :dependent => :delete
-  add_foreign_key "users", "users", :name => "users_manager_id_fk", :column => "manager_id"
 
 end
