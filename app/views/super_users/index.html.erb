@@ -7,7 +7,7 @@
     <%= radio_button_tag "show_users", "CONFIRMED", cookies[:super_users_search_show_users] == 'CONFIRMED',
                    html_options = {:onchange => 'document.search.submit();'} %>Confirmed Users Only&nbsp;&nbsp;
     <%= radio_button_tag "show_users", "UNCONFIRMED", cookies[:super_users_search_show_users] == 'UNCONFIRMED',
-                   html_options = {:onchange => 'document.search.submit();'} %>Unconfirmed UsersOnly
+                   html_options = {:onchange => 'document.search.submit();'} %>Unconfirmed Users Only
 <% end %>
 
 <%= paginate @users %>
