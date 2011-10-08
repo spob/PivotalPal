@@ -1,11 +1,11 @@
 require 'test_helper'
 
-class CategoryTest < ActiveSupport::TestCase
-  context "Given an existing category record" do
+class ProjectTest < ActiveSupport::TestCase
+  context "Given an existing project record" do
     setup do
-      @category = Factory.create(:category)
+      @project = Factory.create(:project)
     end
-    subject { @category }
+    subject { @project }
 
     should belong_to :tenant
     should validate_presence_of :name

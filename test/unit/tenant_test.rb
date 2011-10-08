@@ -10,7 +10,7 @@ class TenantTest < ActiveSupport::TestCase
     should validate_presence_of :name
     should validate_uniqueness_of :name
     should have_many :users
-    should have_many :categories
+    should have_many :projects
     should have_many :pools
   end
 end

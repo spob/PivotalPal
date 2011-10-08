@@ -3,7 +3,7 @@ class CreateTenants < ActiveRecord::Migration
     create_table :tenants do |t|
       t.string :name, :null =>false, :limit => 50
       t.integer :users_count, :default => 0
-      t.integer :categories_count, :default => 0
+      t.integer :projects_count, :default => 0
       t.timestamps
     end
     add_index :tenants, [:name], :unique => true

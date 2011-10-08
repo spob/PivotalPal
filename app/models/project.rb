@@ -1,4 +1,4 @@
-class Category < ActiveRecord::Base
+class Project < ActiveRecord::Base
   belongs_to :tenant, :counter_cache => true
   validates_presence_of :name
   validates_presence_of :tenant_id

@@ -1,0 +1,15 @@
+<% title "List Projects" %>
+
+<%= paginate @projects %>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Action</th>
+  </tr>
+
+  <%= render @projects %>
+</table>
+
+<br />
+
+<%= link_to 'New Project', new_project_path %>

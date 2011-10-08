@@ -18,8 +18,8 @@ en:
     updated: You have successfully changed your password.
     must_change_password: You must select a new password.
 
-  category:
-    entity_name: Category
+  project:
+    entity_name: Project
 
   periodic_job:
     one_time_job_scheduled: Job schedule to run one time

@@ -1,6 +1,6 @@
 class Tenant < ActiveRecord::Base
   has_many :users
-  has_many :categories
+  has_many :projects
   has_many :pools
   validates_presence_of :name
   validates_uniqueness_of :name
@@ -9,6 +9,6 @@ class Tenant < ActiveRecord::Base
   private
 
   def seed_new_tenant
-    self.categories.create!(:name => 'Default')
+    self.projects.create!(:name => 'Default')
   end
 end

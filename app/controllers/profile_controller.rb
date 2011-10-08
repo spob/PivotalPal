@@ -11,7 +11,7 @@ class ProfileController < ApplicationController
     @profile.first_name = params[:user][:first_name]
     @profile.last_name = params[:user][:last_name]
     if @profile.save
-      redirect_to(categories_path, :notice => t('profile.updated'))
+      redirect_to(projects_path, :notice => t('profile.updated'))
     else
       render :action => "edit"
     end

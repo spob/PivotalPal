@@ -18,7 +18,7 @@
 
         <% if current_user.role? ROLE_ADMIN %>
             <strong>Admin Screens: </strong>
-            <%= link_to_unless_current "Categories", categories_path %> |
+            <%= link_to_unless_current "Projects", projects_path %> |
             <%= link_to_unless_current "Users", users_path %>
         <% end %>
         <% if current_user.role? ROLE_SUPERUSER %>

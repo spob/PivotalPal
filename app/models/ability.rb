@@ -9,8 +9,8 @@ class Ability
     if user.role? :superuser
       can :manage, :all
     elsif user.role? :admin
-      can :manage_org, [User, Category]
-      can [:read, :update, :create], [User, Category], :tenant_id => user.tenant.id
+      can :manage_org, [User, Project]
+      can [:read, :update, :create], [User, Project], :tenant_id => user.tenant.id
     else
       can :update, User, :id => user.id
     end

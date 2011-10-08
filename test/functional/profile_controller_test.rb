@@ -32,7 +32,7 @@ class ProfileControllerTest < ActionController::TestCase
           put :update, :id => @profile,
               :user => {:email => 'test@email.com', :first_name => 'first', :last_name => 'last'}
         end
-        should_redirect_to("categories") { categories_path }
+        should_redirect_to("projects") { projects_path }
         should_assign_to :profile
         should_set_the_flash_to /successfully updated/
         should "update profile values" do

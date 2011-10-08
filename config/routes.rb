@@ -5,7 +5,6 @@ PivotalPal::Application.routes.draw do
 
   devise_for :users
 
-  resources :categories
   resources :logons, :only => [:index]
   resources :org_users, :only => [:new, :create, :index]
   resources :passwds, :only => [:edit, :update]
@@ -19,6 +18,7 @@ PivotalPal::Application.routes.draw do
     end
   end
   resources :profile, :only => [:edit, :update]
+  resources :projects
   resources :super_users, :only => [:index, :edit, :update]
   resources :users, :except => [:destroy, :create] do
     member do
@@ -75,7 +75,7 @@ PivotalPal::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => "categories#index"
+  root :to => "projects#index"
 
   # See how all your routes lay out with "rake routes"
 

@@ -9,7 +9,7 @@ development:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: timeout_development
+  database: projectpal_development
   pool: 5
   username: root
   password:
@@ -21,7 +21,7 @@ test:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: timeout_test
+  database: projectpal_test
   pool: 5
   username: root
   password:
@@ -30,7 +30,7 @@ production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: timeout_production
+  database: projectpal_production
   pool: 5
   username: root
   password:

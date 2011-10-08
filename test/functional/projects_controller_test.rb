@@ -1,19 +1,19 @@
 require 'test_helper'
 
-class CategoriesControllerTest < ActionController::TestCase
+class ProjectsControllerTest < ActionController::TestCase
   include Devise::TestHelpers
 
   def self.should_require_login
     should respond_with :redirect
-    should_not_assign_to :categories
+    should_not_assign_to :projects
     should_set_the_flash_to /You need to sign in/
     should_redirect_to("sign in page") { new_user_session_path }
   end
 
-  context "with a category defined" do
+  context "with a project defined" do
     setup do
-      @category = Factory.create(:category)
-      assert_not_nil @category.id
+      @project = Factory.create(:project)
+      assert_not_nil @project.id
     end
 
     context "and not logged in" do
@@ -28,27 +28,27 @@ class CategoriesControllerTest < ActionController::TestCase
       end
 
       context "on GET to :edit" do
-        setup { get :edit, :id => @category.to_param }
+        setup { get :edit, :id => @project.to_param }
         should_require_login
       end
 
       context "on GET to :show" do
-        setup { get :show, :id => @category.to_param }
+        setup { get :show, :id => @project.to_param }
         should_require_login
       end
 
       context "on POST to :create" do
-        setup { post :create, :category => Factory.attributes_for(:category) }
+        setup { post :create, :project => Factory.attributes_for(:project) }
         should_require_login
       end
 
       context "on PUT to :update" do
-        setup { put :update, :id => @category, :category => @category.attributes }
+        setup { put :update, :id => @project, :project => @project.attributes }
         should_require_login
       end
 
       context "on DELETE to :destroy" do
-        setup { delete :destroy, :id => @category }
+        setup { delete :destroy, :id => @project }
         should_require_login
       end
     end
@@ -61,63 +61,63 @@ class CategoriesControllerTest < ActionController::TestCase
       context "on GET to :index" do
         setup { get :index }
         should_respond_with :success
-        should_assign_to :categories
+        should_assign_to :projects
         should_not_set_the_flash
-        should "have categories populated" do
-          assert_equal 1, assigns(:categories).size
+        should "have projects populated" do
+          assert_equal 1, assigns(:projects).size
         end
       end
 
       context "on GET to :new" do
         setup { get :new }
         should_respond_with :success
-        should_assign_to :category
+        should_assign_to :project
         should_not_set_the_flash
       end
 
       context "on GET to :edit" do
-        setup { get :edit, :id => @category }
+        setup { get :edit, :id => @project }
         should_respond_with :success
-        should_assign_to :category
+        should_assign_to :project
         should_not_set_the_flash
       end
 
       context "on GET to :show" do
-        setup { get :show, :id => @category.to_param }
+        setup { get :show, :id => @project.to_param }
         should_respond_with :success
-        should_assign_to :category
+        should_assign_to :project
         should_not_set_the_flash
       end
 
       context "on POST to :new" do
         setup do
-          assert_difference('Category.count', 1) do
-            post :create, :category => Factory.attributes_for(:category)
+          assert_difference('Project.count', 1) do
+            post :create, :project => Factory.attributes_for(:project)
           end
         end
 
-        should_redirect_to("index categories page") { categories_path }
-        should_assign_to :category
+        should_redirect_to("index projects page") { projects_path }
+        should_assign_to :project
         should_set_the_flash_to /successfully created/
       end
 
       context "on PUT to :update" do
-        setup { put :update, :id => @category, :category => @category.attributes }
+        setup { put :update, :id => @project, :project => @project.attributes }
 
-        should_redirect_to("show category page") { category_path }
-        should_assign_to :category
+        should_redirect_to("show project page") { project_path }
+        should_assign_to :project
         should_set_the_flash_to /successfully updated/
       end
 
       context "on DELETE to :destroy" do
         setup do
-          assert_difference('Category.count', -1) do
-            delete :destroy, :id => @category
+          assert_difference('Project.count', -1) do
+            delete :destroy, :id => @project
           end
         end
 
-        should_redirect_to("index category page") { categories_path }
-        should_assign_to :category
+        should_redirect_to("index project page") { projects_path }
+        should_assign_to :project
         should_set_the_flash_to /successfully deleted/
       end
     end
