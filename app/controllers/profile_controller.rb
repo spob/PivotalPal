@@ -7,6 +7,7 @@ class ProfileController < ApplicationController
   end
 
   def update
+    authorize! :update, @profile
     @profile.email = params[:user][:email]
     @profile.first_name = params[:user][:first_name]
     @profile.last_name = params[:user][:last_name]

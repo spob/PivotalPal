@@ -1,13 +1,13 @@
 class ProjectsController < ApplicationController
+  load_and_authorize_resource
   before_filter :authenticate_user!
   before_filter :login_checks
-  before_filter :find_project, :only => [:show, :edit, :update, :destroy]
   respond_to :html, :xml
 
   # GET /projects
   # GET /projects.xml
   def index
-    @projects = Project.where(:tenant_id => current_user.tenant).order("name").page(params[:page]).per(DEFAULT_ROWS_PER_PAGE)
+    @projects = @projects.where(:tenant_id => current_user.tenant).order("name").page(params[:page]).per(DEFAULT_ROWS_PER_PAGE)
 
     respond_with @projects
   end
@@ -21,8 +21,6 @@ class ProjectsController < ApplicationController
 # GET /projects/new
 # GET /projects/new.xml
   def new
-    @project = Project.new
-
     respond_with @project
   end
 
@@ -77,11 +75,5 @@ class ProjectsController < ApplicationController
                                              :identifier => name)) }
       format.xml { head :ok }
     end
-  end
-
-  private
-
-  def find_project
-    @project = Project.find(params[:id])
   end
 end

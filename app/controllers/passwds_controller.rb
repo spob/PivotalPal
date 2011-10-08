@@ -6,6 +6,7 @@ class PasswdsController < ApplicationController
   end
 
   def update
+    authorize! :update, @user
     @user.password = params[:user][:password]
     @user.password_confirmation = params[:user][:password_confirmation]
 #    @user.reset_password_token = params[:user][:reset_password_token]
