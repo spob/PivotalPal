@@ -2,9 +2,11 @@
   <td><%= project.name %></td>
   <td>
     <%= link_to 'Show', project %>
-    <% if current_user.role? ROLE_ADMIN %>
-        | <%= link_to 'Edit', edit_project_path(project) %> |
-        <%= link_to 'Destroy', project, :confirm => t("general.confirm_nag"), :method => :delete %>
+    <% if can? :update, project %>
+        | <%= link_to 'Edit', edit_project_path(project) %>
+    <% end %>
+    <% if can? :destroy, project %>
+        | <%= link_to 'Destroy', project, :confirm => t("general.confirm_nag"), :method => :delete %>
     <% end %>
   </td>
 </tr>

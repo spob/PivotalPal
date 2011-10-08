@@ -10,7 +10,7 @@ class Ability
       can :manage, :all
     elsif user.role? :admin
       can :manage_org, [User, Project]
-      can [:read, :update, :create], [User, Project], :tenant_id => user.tenant.id
+      can [:read, :update, :create, :destroy], [User, Project], :tenant_id => user.tenant.id
     else
       can :update, User, :id => user.id
     end
