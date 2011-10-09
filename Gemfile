@@ -6,13 +6,13 @@ gem 'rails', '~> 3.0.0'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'mysql2', '~> 0.2.0'
-gem 'kaminari'
+gem 'kaminari', '~> 0.12.0'
 gem 'devise',           '~> 1.2.0'
 gem 'devise_invitable', '~> 0.4.0'
-gem 'cancan'
-gem 'foreigner'
-gem 'meta_where'
-gem 'mail'
+gem 'cancan', '~> 1.6.0'
+gem 'foreigner', '~> 1.1.0'
+gem 'meta_where', '~> 1.0.0'
+gem 'mail', '~> 2.2.0'
 
 # Use unicorn as the web server
 # gem 'unicorn'
