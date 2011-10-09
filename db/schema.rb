@@ -11,16 +11,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111009010958) do
+ActiveRecord::Schema.define(:version => 20111009015557) do
 
   create_table "iterations", :force => true do |t|
-    t.integer  "iteration_number", :null => false
-    t.date     "start_on",         :null => false
-    t.date     "end_on",           :null => false
+    t.integer  "iteration_number",                    :null => false
+    t.date     "start_on",                            :null => false
+    t.date     "end_on",                              :null => false
     t.datetime "last_synced_at"
+    t.integer  "stories_count",        :default => 0
+    t.integer  "task_estimates_count", :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "project_id",       :null => false
+    t.integer  "project_id",                          :null => false
   end
 
   add_index "iterations", ["project_id", "iteration_number"], :name => "index_iterations_on_project_id_and_iteration_number", :unique => true
@@ -55,9 +57,9 @@ ActiveRecord::Schema.define(:version => 20111009010958) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "tenant_id",                                             :null => false
-    t.integer  "project_identifier",                                    :null => false
     t.datetime "last_synced_at"
     t.integer  "iterations_count",                       :default => 0
+    t.integer  "pivotal_identifier",                                    :null => false
     t.integer  "iteration_duration_days"
     t.string   "sync_status",             :limit => 200
   end
@@ -73,6 +75,56 @@ ActiveRecord::Schema.define(:version => 20111009010958) do
 
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
+
+  create_table "stories", :force => true do |t|
+    t.integer  "pivotal_identifier",                               :null => false
+    t.string   "story_type",         :limit => 10,                 :null => false
+    t.string   "url",                :limit => 50,                 :null => false
+    t.integer  "points"
+    t.string   "status",             :limit => 10,                 :null => false
+    t.string   "name",               :limit => 200,                :null => false
+    t.string   "owner",              :limit => 50
+    t.integer  "sort"
+    t.integer  "tasks_count",                       :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "iteration_id",                                     :null => false
+  end
+
+  add_index "stories", ["iteration_id", "pivotal_identifier"], :name => "index_stories_on_iteration_id_and_pivotal_identifier", :unique => true
+
+  create_table "task_estimates", :force => true do |t|
+    t.date     "as_of",                            :null => false
+    t.float    "total_hours",                      :null => false
+    t.float    "remaining_hours",                  :null => false
+    t.float    "points_delivered"
+    t.float    "velocity"
+    t.string   "status",             :limit => 10
+    t.float    "remaining_qa_hours"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "iteration_id",                     :null => false
+    t.integer  "task_id"
+  end
+
+  add_index "task_estimates", ["iteration_id", "as_of"], :name => "index_task_estimates_on_iteration_id_and_as_of"
+  add_index "task_estimates", ["iteration_id", "task_id", "as_of"], :name => "index_task_estimates_on_iteration_id_and_task_id_and_as_of", :unique => true
+  add_index "task_estimates", ["task_id", "as_of"], :name => "index_task_estimates_on_task_id_and_as_of"
+
+  create_table "tasks", :force => true do |t|
+    t.integer  "pivotal_identifier",                                     :null => false
+    t.string   "description",          :limit => 200
+    t.float    "total_hours"
+    t.float    "remaining_hours"
+    t.string   "status",               :limit => 10
+    t.boolean  "qa",                                  :default => false, :null => false
+    t.integer  "task_estimates_count",                :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "story_id",                                               :null => false
+  end
+
+  add_index "tasks", ["story_id"], :name => "tasks_story_id_fk"
 
   create_table "tenants", :force => true do |t|
     t.string   "name",           :limit => 50,                :null => false
@@ -132,6 +184,13 @@ ActiveRecord::Schema.define(:version => 20111009010958) do
   add_foreign_key "logons", "users", :name => "logons_user_id_fk", :dependent => :delete
 
   add_foreign_key "projects", "tenants", :name => "projects_tenant_id_fk", :dependent => :delete
+
+  add_foreign_key "stories", "iterations", :name => "stories_iteration_id_fk", :dependent => :delete
+
+  add_foreign_key "task_estimates", "iterations", :name => "task_estimates_iteration_id_fk", :dependent => :delete
+  add_foreign_key "task_estimates", "tasks", :name => "task_estimates_task_id_fk", :dependent => :delete
+
+  add_foreign_key "tasks", "stories", :name => "tasks_story_id_fk", :dependent => :delete
 
   add_foreign_key "users", "tenants", :name => "users_tenant_id_fk", :dependent => :delete
 

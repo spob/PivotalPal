@@ -5,9 +5,10 @@ class Project < ActiveRecord::Base
   has_many :iterations, :dependent => :destroy
   validates_presence_of :name
   validates_presence_of :tenant_id
-  validates_presence_of :project_identifier
-  validates_uniqueness_of :project_identifier, :scope => :tenant_id
-  validates_numericality_of :project_identifier, :only_integer => true, :allow_blank => true, :greater_than => 0
+  validates_presence_of :pivotal_identifier
+  validates_uniqueness_of :pivotal_identifier, :scope => :tenant_id
+  validates_numericality_of :pivotal_identifier, :only_integer => true, :allow_blank => true, :greater_than => 0
+  validates_length_of :sync_status, :maximum => 200, :allow_blank => true
 
 
 
@@ -18,7 +19,7 @@ class Project < ActiveRecord::Base
     begin
       # fetch project
       logger.info("Refreshing project #{name}")
-      resource_uri = URI.parse("http://www.pivotaltracker.com/services/v3/projects/#{self.project_identifier}")
+      resource_uri = URI.parse("http://www.pivotaltracker.com/services/v3/projects/#{self.pivotal_identifier}")
       response = Net::HTTP.start(resource_uri.host, resource_uri.port) do |http|
         http.get(resource_uri.path, {'X-TrackerToken' => self.tenant.api_key})
       end
@@ -33,7 +34,7 @@ class Project < ActiveRecord::Base
 #        end
         self.sync_status = I18n.t('general.ok')
       else
-        self.sync_status =  I18n.t('project.id_not_found', :project_identifier => self.project_identifier)
+        self.sync_status =  I18n.t('project.id_not_found', :pivotal_identifier => self.pivotal_identifier)
       end
     ensure
       GC.enable
