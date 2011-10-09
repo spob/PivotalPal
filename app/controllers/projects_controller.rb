@@ -21,6 +21,7 @@ class ProjectsController < ApplicationController
 # GET /projects/new
 # GET /projects/new.xml
   def new
+    @project = Project.new(:name => "{#{t('project.pending_refresh')}}")
     respond_with @project
   end
 

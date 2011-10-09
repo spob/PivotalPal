@@ -12,7 +12,7 @@ en:
     entity_name: User
     tenant_taken: is already taken
     bad_tenant_name: must be letters and numbers with no spaces
-    invited: "User was successfully invited."
+    invited: User was successfully invited.
 
   password:
     updated: You have successfully changed your password
@@ -21,6 +21,8 @@ en:
   project:
     entity_name: Project
     project_identifier: Pivotal Project ID
+    pending_refresh: Pending refresh from PivotalTracker
+    id_not_found: Project identifier %{project_identifier} not found in PivotalTracker
 
   periodic_job:
     one_time_job_scheduled: Job schedule to run one time

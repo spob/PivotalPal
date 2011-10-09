@@ -12,6 +12,10 @@
   <b>Last Synced At:</b>
   <%= l(@project.last_synced_at) if @project.last_synced_at %>
 </p>
+<p>
+  <b>Sync Status</b>
+  <%= @project.sync_status %>
+</p>
 
 
 <%= link_to 'Edit', edit_project_path(@project) %> |

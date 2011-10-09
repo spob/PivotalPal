@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111007021101) do
+ActiveRecord::Schema.define(:version => 20111009002409) do
 
   create_table "logons", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -39,10 +39,14 @@ ActiveRecord::Schema.define(:version => 20111007021101) do
   add_index "periodic_jobs", ["next_run_at"], :name => "index_periodic_jobs_on_next_run_at"
 
   create_table "projects", :force => true do |t|
-    t.string   "name",       :null => false
+    t.string   "name",                                   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "tenant_id",  :null => false
+    t.integer  "tenant_id",                              :null => false
+    t.integer  "project_identifier",                     :null => false
+    t.datetime "last_synced_at"
+    t.integer  "iteration_duration_days"
+    t.string   "sync_status",             :limit => 200
   end
 
   add_index "projects", ["tenant_id", "name"], :name => "index_projects_on_tenant_id_and_name", :unique => true
