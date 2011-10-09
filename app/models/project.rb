@@ -2,6 +2,7 @@ require 'net/http'
 
 class Project < ActiveRecord::Base
   belongs_to :tenant, :counter_cache => true
+  has_many :iterations, :dependent => :destroy
   validates_presence_of :name
   validates_presence_of :tenant_id
   validates_presence_of :project_identifier
@@ -30,7 +31,7 @@ class Project < ActiveRecord::Base
 #        unless self.new_record?
 #          fetch_current_iteration || fetch_notes
 #        end
-        self.sync_status = "OK"
+        self.sync_status = I18n.t('general.ok')
       else
         self.sync_status =  I18n.t('project.id_not_found', :project_identifier => self.project_identifier)
       end

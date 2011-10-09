@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   before_update :create_logon, :create_tenant
 
   belongs_to :tenant, :counter_cache => true
-  has_many :logons
+  has_many :logons, :dependent => :destroy
 
   validates_uniqueness_of :email
   validates_length_of :first_name, :maximum => 25, :allow_blank => true

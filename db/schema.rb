@@ -11,7 +11,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111009002409) do
+ActiveRecord::Schema.define(:version => 20111009010958) do
+
+  create_table "iterations", :force => true do |t|
+    t.integer  "iteration_number", :null => false
+    t.date     "start_on",         :null => false
+    t.date     "end_on",           :null => false
+    t.datetime "last_synced_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "project_id",       :null => false
+  end
+
+  add_index "iterations", ["project_id", "iteration_number"], :name => "index_iterations_on_project_id_and_iteration_number", :unique => true
 
   create_table "logons", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -39,12 +51,13 @@ ActiveRecord::Schema.define(:version => 20111009002409) do
   add_index "periodic_jobs", ["next_run_at"], :name => "index_periodic_jobs_on_next_run_at"
 
   create_table "projects", :force => true do |t|
-    t.string   "name",                                   :null => false
+    t.string   "name",                                                  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "tenant_id",                              :null => false
-    t.integer  "project_identifier",                     :null => false
+    t.integer  "tenant_id",                                             :null => false
+    t.integer  "project_identifier",                                    :null => false
     t.datetime "last_synced_at"
+    t.integer  "iterations_count",                       :default => 0
     t.integer  "iteration_duration_days"
     t.string   "sync_status",             :limit => 200
   end
@@ -113,6 +126,8 @@ ActiveRecord::Schema.define(:version => 20111009002409) do
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["tenant_id"], :name => "users_tenant_id_fk"
   add_index "users", ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
+
+  add_foreign_key "iterations", "projects", :name => "iterations_project_id_fk", :dependent => :delete
 
   add_foreign_key "logons", "users", :name => "logons_user_id_fk", :dependent => :delete
 

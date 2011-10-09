@@ -7,6 +7,7 @@ en:
     updated: "%{entity} %{identifier} was successfully updated."
     deleted: "%{entity} %{identifier} was successfully deleted."
     confirm_nag: "Are you sure?"
+    ok: OK
 
   user:
     entity_name: User
