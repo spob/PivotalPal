@@ -34,6 +34,7 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(params[:project])
     @project.tenant = current_user.tenant
+    @project.next_sync_at = Time.now
 
     respond_to do |format|
       if @project.save

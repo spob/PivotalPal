@@ -61,7 +61,7 @@ class PeriodicJob < ActiveRecord::Base
       jobs = PeriodicJob.ready_to_run.all
 
       # Update last_run_result to 'Running' to signal it is in process
-      PeriodicJob.ready_to_run.update_all(:last_run_result => 'Running')
+      PeriodicJob.where(:id => jobs.collect(&:id)).update_all(:last_run_result => 'Running')
       jobs
     end
   end
@@ -107,7 +107,9 @@ class PeriodicJob < ActiveRecord::Base
       self.last_run_at = Time.now
       self.next_run_at = nil
       self.save
-      eval(self.job.gsub(/#JOBID#/, self.id.to_s).gsub(/#RAILS_ROOT#/, Rails.root.to_s))
+      command = self.job.gsub(/#JOBID#/, self.id.to_s).gsub(/#RAILS_ROOT#/, Rails.root.to_s)
+      puts command
+      eval(command)
       self.last_run_result = "OK"
       PeriodicJob.log_info "Job completed successfully"
     rescue Exception

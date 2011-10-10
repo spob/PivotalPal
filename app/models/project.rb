@@ -4,6 +4,7 @@ class Project < ActiveRecord::Base
   belongs_to :tenant, :counter_cache => true
   has_many :iterations, :dependent => :destroy
   has_one :latest_iteration, :class_name => "Iteration", :order => "iteration_number DESC"
+
   validates_presence_of :name
   validates_presence_of :tenant_id
   validates_presence_of :pivotal_identifier
@@ -11,7 +12,21 @@ class Project < ActiveRecord::Base
   validates_numericality_of :pivotal_identifier, :only_integer => true, :allow_blank => true, :greater_than => 0
   validates_length_of :sync_status, :maximum => 200, :allow_blank => true
 
+  scope :scheduled_to_sync, where(:next_sync_at.lt => Time.now).order(:next_sync_at)
+
   STATUS_PUSHED = "pushed"
+
+  def self.sync_projects
+    Project.scheduled_to_sync.select("id").find_each do |project|
+      RunOncePeriodicJob.create_job("Sync Project", "Project.refresh(#{project.id})")
+    end
+  end
+
+  def self.refresh id
+    project = Project.find(id)
+    project.refresh
+    project.save
+  end
 
   def refresh
     GC.start
@@ -34,9 +49,11 @@ class Project < ActiveRecord::Base
         self.iteration_duration_days = doc.at('iteration_length').innerHTML
         fetch_current_iteration unless self.new_record?
         self.sync_status = I18n.t('general.ok')
+        self.last_synced_at = Time.now
       else
         self.sync_status = I18n.t('project.id_not_found', :pivotal_identifier => self.pivotal_identifier)
       end
+      self.next_sync_at = self.tenant.refresh_frequency_hours.hours.since
     ensure
       GC.enable
     end

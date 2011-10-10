@@ -3,6 +3,10 @@
 class RunIntervalPeriodicJob < PeriodicJob
   before_create :set_next_run_at_date
 
+  def self.create_job(name, job, interval)
+    RunOncePeriodicJob(:name => name, :job => job, :interval => interval)
+  end
+
   # Instantiate a new instance of this type of job (called after this job has run) which all the same
   # settings as this job except with the next_run_at based upon the run_at_minutes
   def calc_next_run

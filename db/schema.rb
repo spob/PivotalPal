@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111009015557) do
+ActiveRecord::Schema.define(:version => 20111010012554) do
 
   create_table "iterations", :force => true do |t|
     t.integer  "iteration_number",                    :null => false
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(:version => 20111009015557) do
     t.integer  "pivotal_identifier",                                    :null => false
     t.integer  "iteration_duration_days"
     t.string   "sync_status",             :limit => 200
+    t.datetime "next_sync_at"
   end
 
   add_index "projects", ["tenant_id", "name"], :name => "index_projects_on_tenant_id_and_name", :unique => true
@@ -127,12 +128,13 @@ ActiveRecord::Schema.define(:version => 20111009015557) do
   add_index "tasks", ["story_id"], :name => "tasks_story_id_fk"
 
   create_table "tenants", :force => true do |t|
-    t.string   "name",           :limit => 50,                :null => false
-    t.string   "api_key",        :limit => 32
-    t.integer  "users_count",                  :default => 0
-    t.integer  "projects_count",               :default => 0
+    t.string   "name",                    :limit => 50,                :null => false
+    t.string   "api_key",                 :limit => 32
+    t.integer  "users_count",                           :default => 0
+    t.integer  "projects_count",                        :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "refresh_frequency_hours",               :default => 1, :null => false
   end
 
   add_index "tenants", ["name"], :name => "index_tenants_on_name", :unique => true
