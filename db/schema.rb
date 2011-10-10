@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(:version => 20111009015557) do
     t.string   "story_type",         :limit => 10,                 :null => false
     t.string   "url",                :limit => 50,                 :null => false
     t.integer  "points"
-    t.string   "status",             :limit => 10,                 :null => false
+    t.string   "status",             :limit => 20,                 :null => false
     t.string   "name",               :limit => 200,                :null => false
     t.string   "owner",              :limit => 50
     t.integer  "sort"
@@ -99,7 +99,7 @@ ActiveRecord::Schema.define(:version => 20111009015557) do
     t.float    "remaining_hours",                  :null => false
     t.float    "points_delivered"
     t.float    "velocity"
-    t.string   "status",             :limit => 10
+    t.string   "status",             :limit => 20
     t.float    "remaining_qa_hours"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -116,7 +116,7 @@ ActiveRecord::Schema.define(:version => 20111009015557) do
     t.string   "description",          :limit => 200
     t.float    "total_hours"
     t.float    "remaining_hours"
-    t.string   "status",               :limit => 10
+    t.string   "status",               :limit => 20
     t.boolean  "qa",                                  :default => false, :null => false
     t.integer  "task_estimates_count",                :default => 0
     t.datetime "created_at"
