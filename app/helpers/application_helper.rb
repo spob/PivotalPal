@@ -3,10 +3,6 @@ module ApplicationHelper
     content_for(:title) { page_title }
   end
 
-  def mark_required(object, attribute)
-    "*" if object.class.validators_on(attribute).map(&:class).include? ActiveModel::Validations::PresenceValidator
-  end
-
   def bold_text(text, bold)
     return text unless bold
     "<strong>".html_safe + text + "</strong>".html_safe
