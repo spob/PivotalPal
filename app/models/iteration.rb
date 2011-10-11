@@ -12,6 +12,10 @@ class Iteration < ActiveRecord::Base
   validates_uniqueness_of :iteration_number, :scope => :project_id
   validates_numericality_of :iteration_number, :only_integer => true, :allow_blank => true, :greater_than => 0
 
+  scope :last_iteration, lambda { |project|
+    where(:project => project).includes(:task_estimates, :stories => {:tasks => :task_estimates}).order("iteration_number desc").limit(1)
+  }
+
   def iteration_name
     "Iteration #{self.iteration_number}"
   end

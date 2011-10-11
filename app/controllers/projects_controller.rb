@@ -15,6 +15,11 @@ class ProjectsController < ApplicationController
   # GET /projects/1
   # GET /projects/1.xml
   def show
+    if params[:iteration_id]
+      @iteration = Iteration.includes(:task_estimates, :stories => {:tasks => :task_estimates}).find(params[:iteration_id])
+    else
+      @iteration = Iteration.last_iteration(@project)
+    end
     respond_with @project
   end
 

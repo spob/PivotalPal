@@ -13,15 +13,15 @@ class SuperUsersController < ApplicationController
     users = users.confirmed if cookies[:super_users_search_show_users] == "CONFIRMED"
     users = users.unconfirmed if cookies[:super_users_search_show_users] == "UNCONFIRMED"
     @users = users.page(params[:page]).per(DEFAULT_ROWS_PER_PAGE)
-    @users.each {|u| authorize! :read, u }
+    @users.each { |u| authorize! :read, u }
     respond_with @users
   end
 
   # GET /positions/1
   # GET /positions/1.xml
-#  def show
-#    respond_with @users
-#  end
+  #  def show
+  #    respond_with @users
+  #  end
 
   def edit
   end

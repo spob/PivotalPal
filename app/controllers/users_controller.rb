@@ -18,9 +18,9 @@ class UsersController < ApplicationController
 
   # GET /users/1
   # GET /users/1.xml
-#  def show
-#    respond_with @users
-#  end
+  #  def show
+  #    respond_with @users
+  #  end
 
   def edit
   end

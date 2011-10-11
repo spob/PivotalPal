@@ -19,10 +19,4 @@ class Story < ActiveRecord::Base
   scope :accepted, where(:status => "accepted")
   scope :pushed, where(:status => "pushed")
   scope :pointed, where(:points.gte => 0)
-#  scope :conditional_pushed, lambda { |param| return {} if param.nil? or param == "Y"
-#  where(:status.ne => "pushed")
-#  }
-#  scope :conditional_not_accepted, lambda { |param| return {} if param.nil? or param == "Y"
-#  where(:status.ne => "pushed")
-#  }
 end
