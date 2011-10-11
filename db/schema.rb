@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111010012554) do
+ActiveRecord::Schema.define(:version => 20111011003154) do
 
   create_table "iterations", :force => true do |t|
     t.integer  "iteration_number",                    :null => false
@@ -140,7 +140,7 @@ ActiveRecord::Schema.define(:version => 20111010012554) do
   add_index "tenants", ["name"], :name => "index_tenants_on_name", :unique => true
 
   create_table "users", :force => true do |t|
-    t.string   "email",                               :default => "", :null => false
+    t.string   "email",                               :default => "",                           :null => false
     t.string   "encrypted_password",   :limit => 128, :default => ""
     t.string   "reset_password_token"
     t.string   "remember_token"
@@ -161,7 +161,7 @@ ActiveRecord::Schema.define(:version => 20111010012554) do
     t.integer  "tenant_id"
     t.integer  "logons_count",                        :default => 0
     t.string   "first_name"
-    t.string   "last_name",                                           :null => false
+    t.string   "last_name",                                                                     :null => false
     t.string   "company_name"
     t.string   "api_key"
     t.integer  "roles_mask"
@@ -171,6 +171,7 @@ ActiveRecord::Schema.define(:version => 20111010012554) do
     t.integer  "invitation_limit"
     t.integer  "invited_by_id"
     t.string   "invited_by_type"
+    t.string   "time_zone",            :limit => 50,  :default => "Eastern Time (US & Canada)", :null => false
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

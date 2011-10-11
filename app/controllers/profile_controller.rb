@@ -11,6 +11,7 @@ class ProfileController < ApplicationController
     @profile.email = params[:user][:email]
     @profile.first_name = params[:user][:first_name]
     @profile.last_name = params[:user][:last_name]
+    @profile.time_zone = params[:user][:time_zone]
     if @profile.save
       redirect_to(projects_path, :notice => t('profile.updated'))
     else

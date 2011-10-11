@@ -18,6 +18,8 @@ class User < ActiveRecord::Base
   validates_presence_of :last_name
   validates_length_of :last_name, :maximum => 25, :allow_blank => true
   validates_presence_of :company_name, :on => :create, :if => :need_tenant?
+  validates_presence_of :time_zone
+  validates_length_of :time_zone, :maximum => 50
   validates_length_of :company_name, :maximum => 50, :on => :create, :if => :need_tenant?, :allow_blank => true
   validates_format_of :company_name, :with => /^[\w\d]+$/,
                       :on => :create,
