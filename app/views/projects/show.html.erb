@@ -1,9 +1,4 @@
 <% title "Project Details for #{@project.name}" %>
-
-<p>
-  <b>Name:</b>
-  <%= @project.name %>
-</p>
 <p>
   <b><%= t('project.pivotal_identifier') %>:</b>
   <%= link_to @project.pivotal_identifier, "https://www.pivotaltracker.com/projects/#{@project.pivotal_identifier}", :target => "_blank" %>
@@ -18,5 +13,99 @@
 </p>
 
 
-<%= link_to 'Edit', edit_project_path(@project) %> |
+<h1>Project <%= @project.name %>, Iteration <%= @iteration.iteration_number %>
+  (<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)</h1>
+<% form_tag(project_path(@project), :id => 'select_iteration', :method => :get, :name => 'search') do -%>
+      <strong>Iteration:</strong>
+    <%= select_tag :iteration_id,
+                   options_from_collection_for_select(
+                           @project.iterations,
+                           "id",
+                           "iteration_name",
+                           @iteration.id),
+                   html_options = {:onchange => 'document.search.submit();'} %>
+    <br /><br />
+    <strong>Show Pushed Items:</strong> <%= radio_button_tag "show_pushed_stories", "Y", cookies[:show_pushed_stories] != "N",
+                   html_options = {:onchange => 'document.search.submit();'} %>Yes&nbsp;&nbsp;
+    <%= radio_button_tag "show_pushed_stories", "N", cookies[:show_pushed_stories] == "N",
+                   html_options = {:onchange => 'document.search.submit();'} %>No
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <strong>Show Accepted Stories:</strong> <%= radio_button_tag "show_accepted_stories", "Y", cookies[:show_accepted_stories] != "N",
+                   html_options = {:onchange => 'document.search.submit();'} %>Yes&nbsp;&nbsp;
+    <%= radio_button_tag "show_accepted_stories", "N", cookies[:show_accepted_stories] == "N",
+                   html_options = {:onchange => 'document.search.submit();'} %>No
+<% end %>
+
+<p>Synced at <%= l(@iteration.last_synced_at) if @iteration.last_synced_at %></p>
+<table>
+  <tr>
+    <th rowspan="2" valign="bottom">Story</th>
+    <th rowspan="2" valign="bottom" width="5%">Status</th>
+    <th rowspan="2" valign="bottom" width="5%">Estimate<br/>(hours)</th>
+    <th colspan="<%= @iteration.calc_day_number %>">Day</th>
+  </tr>
+  <tr>
+    <%= day_headings @iteration %>
+  </tr>
+  <%= render :partial => 'story', :collection => Story.sort_by_status(@iteration.stories.conditional_not_accepted(cookies[:show_accepted_stories]).conditional_pushed(cookies[:show_pushed_stories])), :locals => {:iteration => @iteration} %>
+
+  <tr>
+    <td colspan="<%= @iteration.calc_day_number + 3 %>">&nbsp;</td>
+  </tr>
+  <tr>
+    <td><strong>REMAINING HOURS:</strong></td>
+    <td>-</td>
+    <td>-</td>
+    <% (1..@iteration.calc_day_number).each do |d| %>
+        <td><%= '%.2f' % @iteration.remaining_hours_for_day_number(d) %></td>
+    <% end %>
+  </tr>
+  <tr>
+    <td><strong>REMAINING QA HOURS:</strong></td>
+    <td>-</td>
+    <td>-</td>
+    <% (1..@iteration.calc_day_number).each do |d| %>
+        <td><%= '%.2f' % (@iteration.remaining_qa_hours_for_day_number(d) ? @iteration.remaining_qa_hours_for_day_number(d) : 0.0) %></td>
+    <% end %>
+  </tr>
+
+  <tr>
+    <td><strong>TOTAL HOURS:</strong></td>
+    <td>-</td>
+    <td><%= '%.2f' % @iteration.total_hours %></td>
+    <% (1..@iteration.calc_day_number).each do |d| %>
+        <td><%= '%.2f' % @iteration.total_hours_for_day_number(d) %></td>
+    <% end %>
+  </tr>
+
+  <tr>
+    <td><strong>COMPLETED HOURS:</strong></td>
+    <td>-</td>
+    <td>-</td>
+    <% (1..@iteration.calc_day_number).each do |d| %>
+        <td><%= '%.2f' % (@iteration.total_hours_for_day_number(d) - @iteration.remaining_hours_for_day_number(d)) %></td>
+    <% end %>
+  </tr>
+
+  <tr>
+    <td><strong>VELOCITY:</strong></td>
+    <td>-</td>
+    <td>-</td>
+    <% (1..@iteration.calc_day_number).each do |d| %>
+        <td><%= @iteration.velocity_for_day_number(d) %></td>
+    <% end %>
+  </tr>
+
+  <tr>
+    <td><strong>POINTS DELIVERED:</strong></td>
+    <td>-</td>
+    <td>-</td>
+    <% (1..@iteration.calc_day_number).each do |d| %>
+        <td><%= @iteration.points_delivered_for_day_number(d) %></td>
+    <% end %>
+  </tr>
+</table>
+<br/>
+
+
 <%= link_to 'Back', projects_path %>

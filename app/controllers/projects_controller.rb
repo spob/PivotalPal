@@ -18,7 +18,7 @@ class ProjectsController < ApplicationController
     if params[:iteration_id]
       @iteration = Iteration.includes(:task_estimates, :stories => {:tasks => :task_estimates}).find(params[:iteration_id])
     else
-      @iteration = Iteration.last_iteration(@project)
+      @iteration = Iteration.last_iteration(@project).first
     end
     respond_with @project
   end

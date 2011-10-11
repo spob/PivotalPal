@@ -19,4 +19,31 @@ class Story < ActiveRecord::Base
   scope :accepted, where(:status => "accepted")
   scope :pushed, where(:status => "pushed")
   scope :pointed, where(:points.gte => 0)
+  scope :conditional_pushed, lambda { |param| return where("") if param.nil? or param == "Y"
+  where(:status.ne => "pushed")
+  }
+  scope :conditional_not_accepted, lambda { |param| return where("") if param.nil? or param == "Y"
+  where(:status.ne => "accepted")
+  }
+
+    def self.sort_by_status stories
+    stories.sort_by do |s|
+      case s.status
+        when "accepted" then
+          1000 + (s.sort ? s.sort : 0)
+        when "delivered" then
+          2000 + (s.sort ? s.sort : 0)
+        when "finished" then
+          3000 + (s.sort ? s.sort : 0)
+        when "rejected" then
+          4000 + (s.sort ? s.sort : 0)
+        when "started" then
+          5000 + (s.sort ? s.sort : 0)
+        when "unstarted" then
+          6000 + (s.sort ? s.sort : 0)
+        when "pushed" then
+          7000 + (s.sort ? s.sort : 0)
+      end
+    end
+  end
 end
