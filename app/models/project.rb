@@ -160,6 +160,7 @@ class Project < ActiveRecord::Base
                                            :velocity => self.latest_iteration.total_points)
             else
               @day = @iteration.task_estimates.create!(:as_of => self.calc_iteration_day,
+                                                       :day_number => self.latest_iteration.calc_day_number,
                                                        :total_hours => self.latest_iteration.try(:total_hours),
                                                        :remaining_hours => self.latest_iteration.try(:remaining_hours),
                                                        :remaining_qa_hours => self.latest_iteration.try(:remaining_qa_hours),
@@ -232,6 +233,7 @@ class Project < ActiveRecord::Base
                                   :status => task.status)
     else
       task.task_estimates.create!(:as_of => self.calc_iteration_day,
+                                  :day_number => iteration.try(:calc_day_number),
                                   :iteration => iteration,
                                   :total_hours => task.total_hours,
                                   :remaining_hours => task.remaining_hours,

@@ -15,7 +15,7 @@
 
 <h1>Project <%= @project.name %>, Iteration <%= @iteration.iteration_number %>
   (<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)</h1>
-<% form_tag(project_path(@project), :id => 'select_iteration', :method => :get, :name => 'search') do -%>
+<%= form_tag(project_path(@project), :id => 'select_iteration', :method => :get, :name => 'search') do -%>
       <strong>Iteration:</strong>
     <%= select_tag :iteration_id,
                    options_from_collection_for_select(

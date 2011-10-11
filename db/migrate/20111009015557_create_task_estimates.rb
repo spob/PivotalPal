@@ -2,6 +2,7 @@ class CreateTaskEstimates < ActiveRecord::Migration
   def self.up
     create_table :task_estimates do |t|
       t.date :as_of, :null => false
+      t.integer :day_number, :null => false
       t.float :total_hours, :null => false
       t.float :remaining_hours, :null => false
       t.float :points_delivered

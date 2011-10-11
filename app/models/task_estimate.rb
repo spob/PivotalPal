@@ -4,6 +4,7 @@ class TaskEstimate < ActiveRecord::Base
 
   validates_presence_of :as_of
   validates_presence_of :total_hours
+  validates_presence_of :day_number
   validates_presence_of :remaining_hours
   validates_length_of :status, :maximum => 20, :allow_blank => true
 end
