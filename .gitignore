@@ -5,3 +5,4 @@ tmp/
 .idea
 .rvmrc
 Gemfile.lock
+schema.rb
