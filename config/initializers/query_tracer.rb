@@ -1,5 +1,5 @@
 QueryTracer.configure do |tracer|
-  tracer.enabled = no
+  tracer.enabled = false
   tracer.colorize = true
   tracer.show_revision = true
   tracer.multiline = true

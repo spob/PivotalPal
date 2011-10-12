@@ -76,11 +76,11 @@ class Iteration < ActiveRecord::Base
   end
 
 
-  def calc_day_number the_date=Project.calculate_project_date
+  def calc_day_number duration_weeks=self.project.iteration_duration_weeks, the_date=Project.calculate_project_date
     the_date = end_on if the_date > end_on
     day_num = 0
 
-    (self.end_on - (self.project.iteration_duration_weeks * 7)..the_date).each do |d|
+    (self.end_on - (duration_weeks * 7)..the_date).each do |d|
       day_num += 1 if d.cwday < 6
     end
     day_num

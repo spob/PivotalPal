@@ -9,6 +9,7 @@ gem 'cancan', '~> 1.6.0'
 gem 'devise', '~> 1.2.0'
 gem 'devise_invitable', '~> 0.4.0'
 gem 'foreigner', '~> 1.1.0'
+gem "friendly_id", "~> 4.0.0.beta14"
 gem "hpricot", "~> 0.8.4"
 gem 'kaminari', '~> 0.12.0'
 gem 'mail', '~> 2.2.0'

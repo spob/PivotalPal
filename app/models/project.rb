@@ -1,6 +1,9 @@
 require 'net/http'
 
 class Project < ActiveRecord::Base
+  extend FriendlyId
+  friendly_id :name, :use => :slugged
+
   belongs_to :tenant, :counter_cache => true
   has_many :iterations, :dependent => :destroy
   has_one :latest_iteration, :class_name => "Iteration", :order => "iteration_number DESC"
@@ -160,7 +163,7 @@ class Project < ActiveRecord::Base
                                            :velocity => self.latest_iteration.total_points)
             else
               @day = @iteration.task_estimates.create!(:as_of => self.calc_iteration_day,
-                                                       :day_number => self.latest_iteration.calc_day_number,
+                                                       :day_number => self.latest_iteration.calc_day_number(self.iteration_duration_weeks),
                                                        :total_hours => self.latest_iteration.try(:total_hours),
                                                        :remaining_hours => self.latest_iteration.try(:remaining_hours),
                                                        :remaining_qa_hours => self.latest_iteration.try(:remaining_qa_hours),
@@ -233,7 +236,7 @@ class Project < ActiveRecord::Base
                                   :status => task.status)
     else
       task.task_estimates.create!(:as_of => self.calc_iteration_day,
-                                  :day_number => iteration.try(:calc_day_number),
+                                  :day_number => (iteration ? iteration.calc_day_number(self.iteration_duration_weeks) : nil),
                                   :iteration => iteration,
                                   :total_hours => task.total_hours,
                                   :remaining_hours => task.remaining_hours,
