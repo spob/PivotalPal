@@ -35,6 +35,7 @@ gem 'mysql2', '~> 0.2.0'
 # and rake tasks are available in development mode:
 group :development do
   gem 'wirble'
+  gem 'newrelic_rpm', '~> 3.1.2'
 end
 
 group :test do

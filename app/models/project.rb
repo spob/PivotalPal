@@ -46,7 +46,7 @@ class Project < ActiveRecord::Base
         doc = Hpricot(response.body).at('project')
 
         self.name = doc.at('name').innerHTML
-        self.iteration_duration_days = doc.at('iteration_length').innerHTML
+        self.iteration_duration_weeks = doc.at('iteration_length').innerHTML
         fetch_current_iteration unless self.new_record?
         self.sync_status = I18n.t('general.ok')
         self.last_synced_at = Time.now
