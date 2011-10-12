@@ -45,5 +45,10 @@ class Story < ActiveRecord::Base
           7000 + (s.sort ? s.sort : 0)
       end
     end
+    end
+
+  def tasks_conditional_pushed(flag)
+    return self.tasks if flag.nil? or flag == "Y"
+    self.tasks.find_all{|t| t.status != "pushed"}
   end
 end

@@ -80,7 +80,7 @@ class Iteration < ActiveRecord::Base
     the_date = end_on if the_date > end_on
     day_num = 0
 
-    (self.end_on - 14..the_date).each do |d|
+    (self.end_on - (self.project.iteration_duration_weeks * 7)..the_date).each do |d|
       day_num += 1 if d.cwday < 6
     end
     day_num
@@ -102,6 +102,17 @@ class Iteration < ActiveRecord::Base
     @estimates.keys.each do |k|
       puts "#{k}: #{@estimates[k].try(:id)}"
     end
+  end
+
+  def stories_filtered(not_accepted_flag, pushed_flag)
+    _stories = self.stories
+    unless not_accepted_flag.nil? or not_accepted_flag == "Y"
+      _stories = _stories.find_all{|s| s.status != "accepted"}
+    end
+    unless pushed_flag.nil? or pushed_flag == "Y"
+    _stories = _stories.find_all{|s| s.status != "pushed"}
+    end
+    _stories
   end
 
   private

@@ -36,6 +36,7 @@ gem 'mysql2', '~> 0.2.0'
 group :development do
   gem 'wirble'
   gem 'newrelic_rpm', '~> 3.1.2'
+  gem "query_tracer", "~> 0.0.4"
 end
 
 group :test do
