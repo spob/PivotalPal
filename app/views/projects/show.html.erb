@@ -1,19 +1,5 @@
-<% title "Project Details for #{@project.name}" %>
-<p>
-  <b><%= t('project.pivotal_identifier') %>:</b>
-  <%= link_to @project.pivotal_identifier, "https://www.pivotaltracker.com/projects/#{@project.pivotal_identifier}", :target => "_blank" %>
-</p>
-<p>
-  <b>Last Synced At:</b>
-  <%= l(@project.last_synced_at) if @project.last_synced_at %>
-</p>
-<p>
-  <b>Sync Status</b>
-  <%= @project.sync_status %>
-</p>
+<% title "Project #{@project.name}, Iteration #{@iteration.iteration_number}" %>
 
-
-<h1>Project <%= @project.name %>, Iteration <%= @iteration.iteration_number %>
   (<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)</h1>
 <%= form_tag(project_path(@project), :id => 'select_iteration', :method => :get, :name => 'search') do -%>
     <strong>Iteration:</strong>

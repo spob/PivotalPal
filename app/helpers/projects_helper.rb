@@ -78,5 +78,4 @@ module ProjectsHelper
   def bgcolor color, other_style=""
     "style=\"background-color: #{color}; #{other_style}\""
   end
-
 end

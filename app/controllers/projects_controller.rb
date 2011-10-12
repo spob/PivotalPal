@@ -15,6 +15,9 @@ class ProjectsController < ApplicationController
   # GET /projects/1
   # GET /projects/1.xml
   def show
+    cookies[:show_pushed_stories] = {:value => params[:show_pushed_stories], :expires => 6.month.since} if params[:show_pushed_stories]
+    cookies[:show_accepted_stories] = {:value => params[:show_accepted_stories], :expires => 6.month.since} if params[:show_accepted_stories]
+
     if params[:iteration_id]
       @iteration = Iteration.includes(:task_estimates, :stories => {:tasks => :task_estimates}).find(params[:iteration_id])
     else
