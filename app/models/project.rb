@@ -114,7 +114,7 @@ class Project < ActiveRecord::Base
                                                   :url => story.at('url').inner_html,
                                                   :points => story.at('estimate').try(:inner_html),
                                                   :status => story.at('current_state').inner_html,
-                                                  :name => story.at('name').inner_html,
+                                                  :name => story.at('name').inner_html[0..199],
                                                   :owner => story.at('owned_by').try(:inner_html),
                                                   :story_type => story.at('story_type').inner_html,
                                                   :sort => n)

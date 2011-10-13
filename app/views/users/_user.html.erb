@@ -5,6 +5,6 @@
   <td><%= l(user.logons.latest.first.created_at) unless user.logons.empty? %></td>
   <td><%= "Y" if user.confirmed_at %></td>
   <td>
-    <%= link_to 'Edit', edit_user_path(user) %>
+    <%= edit_link user %>
   </td>
 </tr>

@@ -5,12 +5,11 @@
   <td><%= l(project.next_sync_at) if project.next_sync_at %></td>
   <td><%= project.sync_status %></td>
   <td>
-    <%= link_to 'Show', project %>
-    <% if can? :update, project %>
-        | <%= link_to 'Edit', edit_project_path(project) %>
-    <% end %>
-    <% if can? :destroy, project %>
-        | <%= link_to 'Destroy', project, :confirm => t("general.confirm_nag"), :method => :delete %>
+    <%= show_link project %>
+    <%= edit_link project, " | " %>
+    <%= destroy_link project, " | " %>
+    <% if can? :refresh_project, project %>
+        | <%= link_to 'Refresh', refresh_project_path(project), :method => :delete %>
     <% end %>
   </td>
 </tr>

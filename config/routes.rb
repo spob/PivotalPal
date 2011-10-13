@@ -22,7 +22,11 @@ PivotalPal::Application.routes.draw do
     end
   end
   resources :profile, :only => [:edit, :update]
-  resources :projects
+  resources :projects do
+    member do
+      post :refresh
+    end
+  end
   resources :super_users, :only => [:index, :edit, :update]
   resources :tenants, :only => [:edit, :update]
   resources :users, :except => [:destroy, :create] do

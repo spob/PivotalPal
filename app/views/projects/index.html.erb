@@ -16,6 +16,4 @@
 
 <br/>
 
-<% if can? :create, Project %>
-    <%= link_to 'New Project', new_project_path %>
-<% end %>
+<%= create_link Project, nil, 'New Project' %>

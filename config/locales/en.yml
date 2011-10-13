@@ -68,3 +68,8 @@ en:
       am: 'am'
       pm: 'pm'
 
+  action:
+    edit: "Edit"
+    show: "Show"
+    destroy: "Delete"
+    new: "New"
