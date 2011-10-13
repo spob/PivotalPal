@@ -73,7 +73,17 @@ class ProjectsController < ApplicationController
   end
 
   def refresh
-
+    respond_to do |format|
+      if @project.update_attribute(:next_sync_at, Time.now)
+        format.html { redirect_to(project_path(@project),
+                                  :notice => t('project.refresh_scheduled',
+                                               :project => @project.name)) }
+        format.xml { head :ok }
+      else
+        format.html { render :action => "show" }
+        format.xml { render :xml => @project.errors, :status => :unprocessable_entity }
+      end
+    end
   end
 
 # DELETE /projects/1

@@ -1,6 +1,10 @@
 <% title "Project #{@project.name}, Iteration #{@iteration.iteration_number}" %>
 
-  (<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)</h1>
+(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)</h1>
+
+<% if can? :refresh_project, @project %>
+    | <%= link_to 'Refresh', refresh_project_path(@project), :method => :post %>
+<% end %>
 <%= form_tag(project_path(@project), :id => 'select_iteration', :method => :get, :name => 'search') do -%>
     <strong>Iteration:</strong>
     <%= select_tag :iteration_id,
