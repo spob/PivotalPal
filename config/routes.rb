@@ -25,6 +25,7 @@ PivotalPal::Application.routes.draw do
   resources :projects do
     member do
       post :refresh
+      post :renumber
     end
   end
   resources :super_users, :only => [:index, :edit, :update]

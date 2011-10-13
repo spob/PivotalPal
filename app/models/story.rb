@@ -2,6 +2,8 @@ class Story < ActiveRecord::Base
   belongs_to :iteration, :counter_cache => true
   has_many :tasks, :dependent => :destroy
 
+  before_validation :adjust_points
+
   validates_presence_of :pivotal_identifier
   validates_presence_of :story_type
   validates_presence_of :url
@@ -50,5 +52,11 @@ class Story < ActiveRecord::Base
   def tasks_conditional_pushed(flag)
     return self.tasks if flag.nil? or flag == "Y"
     self.tasks.find_all{|t| t.status != "pushed"}
+  end
+
+  protected
+
+  def adjust_points
+    self.points = nil if self.points == -1
   end
 end

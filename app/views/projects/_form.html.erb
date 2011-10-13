@@ -17,6 +17,46 @@
       <br/>
       <%= f.text_field :pivotal_identifier %>
     </div>
+    <div class="field">
+      <%= f.label :renumber_features %>
+      <br/>
+      <%= f.check_box :renumber_features %>
+    </div>
+    <div class="field">
+      <%= f.label :feature_prefix %>
+      <br/>
+      <%= f.text_field :feature_prefix, :size => 5 %>
+    </div>
+    <div class="field">
+      <%= f.label :renumber_bugs %>
+      <br/>
+      <%= f.check_box :renumber_bugs %>
+    </div>
+    <div class="field">
+      <%= f.label :bug_prefix %>
+      <br/>
+      <%= f.text_field :bug_prefix, :size => 5 %>
+    </div>
+    <div class="field">
+      <%= f.label :renumber_chores %>
+      <br/>
+      <%= f.check_box :renumber_chores %>
+    </div>
+    <div class="field">
+      <%= f.label :chore_prefix %>
+      <br/>
+      <%= f.text_field :chore_prefix, :size => 5 %>
+    </div>
+    <div class="field">
+      <%= f.label :renumber_releases %>
+      <br/>
+      <%= f.check_box :renumber_releases %>
+    </div>
+    <div class="field">
+      <%= f.label :release_prefix %>
+      <br/>
+      <%= f.text_field :release_prefix, :size => 5 %>
+    </div>
     <div class="actions">
       <%= f.submit %>
     </div>

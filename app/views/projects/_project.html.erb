@@ -5,11 +5,12 @@
   <td><%= l(project.next_sync_at) if project.next_sync_at %></td>
   <td><%= project.sync_status %></td>
   <td>
-    <%= show_link project %>
-    <%= edit_link project, " | " %>
+    <%= show_link project if project.latest_iteration %>
+    <%= edit_link project, (project.latest_iteration ? " | " : "") %>
     <%= destroy_link project, " | " %>
     <% if can? :refresh_project, project %>
         | <%= link_to 'Refresh', refresh_project_path(project), :method => :post %>
+        | <%= link_to 'Renumber', renumber_project_path(project), :method => :post %>
     <% end %>
   </td>
 </tr>

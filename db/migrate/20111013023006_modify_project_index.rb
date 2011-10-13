@@ -1,11 +1,10 @@
-class AddTenantFkToProject < ActiveRecord::Migration
+class ModifyProjectIndex < ActiveRecord::Migration
   def self.up
-    add_column :projects, :pivotal_identifier, :integer, :null => false
     add_index :projects, [:tenant_id, :pivotal_identifier], :unique => true
   end
 
   def self.down
+    add_index :projects, [:tenant_id, :name], :unique => true
     remove_index :projects, [:tenant_id, :pivotal_identifier]
-    remove_column :projects, :pivotal_identifier
   end
 end

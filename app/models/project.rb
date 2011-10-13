@@ -14,6 +14,10 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :pivotal_identifier, :scope => :tenant_id
   validates_numericality_of :pivotal_identifier, :only_integer => true, :allow_blank => true, :greater_than => 0
   validates_length_of :sync_status, :maximum => 200, :allow_blank => true
+  validates_length_of :feature_prefix, :maximum => 5, :allow_blank => true
+  validates_length_of :chore_prefix, :maximum => 5, :allow_blank => true
+  validates_length_of :release_prefix, :maximum => 5, :allow_blank => true
+  validates_length_of :bug_prefix, :maximum => 5, :allow_blank => true
 
   scope :scheduled_to_sync, where(:next_sync_at.lt => Time.now).order(:next_sync_at)
 
@@ -101,7 +105,7 @@ class Project < ActiveRecord::Base
             if @story
               @story.update_attributes!(:points => story.at('estimate').try(:inner_html),
                                         :status => story.at('current_state').inner_html,
-                                        :name => story.at('name').inner_html,
+                                        :name => story.at('name').inner_html[0..199],
                                         :owner => story.at('owned_by').try(:inner_html),
                                         :story_type => story.at('story_type').inner_html,
                                         :sort => n)
@@ -110,6 +114,7 @@ class Project < ActiveRecord::Base
                 t.update_attributes!(:status => STATUS_PUSHED, :remaining_hours => 0.0)
               end
             else
+              puts "Points: #{story.at('estimate').try(:inner_html)}"
               @story = @iteration.stories.create!(:pivotal_identifier => story.at('id').inner_html,
                                                   :url => story.at('url').inner_html,
                                                   :points => story.at('estimate').try(:inner_html),
@@ -258,5 +263,97 @@ class Project < ActiveRecord::Base
 #      the_date = Date.current
 #    end
 #    the_date
+  end
+
+
+
+  def renumber
+    logger.info("renumber for project #{id}")
+    resource_uri = URI.parse("http://www.pivotaltracker.com/services/v3/projects/#{pivotal_identifier}/stories")
+    response = Net::HTTP.start(resource_uri.host, resource_uri.port) do |http|
+      http.get(resource_uri.path, {'X-TrackerToken' => self.tenant.api_key})
+    end
+
+    if response.code == "200"
+      GC.start
+      GC.disable
+
+      begin
+        walk_stories_to_renumber Hpricot(response.body), 'feature' if self.renumber_features
+        walk_stories_to_renumber Hpricot(response.body), 'chore' if self.renumber_chores
+        walk_stories_to_renumber Hpricot(response.body), 'release' if self.renumber_releases
+        walk_stories_to_renumber Hpricot(response.body), 'bug' if self.renumber_bugs
+      ensure
+        GC.enable
+      end
+      self.refresh
+      self.sync_status = I18n.t('project.renumbered')
+      true
+    else
+      self.sync_status = I18n.t('project.renumber_failed')
+      logger.warn("Response Code: #{response.message} #{response.code}")
+      false
+    end
+  end
+
+  def walk_stories_to_renumber doc, story_type
+    numbered_stories = {}
+    unnumbered_stories = {}
+    (doc/"story").each do |story|
+      id = story.at('id').try(:inner_html)
+      name = story.at('name').try(:inner_html)
+      stype = story.at('story_type').try(:inner_html)
+      if stype == story_type
+        if (name =~ /^#{story_prefix(story_type)}\d+/ix)
+          num = /\d+/x.match(name).to_s.to_i
+          numbered_stories[num] = name
+        else
+          # un-numbered story
+          unnumbered_stories[id] = name
+        end
+      end
+    end
+    next_story = next_story_number numbered_stories
+    unnumbered_stories.each do |e|
+      update_story_name e[0], "#{story_prefix(story_type)}#{next_story}: #{e[1]}"
+      next_story = next_story_number(numbered_stories, next_story + 1)
+    end
+  end
+
+  protected
+
+  def story_prefix story_type
+    case story_type
+      when 'feature' then
+        self.feature_prefix
+      when 'chore' then
+        self.chore_prefix
+      when 'release' then
+        self.release_prefix
+      when 'bug' then
+        self.bug_prefix
+      else
+        'X'
+    end
+  end
+
+  def update_story_name story_id, name, description=nil
+    desc = (description ? "<description>#{description}</description>" : "")
+    body = "<story><name>#{name}</name>#{desc}</story>"
+    resource_uri = URI.parse("http://www.pivotaltracker.com/services/v3/projects/#{pivotal_identifier}/stories/#{story_id}")
+    http = Net::HTTP.new(resource_uri.host, resource_uri.port)
+    req = Net::HTTP::Put.new(resource_uri.path, {'Content-type' => 'application/xml', 'X-TrackerToken' => self.tenant.api_key})
+    http.use_ssl = false
+    req.body = body
+    response = http.request(req)
+    logger.info "RESPONSE: #{response.code} #{response.body} #{response.message}" unless response.code == "200"
+    response.code == "200"
+  end
+
+  def next_story_number stories, start_at=1
+    for x in start_at..3000 do
+      return x unless stories.has_key? x
+    end
+    0
   end
 end

@@ -29,7 +29,9 @@ class ProjectsController < ApplicationController
 # GET /projects/new
 # GET /projects/new.xml
   def new
-    @project = Project.new(:name => "{#{t('project.pending_refresh')}}")
+    @project = Project.new(:name => "{#{t('project.pending_refresh')}}",
+                           :feature_prefix => "S", :bug_prefix => "D", :chore_prefix => "C", :release_prefix => "R",
+                           :renumber_features => true, :renumber_chores => true)
     respond_with @project
   end
 
@@ -73,6 +75,7 @@ class ProjectsController < ApplicationController
   end
 
   def refresh
+    authorize! :refresh, @project
     respond_to do |format|
       if @project.update_attribute(:next_sync_at, Time.now)
         format.html { redirect_to(project_path(@project),
@@ -81,6 +84,20 @@ class ProjectsController < ApplicationController
         format.xml { head :ok }
       else
         format.html { render :action => "show" }
+        format.xml { render :xml => @project.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  def renumber
+    authorize! :refresh, @project
+    respond_to do |format|
+      if @project.renumber
+        format.html { redirect_to(project_path(@project),
+                                  :notice => t('project.renumbered')) }
+        format.xml { head :ok }
+      else
+        format.html { redirect_to(project_path(@project), :alert => t('project.renumber_failed')) }
         format.xml { render :xml => @project.errors, :status => :unprocessable_entity }
       end
     end
