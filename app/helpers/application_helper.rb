@@ -4,12 +4,12 @@ module ApplicationHelper
   end
 
   def bold_text(text, bold)
-    return text unless bold
+    return h(text) unless bold
     "<strong>".html_safe + h(text) + "</strong>".html_safe
   end
 
   def strike_text(text, strike)
-    return text unless strike
+    return h(text) unless strike
     "<strike>".html_safe + h(text) + "</strike>".html_safe
   end
 

@@ -36,6 +36,10 @@ en:
   profile:
     updated: You have successfully updated your profile
 
+  story:
+    not_owned: not owned
+    owned_by: owned by
+
   tenant:
     api_key: Pivotal API Key
     updated: You have successfully updated your company information

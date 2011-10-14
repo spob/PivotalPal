@@ -1,9 +1,8 @@
 <tr style="font-weight:800;">
-  <td style="padding-left: 14px;"><%= strike_text(task.description, task.status == "pushed") %></td>
-  <td <%= cell_color_by_task_status task  %>><span style="white-space: nowrap;"><%= task.status.try(:titleize) %></span></td>
+  <td style="padding-left: 14px;"><%= task.display_description %></td>
+  <%= task.display_status %>
   <td><%= '%.2f' % task.total_hours %></td>
   <% (1..iteration.calc_day_number).each do |d| %>
-      <% @estimate = task.task_estimates.find_all{|e| e.day_number == d + 1}.first %>
-  <td <%= cell_color_by_hours @estimate, task, story %>><%= task_estimate_for_day @estimate %></td>
+      <%= task.display_estimate(d, story) %>
   <% end %>
 </tr>

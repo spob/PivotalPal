@@ -61,7 +61,36 @@ class IterationDecorator < ApplicationDecorator
     values_by_day(false) { |x| model.points_delivered_for_day_number(x) }
   end
 
+  def decorated_stories show_accepted, show_pushed
+    sort_by_status(model.stories_filtered(show_accepted, show_pushed).map{|s| StoryDecorator.decorate(s)})
+  end
+
+  def day_headings
+    (1..model.calc_day_number).collect { |d| h.content_tag(:th, "#{d}") }.join.html_safe
+  end
+
   protected
+
+  def sort_by_status stories
+    stories.sort_by do |s|
+      case s.status
+        when "accepted" then
+          1000 + (s.sort ? s.sort : 0)
+        when "delivered" then
+          2000 + (s.sort ? s.sort : 0)
+        when "finished" then
+          3000 + (s.sort ? s.sort : 0)
+        when "rejected" then
+          4000 + (s.sort ? s.sort : 0)
+        when "started" then
+          5000 + (s.sort ? s.sort : 0)
+        when "unstarted" then
+          6000 + (s.sort ? s.sort : 0)
+        when "pushed" then
+          7000 + (s.sort ? s.sort : 0)
+      end
+    end
+  end
 
   def values_by_day(format_as_hours=true, &block)
     buf = h.content_tag(:td, "-") + h.content_tag(:td, "-")

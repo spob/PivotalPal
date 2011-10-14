@@ -28,30 +28,9 @@ class Story < ActiveRecord::Base
   where(:status.ne => "accepted")
   }
 
-    def self.sort_by_status stories
-    stories.sort_by do |s|
-      case s.status
-        when "accepted" then
-          1000 + (s.sort ? s.sort : 0)
-        when "delivered" then
-          2000 + (s.sort ? s.sort : 0)
-        when "finished" then
-          3000 + (s.sort ? s.sort : 0)
-        when "rejected" then
-          4000 + (s.sort ? s.sort : 0)
-        when "started" then
-          5000 + (s.sort ? s.sort : 0)
-        when "unstarted" then
-          6000 + (s.sort ? s.sort : 0)
-        when "pushed" then
-          7000 + (s.sort ? s.sort : 0)
-      end
-    end
-    end
-
   def tasks_conditional_pushed(flag)
     return self.tasks if flag.nil? or flag == "Y"
-    self.tasks.find_all{|t| t.status != "pushed"}
+    self.tasks.find_all { |t| t.status != "pushed" }
   end
 
   protected

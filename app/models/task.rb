@@ -25,23 +25,6 @@ class Task < ActiveRecord::Base
     @estimates[the_date]
   end
 
-  def self.sort_by_status tasks
-    tasks.sort_by do |s|
-      case s.status
-        when "Done" then
-          1
-        when "Blocked" then
-          2
-        when "In Progress" then
-          3
-        when "Not Started" then
-          4
-        else
-          7
-      end
-    end
-  end
-
   private
 
   def populate_estimates_hash

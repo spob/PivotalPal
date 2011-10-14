@@ -38,9 +38,9 @@
     <th colspan="<%= @iteration.calc_day_number %>">Day</th>
   </tr>
   <tr>
-    <%= day_headings @iteration %>
+    <%= @iteration.day_headings %>
   </tr>
-  <%= render :partial => 'story', :collection => Story.sort_by_status(@iteration.stories_filtered(cookies[:show_accepted_stories], cookies[:show_pushed_stories])), :locals => {:iteration => @iteration} %>
+  <%= render :partial => 'story', :collection => @iteration.decorated_stories(cookies[:show_accepted_stories], cookies[:show_pushed_stories]), :locals => {:iteration => @iteration} %>
 
   <tr>
     <td colspan="<%= @iteration.calc_day_number + 3 %>">&nbsp;</td>
