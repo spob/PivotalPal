@@ -69,9 +69,9 @@ class PeriodicJob < ActiveRecord::Base
 # Execute jobs pending to run.
   def self.run_jobs
     process_zombies
-    log_debug("Checking for periodic jobs to run...")
     jobs_found = false
     begin
+      log_debug("Checking for periodic jobs to run...")
       jobs = PeriodicJob.find_jobs_to_run
       jobs.each do |job|
         job.run!

@@ -25,7 +25,7 @@ class Project < ActiveRecord::Base
 
   def self.sync_projects
     Project.scheduled_to_sync.select("id").find_each do |project|
-      RunOncePeriodicJob.create_job("Sync Project", "Project.refresh(#{project.id})")
+      RunOncePeriodicJob.create_job("Sync Project", "Project.refresh(#{project.id})", 1.minute.ago)
     end
   end
 
