@@ -75,5 +75,74 @@
 </table>
 <br/>
 
+<div id="burndown_chart" style="width: 1100px; height: 500px;"></div>
 
 <%= link_to 'Back', projects_path %>
+
+<script type="text/javascript" charset="utf-8">
+    $(function () {
+        new Highcharts.Chart({
+            chart: { renderTo: 'burndown_chart' },
+            colors: [
+                '#4572A7',
+                '#DB843D',
+                '#3D96AE',
+                '#AA4643',
+                '#80699B',
+                '#89A54E',
+                '#92A8CD',
+                '#A47D7C',
+                '#B5CA92'
+            ],
+            title: { text: 'Burn Down for Iteration <%= @iteration.iteration_number %>' },
+            xAxis: { title: { text: 'Day #'},
+                allowDecimals: false},
+            yAxis: [
+                {
+                    title: { text: 'Task Hours'},
+                    min: 0
+                },
+                {
+                    title: { text: 'Story Points'},
+                    min: 0,
+                    opposite: true
+                }
+            ],
+            series: [
+
+                {
+                    name: "Target Velocity",
+                    type: 'column',
+                    yAxis: 1,
+                    data: <%= @iteration.chart_velocity_by_day.inspect %>
+                },
+                {
+                    name: "Points Delivered",
+                    type: 'column',
+                    yAxis: 1,
+                    data: <%= @iteration.chart_points_delivered_by_day.inspect %>
+                },
+                {
+                    name: "Total Hours",
+                    type: 'spline',
+                    data: <%= @iteration.chart_total_hours_by_day.inspect %>
+                },
+                {
+                    name: "Remaining Hours",
+                    type: 'spline',
+                    data: <%= @iteration.chart_remaining_hours_by_day.inspect %>
+                },
+                {
+                    name: "Remaining QA Hours",
+                    type: 'spline',
+                    data: <%= @iteration.chart_remaining_qa_hours_by_day.inspect %>
+                },
+                {
+                    name: "Ideal Hours",
+                    type: 'line',
+                    data: <%= @iteration.chart_ideal_hours_by_day.inspect %>
+                }
+            ]
+        });
+    });
+</script>

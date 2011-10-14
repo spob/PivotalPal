@@ -35,12 +35,24 @@ class IterationDecorator < ApplicationDecorator
     values_by_day { |x| model.remaining_hours_for_day_number(x) }
   end
 
+  def chart_remaining_hours_by_day
+    chart_data_by_day(false) { |x| model.remaining_hours_for_day_number(x) }
+  end
+
   def remaining_qa_hours_by_day
     values_by_day { |x| model.remaining_qa_hours_for_day_number(x) }
   end
 
+  def chart_remaining_qa_hours_by_day
+    chart_data_by_day(false) { |x| model.remaining_qa_hours_for_day_number(x) }
+  end
+
   def total_hours_by_day
     values_by_day { |x| model.total_hours_for_day_number(x) }
+  end
+
+  def chart_total_hours_by_day
+    chart_data_by_day(false) { |x| model.total_hours_for_day_number(x) }
   end
 
   def completed_hours_by_day
@@ -53,16 +65,28 @@ class IterationDecorator < ApplicationDecorator
     end
   end
 
+  def chart_ideal_hours_by_day
+    chart_data_by_day(true) { |x| calculate_ideal_hours(x) }
+  end
+
   def velocity_by_day
     values_by_day(false) { |x| model.velocity_for_day_number(x) }
+  end
+
+  def chart_velocity_by_day
+    chart_data_by_day(true) { |x| model.velocity_for_day_number(x) }
   end
 
   def points_delivered_by_day
     values_by_day(false) { |x| model.points_delivered_for_day_number(x) }
   end
 
+  def chart_points_delivered_by_day
+    chart_data_by_day(true) { |x| model.points_delivered_for_day_number(x) }
+  end
+
   def decorated_stories show_accepted, show_pushed
-    sort_by_status(model.stories_filtered(show_accepted, show_pushed).map{|s| StoryDecorator.decorate(s)})
+    sort_by_status(model.stories_filtered(show_accepted, show_pushed).map { |s| StoryDecorator.decorate(s) })
   end
 
   def day_headings
@@ -70,6 +94,12 @@ class IterationDecorator < ApplicationDecorator
   end
 
   protected
+
+  def calculate_ideal_hours(d)
+    max =  chart_total_hours_by_day.max
+    daily = max/(model.project.iteration_duration_weeks * 5.0)
+    max - daily * d
+  end
 
   def sort_by_status stories
     stories.sort_by do |s|
@@ -99,6 +129,16 @@ class IterationDecorator < ApplicationDecorator
       buf = buf + h.content_tag(:td, (format_as_hours ? format_hours(v) : v))
     end
     buf
+  end
+
+  def chart_data_by_day(calc_day_zero, &block)
+    (0..model.calc_day_number).each.collect { |x| x }.map do |d|
+      if d == 0 and !calc_day_zero
+        block.call(1)
+      else
+        block.call(d)
+      end
+    end
   end
 
   def format_hours hours

@@ -12,6 +12,7 @@ gem 'draper', '~>0.8.1'
 gem 'foreigner', '~> 1.1.0'
 gem "friendly_id", "~> 4.0.0.beta14"
 gem "hpricot", "~> 0.8.4"
+gem 'jquery-rails', '~> 1.0.12'
 gem 'kaminari', '~> 0.12.0'
 gem 'mail', '~> 2.2.0'
 gem 'meta_where', '~> 1.0.0'
