@@ -106,6 +106,7 @@ class Project < ActiveRecord::Base
               @story.update_attributes!(:points => story.at('estimate').try(:inner_html),
                                         :status => story.at('current_state').inner_html,
                                         :name => story.at('name').inner_html[0..199],
+                                        :body => story.at('description').try(:inner_html),
                                         :owner => story.at('owned_by').try(:inner_html),
                                         :story_type => story.at('story_type').inner_html,
                                         :sort => n)
@@ -120,6 +121,7 @@ class Project < ActiveRecord::Base
                                                   :points => story.at('estimate').try(:inner_html),
                                                   :status => story.at('current_state').inner_html,
                                                   :name => story.at('name').inner_html[0..199],
+                                                  :body => story.at('description').try(:inner_html),
                                                   :owner => story.at('owned_by').try(:inner_html),
                                                   :story_type => story.at('story_type').inner_html,
                                                   :sort => n)
@@ -264,7 +266,6 @@ class Project < ActiveRecord::Base
 #    end
 #    the_date
   end
-
 
 
   def renumber

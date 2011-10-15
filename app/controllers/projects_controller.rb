@@ -100,6 +100,10 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def print
+
+  end
+
 # DELETE /projects/1
 # DELETE /projects/1.xml
   def destroy

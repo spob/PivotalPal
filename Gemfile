@@ -17,6 +17,9 @@ gem 'kaminari', '~> 0.12.0'
 gem 'mail', '~> 2.2.0'
 gem 'meta_where', '~> 1.0.0'
 gem 'mysql2', '~> 0.2.0'
+gem 'prawn', '~>0.12.0'
+gem 'prawn_rails'
+
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -38,7 +41,6 @@ gem 'mysql2', '~> 0.2.0'
 # and rake tasks are available in development mode:
 group :development do
   gem 'wirble'
-  gem 'newrelic_rpm', '~> 3.1.2'
   gem "query_tracer", "~> 0.0.4"
 end
 
