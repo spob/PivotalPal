@@ -18,8 +18,7 @@ class ProjectsController < ApplicationController
     cookies[:show_pushed_stories] = {:value => params[:show_pushed_stories], :expires => 6.month.since} if params[:show_pushed_stories]
     cookies[:show_accepted_stories] = {:value => params[:show_accepted_stories], :expires => 6.month.since} if params[:show_accepted_stories]
 
-    @iteration = IterationDecorator.decorate(
-        Iteration.includes(:task_estimates, :stories => {:tasks => :task_estimates}).find(params[:iteration_id] ? params[:iteration_id] : @project.latest_iteration.id))
+    @iteration = IterationDecorator.decorate(select_iteration(@project, params))
     respond_with @project
   end
 
@@ -101,7 +100,16 @@ class ProjectsController < ApplicationController
   end
 
   def print
+    if params[:story_ids].nil?
+      redirect_to(select_to_print_project_path(@project), :notice => t('story.must_select_to_print'))
+    else
+        @stories = Story.where(:id => params[:story_ids]).order(:name)
+    end
+  end
 
+  def select_to_print
+    @iteration = Iteration.find(params[:iteration_id] ? params[:iteration_id] : @project.latest_iteration.id)
+    respond_with @project
   end
 
 # DELETE /projects/1
@@ -117,5 +125,11 @@ class ProjectsController < ApplicationController
                                              :identifier => name)) }
       format.xml { head :ok }
     end
+  end
+
+  protected
+
+  def select_iteration project, v_params
+    Iteration.includes(:task_estimates, :stories => {:tasks => :task_estimates}).find(v_params[:iteration_id] ? v_params[:iteration_id] : project.latest_iteration.id)
   end
 end

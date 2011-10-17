@@ -1,0 +1,17 @@
+<% title "Project #{@project.name}, Iteration #{@iteration.iteration_number}" %>
+
+(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)</h1>
+
+<p>Synced at <%= l(@iteration.last_synced_at) if @iteration.last_synced_at %></p>
+
+<% form_tag print_project_path(:format => :pdf), :method => :get do %>
+    <%= submit_tag "Create Story Cards" %>
+    <!--<%= hidden_field_tag(:iteration_id, @iteration.id) %>-->
+    <table>
+      <tr>
+        <th colspan="2" valign="bottom">Story</th>
+      </tr>
+      <%= render :partial => 'story_to_select', :collection => @iteration.stories.order(:name), :as => :story,
+                 :locals => {:iteration => @iteration} %>
+    </table>
+<% end %>

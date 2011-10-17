@@ -8,7 +8,7 @@ prawn_document(
 
   pdf.font "#{Prawn::BASEDIR}/data/fonts/DejaVuSans.ttf"
 
-  @project.latest_iteration.stories.each_with_index do |card, i|
+  @stories.each_with_index do |card, i|
 
     # --- Split pages
     if i > 0 and i % 4 == 0
