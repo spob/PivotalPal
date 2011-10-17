@@ -15,6 +15,7 @@ class Ability
       can :update, Tenant, :id => user.tenant.id
     else
       can :read, Project, :tenant_id => user.tenant.try(:id)
+      can :read, Story, :iteration => { :project => { :tenant_id => user.tenant.try(:id) } }
     end
     can :update, User, :id => user.id
   end

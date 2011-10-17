@@ -103,11 +103,13 @@ class ProjectsController < ApplicationController
     if params[:story_ids].nil?
       redirect_to(select_to_print_project_path(@project), :notice => t('story.must_select_to_print'))
     else
-        @stories = Story.where(:id => params[:story_ids]).order(:name)
+      @stories = Story.where(:id => params[:story_ids]).order(:name)
+      authorize! :read, @stories
     end
   end
 
   def select_to_print
+    authorize! :read, @project
     @iteration = Iteration.find(params[:iteration_id] ? params[:iteration_id] : @project.latest_iteration.id)
     respond_with @project
   end
