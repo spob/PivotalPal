@@ -1,8 +1,11 @@
 <tr>
   <td>
-    <%= check_box_tag "story_ids[]", story.id %>
+    <%= check_box_tag "story_ids[]", card.id %>
   </td>
-  <td>
-    <%= story.name %>
-  </td>
+  <td><%= card.name %></td>
+  <td><%= card.story_type %></td>
+  <td><%= card.status %></td>
+  <td><%= card.points %></td>
+  <td><%= card.owner %></td>
+  <td><%= card.iteration_number %></td>
 </tr>

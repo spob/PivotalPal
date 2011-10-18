@@ -104,14 +104,16 @@ class ProjectsController < ApplicationController
     if params[:story_ids].nil?
       redirect_to(select_to_print_project_path(@project), :notice => t('story.must_select_to_print'))
     else
-      @stories = Story.where(:id => params[:story_ids]).order(:name)
+      @stories = Card.where(:id => params[:story_ids]).order(:iteration_number).order(:sort )
       authorize! :read, @stories
     end
   end
 
   def select_to_print
     authorize! :read, @project
-    @iteration = Iteration.find(params[:iteration_id] ? params[:iteration_id] : @project.latest_iteration.id)
+    cookies[:story_state] = {:value => params[:story_state], :expires => 6.month.since} if params[:story_state]
+    cookies[:story_state] = {:value => "current", :expires => 6.month.since} unless cookies[:story_state]
+    @card_request = @project.fetch_story_cards(cookies[:story_state], current_user)
     respond_with @project
   end
 

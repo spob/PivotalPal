@@ -85,7 +85,7 @@ class Project < ActiveRecord::Base
           iteration_number = iteration.at('id').inner_html.to_i
 #        start_on = iteration.at('start').inner_html.to_date
 #        iteration_number = iteration_number - 1 if iteration_number > 1 && Project.calculate_project_date < start_on
-          @iteration = self.iterations.where(:iteration_number => iteration_number).lock.first
+          @iteration = self.iterations.where(:story_id => iteration_number).lock.first
 
 #        puts "#{iteration.at('finish').inner_html} -- #{Date.parse(iteration.at('finish').inner_html)}"
           if @iteration
@@ -94,7 +94,7 @@ class Project < ActiveRecord::Base
                                               :end_on => Date.parse(iteration.at('finish').inner_html))
             @iteration.stories.each { |s| s.update_attributes!(:status => STATUS_PUSHED, :points => 0) }
           else
-            @iteration = self.iterations.create!(:iteration_number => iteration_number,
+            @iteration = self.iterations.create!(:story_id => iteration_number,
                                                  :start_on => Date.parse(iteration.at('start').inner_html),
                                                  :end_on => iteration.at('finish').inner_html)
           end
@@ -196,6 +196,43 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def fetch_story_cards(state, user)
+    logger.info("fetch_current_iteration for project #{id}")
+    resource_uri = URI.parse("http://www.pivotaltracker.com/services/v3/projects/#{pivotal_identifier}/iterations/#{state}")
+    response = Net::HTTP.start(resource_uri.host, resource_uri.port) do |http|
+      http.get(resource_uri.path, {'X-TrackerToken' => self.tenant.api_key})
+    end
+
+    if response.code == "200"
+      GC.start
+      GC.disable
+
+      begin
+        doc = Hpricot(response.body)
+
+        card_request = CardRequest.create!(:user => user)
+
+        (doc/"iteration").each do |iteration|
+          iteration_number = iteration.at('id').inner_html.to_i
+          (iteration.at('stories')/"story").each_with_index do |story, i|
+            pivotal_id = story.at('id').inner_html.to_i
+            card_request.cards.create!(:pivotal_identifier => story.at('id').inner_html,
+                                       :url => story.at('url').inner_html,
+                                       :iteration_number => iteration_number,
+                                       :points => story.at('estimate').try(:inner_html),
+                                       :status => story.at('current_state').inner_html,
+                                       :name => story.at('name').inner_html[0..199],
+                                       :body => story.at('description').try(:inner_html),
+                                       :owner => story.at('owned_by').try(:inner_html),
+                                       :story_type => story.at('story_type').inner_html,
+                                       :sort => i)
+          end
+        end
+        card_request
+      end
+    end
+  end
+
   def parse_hours description, completed
     remaining_hours = 0.0
     total_hours = 0.0
@@ -244,7 +281,7 @@ class Project < ActiveRecord::Base
     else
       task.task_estimates.create!(:as_of => self.calc_iteration_day,
                                   :day_number => (iteration ? iteration.calc_day_number(self.iteration_duration_weeks) : nil),
-                                  :iteration => iteration,
+                                  :story => iteration,
                                   :total_hours => task.total_hours,
                                   :remaining_hours => task.remaining_hours,
                                   :status => task.status)
@@ -357,4 +394,5 @@ class Project < ActiveRecord::Base
     end
     0
   end
+
 end

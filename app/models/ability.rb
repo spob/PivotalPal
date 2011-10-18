@@ -17,6 +17,7 @@ class Ability
       can :read, Project, :tenant_id => user.tenant.try(:id)
       can :read, Story, :iteration => { :project => { :tenant_id => user.tenant.try(:id) } }
     end
+    can :read, [CardRequest, Card], :user_id => user.try(:id)
     can :update, User, :id => user.id
   end
 end

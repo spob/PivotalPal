@@ -58,7 +58,7 @@ class PeriodicJob < ActiveRecord::Base
     # to ensure that other threads or task_schedulers won't try to run
     # the same jobs
     PeriodicJob.transaction do
-      jobs = PeriodicJob.ready_to_run.all
+      jobs = PeriodicJob.ready_to_run.limit(3)
 
       # Update last_run_result to 'Running' to signal it is in process
       PeriodicJob.where(:id => jobs.collect(&:id)).update_all(:last_run_result => 'Running')

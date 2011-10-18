@@ -1,17 +1,28 @@
-<% title "Project #{@project.name}, Iteration #{@iteration.iteration_number}" %>
-
-(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)</h1>
-
-<p>Synced at <%= l(@iteration.last_synced_at) if @iteration.last_synced_at %></p>
+<% title "Project #{@project.name}" %>
+<%= form_tag(select_to_print_project_path(@project), :id => 'select_iteration', :method => :get, :name => 'search') do -%>
+    <strong>Story Status:</strong>&nbsp;&nbsp;&nbsp;&nbsp;
+    <%= radio_button_tag "story_state", "current", cookies[:story_state] == "current",
+                                           html_options = {:onchange => 'document.search.submit();'} %>Current&nbsp;&nbsp;
+    <%= radio_button_tag "story_state", "backlog", cookies[:story_state] == "backlog",
+                                           html_options = {:onchange => 'document.search.submit();'} %>Backlog&nbsp;&nbsp;
+    <%= radio_button_tag "story_state", "current_backlog", cookies[:story_state] == "current_backlog",
+                                           html_options = {:onchange => 'document.search.submit();'} %>Current & Backlog&nbsp;&nbsp;
+    <%= radio_button_tag "story_state", "done", cookies[:story_state] == "done",
+                                           html_options = {:onchange => 'document.search.submit();'} %>Done
+<% end %>
 
 <% form_tag print_project_path(:format => :pdf), :method => :get do %>
     <%= submit_tag "Create Story Cards" %>
-    <!--<%= hidden_field_tag(:iteration_id, @iteration.id) %>-->
+    <!--<%= hidden_field_tag(:card_request_id, @card_request.id) %>-->
     <table>
       <tr>
         <th colspan="2" valign="bottom">Story</th>
+        <th>Story Type</th>
+        <th>Size</th>
+        <th>Status</th>
+        <th>Owner</th>
+        <th>Iteration Number</th>
       </tr>
-      <%= render :partial => 'story_to_select', :collection => @iteration.stories.order(:name), :as => :story,
-                 :locals => {:iteration => @iteration} %>
+      <%= render :partial => 'story_to_select', :collection => @card_request.cards.order(:iteration_number).order(:sort), :as => :card %>
     </table>
 <% end %>
