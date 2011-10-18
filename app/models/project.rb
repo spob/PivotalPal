@@ -94,7 +94,7 @@ class Project < ActiveRecord::Base
                                               :end_on => Date.parse(iteration.at('finish').inner_html))
             @iteration.stories.each { |s| s.update_attributes!(:status => STATUS_PUSHED, :points => 0) }
           else
-            @iteration = self.iterations.create!(:story_id => iteration_number,
+            @iteration = self.iterations.create!(:iteration_number => iteration_number,
                                                  :start_on => Date.parse(iteration.at('start').inner_html),
                                                  :end_on => iteration.at('finish').inner_html)
           end
