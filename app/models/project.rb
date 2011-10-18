@@ -281,7 +281,7 @@ class Project < ActiveRecord::Base
     else
       task.task_estimates.create!(:as_of => self.calc_iteration_day,
                                   :day_number => (iteration ? iteration.calc_day_number(self.iteration_duration_weeks) : nil),
-                                  :story => iteration,
+                                  :iteration => iteration,
                                   :total_hours => task.total_hours,
                                   :remaining_hours => task.remaining_hours,
                                   :status => task.status)
