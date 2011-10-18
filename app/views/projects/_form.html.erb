@@ -17,6 +17,10 @@
       <br/>
       <%= f.text_field :pivotal_identifier %>
     </div>
+    <div>
+      <%= f.label :time_zone %>
+      <%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones %>
+    </div>
     <div class="field">
       <%= f.label :renumber_features %>
       <br/>
@@ -53,7 +57,7 @@
       <%= f.check_box :renumber_releases %>
     </div>
     <div class="field">
-      <%= f.label :release_prefix %>
+zone      <%= f.label :release_prefix %>
       <br/>
       <%= f.text_field :release_prefix, :size => 5 %>
     </div>

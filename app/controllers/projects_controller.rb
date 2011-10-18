@@ -27,7 +27,8 @@ class ProjectsController < ApplicationController
   def new
     @project = Project.new(:name => "{#{t('project.pending_refresh')}}",
                            :feature_prefix => "S", :bug_prefix => "D", :chore_prefix => "C", :release_prefix => "R",
-                           :renumber_features => true, :renumber_chores => true)
+                           :renumber_features => true, :renumber_chores => true,
+                           :time_zone => current_user.time_zone)
     respond_with @project
   end
 

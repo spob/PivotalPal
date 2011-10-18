@@ -90,12 +90,12 @@ class Project < ActiveRecord::Base
 #        puts "#{iteration.at('finish').inner_html} -- #{Date.parse(iteration.at('finish').inner_html)}"
           if @iteration
             start_on =
-                @iteration.update_attributes!(:start_on => Date.parse(iteration.at('start').inner_html)+1,
+                @iteration.update_attributes!(:start_on => Date.parse(iteration.at('start').inner_html),
                                               :end_on => Date.parse(iteration.at('finish').inner_html))
             @iteration.stories.each { |s| s.update_attributes!(:status => STATUS_PUSHED, :points => 0) }
           else
             @iteration = self.iterations.create!(:iteration_number => iteration_number,
-                                                 :start_on => Date.parse(iteration.at('start').inner_html)+1,
+                                                 :start_on => Date.parse(iteration.at('start').inner_html),
                                                  :end_on => iteration.at('finish').inner_html)
           end
           n = 0
@@ -251,12 +251,12 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def calc_iteration_day the_date=Project.calculate_project_date
+  def calc_iteration_day the_date=self.calculate_project_date
     (the_date.cwday > 5 ? the_date - (the_date.cwday - 5) : the_date)
   end
 
-  def self.calculate_project_date
-    Date.current
+  def calculate_project_date
+    Time.now.in_time_zone(self.time_zone).to_date
 #    minutes = Time.now.in_time_zone(APP_CONFIG['default_user_timezone']).hour * 60 +
 #        Time.now.in_time_zone(APP_CONFIG['default_user_timezone']).min
 #    if minutes < APP_CONFIG['sprint_standup_time'].to_i

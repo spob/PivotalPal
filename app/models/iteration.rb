@@ -76,7 +76,8 @@ class Iteration < ActiveRecord::Base
   end
 
 
-  def calc_day_number duration_weeks=self.project.iteration_duration_weeks, the_date=Project.calculate_project_date
+  def calc_day_number duration_weeks=self.project.iteration_duration_weeks, the_date=self.project.calculate_project_date
+    puts the_date
     the_date = end_on if the_date > end_on
     day_num = 0
 
