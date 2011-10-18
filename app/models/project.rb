@@ -85,7 +85,7 @@ class Project < ActiveRecord::Base
           iteration_number = iteration.at('id').inner_html.to_i
 #        start_on = iteration.at('start').inner_html.to_date
 #        iteration_number = iteration_number - 1 if iteration_number > 1 && Project.calculate_project_date < start_on
-          @iteration = self.iterations.where(:story_id => iteration_number).lock.first
+          @iteration = self.iterations.where(:iteration_number => iteration_number).lock.first
 
 #        puts "#{iteration.at('finish').inner_html} -- #{Date.parse(iteration.at('finish').inner_html)}"
           if @iteration
