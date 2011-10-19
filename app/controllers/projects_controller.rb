@@ -135,6 +135,6 @@ class ProjectsController < ApplicationController
   protected
 
   def select_iteration project, v_params
-    Iteration.includes(:task_estimates, :stories => {:tasks => :task_estimates}).find(v_params[:iteration_id] ? v_params[:iteration_id] : project.latest_iteration.id)
+    Iteration.includes(:task_estimates, {:tasks => :task_estimates}, :stories => {:tasks => :task_estimates}).find(v_params[:iteration_id] ? v_params[:iteration_id] : project.latest_iteration.id)
   end
 end

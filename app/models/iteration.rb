@@ -21,18 +21,30 @@ class Iteration < ActiveRecord::Base
   end
 
   def remaining_hours_for_day_number day_number
-    @estimate = fetch_estimate_by_day_number day_number
-    (@estimate ? @estimate.remaining_hours : 0.0)
+    if day_number == 0
+      self.tasks.find_all{|t| !t.pushed?}.map{|t| t.task_estimates}.flatten.find_all{|e| e.day_number == 1}.inject(0){|sum, e| sum + e.total_hours}
+    else
+      @estimate = fetch_estimate_by_day_number day_number
+      (@estimate ? @estimate.remaining_hours : 0.0)
+    end
   end
 
   def remaining_qa_hours_for_day_number day_number
-    @estimate = fetch_estimate_by_day_number day_number
-    (@estimate ? @estimate.remaining_qa_hours : 0.0)
+    if day_number == 0
+      self.tasks.find_all { |t| t.qa && !t.pushed? }.map{|t| t.task_estimates}.flatten.find_all{|e| e.day_number == 1}.inject(0){|sum, e| sum + e.total_hours}
+    else
+      @estimate = fetch_estimate_by_day_number day_number
+      (@estimate ? @estimate.remaining_qa_hours : 0.0)
+    end
   end
 
   def total_hours_for_day_number day_number
-    @estimate = fetch_estimate_by_day_number day_number
-    (@estimate ? @estimate.total_hours : 0.0)
+    if day_number == 0
+      self.remaining_hours_for_day_number(day_number)
+    else
+      @estimate = fetch_estimate_by_day_number day_number
+      (@estimate ? @estimate.total_hours : 0.0)
+    end
   end
 
   def velocity_for_day_number day_number
@@ -77,7 +89,7 @@ class Iteration < ActiveRecord::Base
 
 
   def calc_day_number duration_weeks=self.project.iteration_duration_weeks, the_date=self.project.calculate_project_date
-    puts the_date
+#    puts the_date
     the_date = end_on if the_date > end_on
     day_num = 0
 
@@ -108,10 +120,10 @@ class Iteration < ActiveRecord::Base
   def stories_filtered(not_accepted_flag, pushed_flag)
     _stories = self.stories
     unless not_accepted_flag.nil? or not_accepted_flag == "Y"
-      _stories = _stories.find_all{|s| s.status != "accepted"}
+      _stories = _stories.find_all { |s| s.status != "accepted" }
     end
     unless pushed_flag.nil? or pushed_flag == "Y"
-    _stories = _stories.find_all{|s| s.status != "pushed"}
+      _stories = _stories.find_all { |s| s.status != "pushed" }
     end
     _stories
   end

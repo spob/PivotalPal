@@ -12,7 +12,7 @@ class TaskDecorator < ApplicationDecorator
   end
 
   def display_estimate(d, story)
-      @estimate = model.task_estimates.find_all{|e| e.day_number == d + 1}.first
+      @estimate = model.task_estimates.find_all{|e| e.day_number == d}.first
       h.content_tag(:td, task_estimate_for_day(@estimate), style: "background-color: #{cell_color_by_hours(@estimate, model, story)}")
   end
 

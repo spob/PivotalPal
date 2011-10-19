@@ -25,6 +25,10 @@ class Task < ActiveRecord::Base
     @estimates[the_date]
   end
 
+  def pushed?
+    self.status == "pushed"
+  end
+
   private
 
   def populate_estimates_hash

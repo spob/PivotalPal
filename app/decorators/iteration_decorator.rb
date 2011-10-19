@@ -32,31 +32,31 @@ class IterationDecorator < ApplicationDecorator
 #   end
 
   def remaining_hours_by_day
-    values_by_day { |x| model.remaining_hours_for_day_number(x) }
+    values_by_day(0, true) { |x| model.remaining_hours_for_day_number(x) }
   end
 
   def chart_remaining_hours_by_day
-    chart_data_by_day(false) { |x| model.remaining_hours_for_day_number(x) }
+    chart_data_by_day(true) { |x| model.remaining_hours_for_day_number(x) }
   end
 
   def remaining_qa_hours_by_day
-    values_by_day { |x| model.remaining_qa_hours_for_day_number(x) }
+    values_by_day(0, true) { |x| model.remaining_qa_hours_for_day_number(x) }
   end
 
   def chart_remaining_qa_hours_by_day
-    chart_data_by_day(false) { |x| model.remaining_qa_hours_for_day_number(x) }
+    chart_data_by_day(true) { |x| model.remaining_qa_hours_for_day_number(x) }
   end
 
   def total_hours_by_day
-    values_by_day { |x| model.total_hours_for_day_number(x) }
+    values_by_day(0, true) { |x| model.total_hours_for_day_number(x) }
   end
 
   def chart_total_hours_by_day
-    chart_data_by_day(false) { |x| model.total_hours_for_day_number(x) }
+    chart_data_by_day(true) { |x| model.total_hours_for_day_number(x) }
   end
 
   def completed_hours_by_day
-    values_by_day do |x|
+    values_by_day(1, true) do |x|
       if model.total_hours_for_day_number(x) && model.remaining_hours_for_day_number(x)
         model.total_hours_for_day_number(x) - model.remaining_hours_for_day_number(x)
       else
@@ -70,7 +70,7 @@ class IterationDecorator < ApplicationDecorator
   end
 
   def velocity_by_day
-    values_by_day(false) { |x| model.velocity_for_day_number(x) }
+    values_by_day(1, false) { |x| model.velocity_for_day_number(x) }
   end
 
   def chart_velocity_by_day
@@ -78,7 +78,7 @@ class IterationDecorator < ApplicationDecorator
   end
 
   def points_delivered_by_day
-    values_by_day(false) { |x| model.points_delivered_for_day_number(x) }
+    values_by_day(1, false) { |x| model.points_delivered_for_day_number(x) }
   end
 
   def chart_points_delivered_by_day
@@ -122,13 +122,14 @@ class IterationDecorator < ApplicationDecorator
     end
   end
 
-  def values_by_day(format_as_hours=true, &block)
-    buf = h.content_tag(:td, "-") + h.content_tag(:td, "-")
-    (1..model.calc_day_number).each do |d|
+  def values_by_day(start_day_number, format_as_hours=true, &block)
+    buf = h.content_tag(:td, "-")
+    buf = buf + h.content_tag(:td, "-") if start_day_number == 1
+    (start_day_number..model.calc_day_number).each do |d|
       v = block.call(d)
       buf = buf + h.content_tag(:td, (format_as_hours ? format_hours(v) : v))
     end
-    buf
+    buf.html_safe
   end
 
   def chart_data_by_day(calc_day_zero, &block)

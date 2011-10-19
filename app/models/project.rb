@@ -43,7 +43,7 @@ class Project < ActiveRecord::Base
       # fetch project
       logger.info("Refreshing project #{name}")
       service_uri = "http://www.pivotaltracker.com/services/v3/projects/#{self.pivotal_identifier}"
-      puts service_uri
+#      puts service_uri
       resource_uri = URI.parse(service_uri)
       response = Net::HTTP.start(resource_uri.host, resource_uri.port) do |http|
         http.get(resource_uri.path, {'X-TrackerToken' => self.tenant.api_key})
@@ -90,12 +90,12 @@ class Project < ActiveRecord::Base
 #        puts "#{iteration.at('finish').inner_html} -- #{Date.parse(iteration.at('finish').inner_html)}"
           if @iteration
             start_on =
-                @iteration.update_attributes!(:start_on => Date.parse(iteration.at('start').inner_html),
+                @iteration.update_attributes!(:start_on => Date.parse(iteration.at('start').inner_html)+1,
                                               :end_on => Date.parse(iteration.at('finish').inner_html))
             @iteration.stories.each { |s| s.update_attributes!(:status => STATUS_PUSHED, :points => 0) }
           else
             @iteration = self.iterations.create!(:iteration_number => iteration_number,
-                                                 :start_on => Date.parse(iteration.at('start').inner_html),
+                                                 :start_on => Date.parse(iteration.at('start').inner_html)+1,
                                                  :end_on => iteration.at('finish').inner_html)
           end
           n = 0
@@ -115,7 +115,7 @@ class Project < ActiveRecord::Base
                 t.update_attributes!(:status => STATUS_PUSHED, :remaining_hours => 0.0)
               end
             else
-              puts "Points: #{story.at('estimate').try(:inner_html)}"
+#              puts "Points: #{story.at('estimate').try(:inner_html)}"
               @story = @iteration.stories.create!(:pivotal_identifier => story.at('id').inner_html,
                                                   :url => story.at('url').inner_html,
                                                   :points => story.at('estimate').try(:inner_html),
