@@ -5,7 +5,7 @@ class LogonsController < ApplicationController
   respond_to :html, :xml
 
   def index
-    @logons = @logons.order("created_at DESC").page(params[:page]).per(DEFAULT_ROWS_PER_PAGE)
+    @logons = @logons.includes(:user).order("created_at DESC").page(params[:page]).per(DEFAULT_ROWS_PER_PAGE)
 
     respond_with @logons
   end

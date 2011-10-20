@@ -3,7 +3,7 @@
   <td><%= user.full_name %></td>
   <td><%= user.tenant.try(:name) %></td>
   <td><%= l user.created_at %></td>
-  <td><%= l(user.logons.latest.first.created_at) unless user.logons.empty? %></td>
+  <td><%= l(user.last_logon.created_at) unless user.logons.empty? %></td>
   <td><%= "Y" if user.confirmed_at %></td>
   <td>
     <%= link_to 'Edit', edit_super_user_path(user) %>

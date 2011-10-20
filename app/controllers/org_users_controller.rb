@@ -23,7 +23,6 @@ class OrgUsersController < ApplicationController
     @user.first_name = params[:user][:first_name]
     @user.last_name = params[:user][:last_name]
     @user.roles = params[:user][:roles]
-    @user.hired_at = params[:user][:hired_at]
     password = User.random_pronouncable_password
     @user.password = password
     @user.temporary_password = password

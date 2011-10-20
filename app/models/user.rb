@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
 
   belongs_to :tenant, :counter_cache => true
   has_many :logons, :dependent => :destroy
+  has_one :last_logon, :class_name => "Logon", :order => "id DESC"
 
   validates_uniqueness_of :email
   validates_length_of :first_name, :maximum => 25, :allow_blank => true

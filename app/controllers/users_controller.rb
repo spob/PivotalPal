@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   def index
     cookies[:users_search_show_users] = {:value => "ALL", :expires => 6.months.since} unless cookies[:users_search_show_users]
     cookies[:users_search_show_users] = {:value => params["show_users"], :expires => 6.months.since} if params["show_users"]
-    users = User.where(:tenant_id => current_user.tenant.id).order("email")
+    users = User.includes(:last_logon).where(:tenant_id => current_user.tenant.id).order("email")
     users = users.confirmed if cookies[:users_search_show_users] == "CONFIRMED"
     users = users.unconfirmed if cookies[:users_search_show_users] == "UNCONFIRMED"
     @users = users.page(params[:page]).per(DEFAULT_ROWS_PER_PAGE)

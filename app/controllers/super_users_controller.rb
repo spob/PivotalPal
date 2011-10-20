@@ -9,7 +9,7 @@ class SuperUsersController < ApplicationController
   def index
     cookies[:super_users_search_show_users] = {:value => "ALL", :expires => 6.months.since} unless cookies[:super_users_search_show_users]
     cookies[:super_users_search_show_users] = {:value => params[:show_users], :expires => 6.months.since} if params[:show_users]
-    users = User.order("email")
+    users = User.includes(:tenant, :last_logon).order("email")
     users = users.confirmed if cookies[:super_users_search_show_users] == "CONFIRMED"
     users = users.unconfirmed if cookies[:super_users_search_show_users] == "UNCONFIRMED"
     @users = users.page(params[:page]).per(DEFAULT_ROWS_PER_PAGE)
