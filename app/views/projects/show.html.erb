@@ -108,6 +108,12 @@
                     opposite: true
                 }
             ],
+            tooltip: {
+                formatter: function () {
+                    return '<b>Day ' + this.x  +
+                            '</b>: ' + Highcharts.numberFormat(this.y, 1) + " " + this.series.name;
+                }
+            },
             series: [
 
                 {
