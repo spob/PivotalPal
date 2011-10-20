@@ -42,6 +42,7 @@ gem 'prawn_rails'
 group :development do
   gem 'wirble'
   gem "query_tracer", "~> 0.0.4"
+  gem 'whenever', :require => false
 end
 
 group :test do
