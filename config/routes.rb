@@ -24,10 +24,11 @@ PivotalPal::Application.routes.draw do
   resources :profile, :only => [:edit, :update]
   resources :projects do
     member do
+      post :print
       post :refresh
       post :renumber
-      get :print
       get :select_to_print
+      get :storyboard
     end
   end
   resources :super_users, :only => [:index, :edit, :update]

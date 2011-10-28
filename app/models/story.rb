@@ -33,6 +33,10 @@ class Story < ActiveRecord::Base
     self.tasks.find_all { |t| t.status != "pushed" }
   end
 
+  def tasks_by_status v_status
+    self.tasks.find_all { |t| t.status == v_status }
+  end
+
   protected
 
   def adjust_points

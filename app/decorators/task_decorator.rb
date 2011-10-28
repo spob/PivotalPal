@@ -7,16 +7,35 @@ class TaskDecorator < ApplicationDecorator
 
   def display_status
     h.content_tag(:td, style: "background-color: #{cell_color_by_task_status}") do
-      h.content_tag(:span,  model.status.try(:titleize), style: "white-space: nowrap;")
+      h.content_tag(:span, model.status.try(:titleize), style: "white-space: nowrap;")
     end
   end
 
   def display_estimate(d, story)
-      @estimate = model.task_estimates.find_all{|e| e.day_number == d}.first
-      h.content_tag(:td, task_estimate_for_day(@estimate), style: "background-color: #{cell_color_by_hours(@estimate, model, story)}")
+    @estimate = model.task_estimates.find_all { |e| e.day_number == d }.first
+    h.content_tag(:td, task_estimate_for_day(@estimate), style: "background-color: #{cell_color_by_hours(@estimate, model, story)}")
   end
 
-protected
+  def post_it
+    h.content_tag(:p, model.description, style: "border:2px solid #{post_it_border_color(model)};padding:5px 10px 15px 10px;margin:10px;background-color:##{ post_it_background_color(model) }")
+  end
+
+  protected
+
+  def post_it_background_color task
+    task.qa ? 'ffccff' : 'ffff99'
+  end
+
+  def post_it_border_color task
+    case task.status
+      when "Done" then
+        'green'
+      when "Blocked" then
+        'red'
+      else
+        'black'
+    end
+  end
 
   def cell_color_by_task_status
     case model.status

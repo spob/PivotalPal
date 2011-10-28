@@ -100,6 +100,11 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def storyboard
+    @iteration = IterationDecorator.decorate(select_iteration(@project, :iteration_id => @project.latest_iteration))
+    respond_with @project
+  end
+
   def print
     if params[:story_ids].nil?
       redirect_to(select_to_print_project_path(@project), :notice => t('story.must_select_to_print'))

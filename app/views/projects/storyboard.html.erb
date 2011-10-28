@@ -1,0 +1,46 @@
+<% title "Project #{@project.name}, Iteration #{@iteration.iteration_number}" %>
+
+(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)</h1>
+| <%= link_to 'Details', project_path(@project) %>
+
+<table>
+  <tr>
+    <th>Story</th>
+    <th width="15%">Not Started</th>
+    <th width="15%">In Progress</th>
+    <th width="15%">Done</th>
+    <th width="15%">Blocked</th>
+  </tr>
+  <% @iteration.decorated_stories("N", "N").each do |story| %>
+      <tr>
+        <td><strong><%= h story.name %></strong>
+          <br/>
+          (<%= h story.status.titleize %>, <%= pluralize(story.points, "point") %>, <%= story.owner_text %>)
+        </td>
+        <td>
+          <% story.tasks_by_status("Not Started").each do |task| %>
+              <%= TaskDecorator.decorate(task).post_it %>
+          <% end %>
+          &nbsp;
+        </td>
+        <td>
+          <% story.tasks_by_status("In Progress").each do |task| %>
+              <%= TaskDecorator.decorate(task).post_it %>
+          <% end %>
+          &nbsp;
+        </td>
+        <td>
+          <% story.tasks_by_status("Done").each do |task| %>
+              <%= TaskDecorator.decorate(task).post_it %>
+          <% end %>
+          &nbsp;
+        </td>
+        <td>
+          <% story.tasks_by_status("Blocked").each do |task| %>
+              <%= TaskDecorator.decorate(task).post_it %>
+          <% end %>
+          &nbsp;
+        </td>
+      </tr>
+  <% end %>
+</table>
