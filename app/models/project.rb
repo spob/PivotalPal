@@ -5,7 +5,9 @@ class Project < ActiveRecord::Base
   friendly_id :name, :use => :slugged
 
   belongs_to :tenant, :counter_cache => true
+  belongs_to :master_project, :class_name => "Project", :foreign_key => :master_project_id, :counter_cache => :linked_projects_count
   has_many :iterations, :dependent => :destroy
+  has_many :linked_projects, :class_name => "Project", :foreign_key => :master_project_id
   has_one :latest_iteration, :class_name => "Iteration", :order => "iteration_number DESC"
 
   validates_presence_of :name
