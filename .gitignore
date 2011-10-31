@@ -6,3 +6,4 @@ tmp/
 .rvmrc
 Gemfile.lock
 schema.rb
+config/initializers/constants.rb
