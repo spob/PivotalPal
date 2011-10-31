@@ -6,3 +6,7 @@ PERIODIC_JOB_TIMEOUT = 5
 
 # How long to keep periodic jobs before purging them
 KEEP_PERIODIC_JOB_DAYS = 7
+
+# Roles
+ROLE_SUPERUSER = 'superuser'
+ROLE_ADMIN = 'admin'
