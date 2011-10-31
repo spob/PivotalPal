@@ -8,11 +8,10 @@
     <%= show_link project if project.latest_iteration %>
     <%= "|" if project.latest_iteration %>
     <%= link_to 'Storyboard', storyboard_project_path(project) if project.latest_iteration %>
-    <%= "|" if project.latest_iteration %>
     <%= edit_link project, (project.latest_iteration ? " | " : "") %>
     <%= destroy_link project, " | " %>
     <% if can? :refresh_project, project %>
-        | <%= link_to 'Refresh', refresh_project_path(project), :method => :post %>
+        | <%= link_to 'Refresh', refresh_project_path(project.id), :method => :post %>
         | <%= link_to 'Renumber', renumber_project_path(project), :method => :post %>
     <% end %>
     | <%= link_to 'Print Cards', select_to_print_project_path(project) %>

@@ -11,7 +11,7 @@ class Ability
     elsif user.role? :admin
 #      can :manage_org, [User, Project]
       can [:read, :update, :create, :destroy], [User, Project], :tenant_id => user.tenant.id
-      can :refresh_project, Project, :tenant_id => user.tenant.id
+      can :refresh, Project, :tenant_id => user.tenant.id
       can :update, Tenant, :id => user.tenant.id
     else
       can :read, Project, :tenant_id => user.tenant.try(:id)
