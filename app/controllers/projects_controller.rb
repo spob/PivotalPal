@@ -102,7 +102,6 @@ class ProjectsController < ApplicationController
   end
 
   def renumber
-    authorize! :refresh, @project
     respond_to do |format|
       if @project.renumber
         format.html { redirect_to(project_path(@project),
