@@ -79,12 +79,23 @@ class ProjectsController < ApplicationController
     authorize! :refresh, @project
     respond_to do |format|
       if @project.update_attribute(:next_sync_at, Time.now)
-        format.html { redirect_to(project_path(@project),
-                                  :notice => t('project.refresh_scheduled',
-                                               :project => @project.name)) }
+        format.html do
+          notice = t('project.refresh_scheduled', :project => @project.name)
+          if @project.latest_iteration
+            redirect_to(project_path(@project), :notice => notice)
+          else
+            redirect_to(projects_path, :notice => notice)
+          end
+        end
         format.xml { head :ok }
       else
-        format.html { render :action => "show" }
+        format.html do
+          if @project.latest_iteration
+            render :action => "show"
+          else
+            redirect_to(projects_path)
+          end
+        end
         format.xml { render :xml => @project.errors, :status => :unprocessable_entity }
       end
     end
