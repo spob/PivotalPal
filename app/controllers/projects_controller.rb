@@ -15,7 +15,10 @@ class ProjectsController < ApplicationController
   # GET /projects/1
   # GET /projects/1.xml
   def show
-    redirect_to(projects_path) unless @project.latest_iteration
+    unless @project.latest_iteration
+      redirect_to(projects_path)
+      return
+    end
     cookies[:show_pushed_stories] = {:value => params[:show_pushed_stories], :expires => 6.month.since} if params[:show_pushed_stories]
     cookies[:show_accepted_stories] = {:value => params[:show_accepted_stories], :expires => 6.month.since} if params[:show_accepted_stories]
 
@@ -110,7 +113,7 @@ class ProjectsController < ApplicationController
     if params[:story_ids].nil?
       redirect_to(select_to_print_project_path(@project), :notice => t('story.must_select_to_print'))
     else
-      @stories = Card.where(:id => params[:story_ids]).order(:iteration_number).order(:sort )
+      @stories = Card.where(:id => params[:story_ids]).order(:iteration_number).order(:sort)
       authorize! :read, @stories
     end
   end
