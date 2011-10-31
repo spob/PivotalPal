@@ -20,6 +20,7 @@ en:
     must_change_password: You must select a new password
 
   project:
+    api_key_not_set: You must set your Pivotal Tracker api key before a project can be refreshed
     entity_name: Project
     pivotal_identifier: Pivotal Project ID
     pending_refresh: Pending refresh from PivotalTracker

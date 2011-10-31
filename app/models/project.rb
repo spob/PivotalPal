@@ -36,6 +36,7 @@ class Project < ActiveRecord::Base
   end
 
   def refresh
+    return I18n.t('project.api_key_not_set') if self.tenant.api_key.nil?
     GC.start
     GC.disable
 
