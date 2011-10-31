@@ -18,7 +18,7 @@ class ProjectsController < ApplicationController
     cookies[:show_pushed_stories] = {:value => params[:show_pushed_stories], :expires => 6.month.since} if params[:show_pushed_stories]
     cookies[:show_accepted_stories] = {:value => params[:show_accepted_stories], :expires => 6.month.since} if params[:show_accepted_stories]
 
-    @iteration = IterationDecorator.decorate(select_iteration(@project, params))
+    @iteration = IterationDecorator.decorate(select_iteration(@project, params)) if @project
     respond_with @project
   end
 
