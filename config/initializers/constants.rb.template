@@ -3,3 +3,6 @@ DEV_ALL_MAIL_ADDRESS = 'bob@sturim.org'
 
 # How long to wait for a periodic job before determining it's a zombie (in minutes)
 PERIODIC_JOB_TIMEOUT = 5
+
+# How long to keep periodic jobs before purging them
+KEEP_PERIODIC_JOB_DAYS = 7
