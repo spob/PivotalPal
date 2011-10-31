@@ -10,7 +10,7 @@
     <%= link_to 'Storyboard', storyboard_project_path(project) if project.latest_iteration %>
     <%= edit_link project, (project.latest_iteration ? " | " : "") %>
     <%= destroy_link project, " | " %>
-    <% if can? :refresh_project, project %>
+    <% if can? :refresh, project %>
         | <%= link_to 'Refresh', refresh_project_path(project.id), :method => :post %>
         | <%= link_to 'Renumber', renumber_project_path(project), :method => :post %>
     <% end %>
