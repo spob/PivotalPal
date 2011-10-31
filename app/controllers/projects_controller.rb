@@ -93,7 +93,7 @@ class ProjectsController < ApplicationController
           if @project.latest_iteration
             render :action => "show"
           else
-            redirect_to(projects_path)
+            redirect_to(projects_path, "Internal error: update project failed")
           end
         end
         format.xml { render :xml => @project.errors, :status => :unprocessable_entity }
