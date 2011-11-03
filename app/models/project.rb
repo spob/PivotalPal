@@ -55,7 +55,10 @@ class Project < ActiveRecord::Base
       if response.code == "200"
         doc = Hpricot(response.body).at('project')
 
-        self.name = doc.at('name').innerHTML
+        # Only change project name if it needs to be changed...otherwise it changes the slug
+        project_name = doc.at('name').innerHTML
+        self.name = project_name unless self.name == project_name
+
         self.iteration_duration_weeks = doc.at('iteration_length').innerHTML
         fetch_current_iteration unless self.new_record?
         self.sync_status = I18n.t('general.ok')
