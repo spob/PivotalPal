@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
-  load_and_authorize_resource
   before_filter :authenticate_user!
   before_filter :login_checks
+  load_and_authorize_resource
   respond_to :html, :xml
 
   # GET /projects
