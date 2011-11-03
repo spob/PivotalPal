@@ -9,7 +9,8 @@ class Iteration < ActiveRecord::Base
   validates_presence_of :iteration_number
   validates_presence_of :start_on
   validates_presence_of :end_on
-  validates_uniqueness_of :iteration_number, :scope => :project_id
+  # No reason to enforce uniqueness...the database index will handle it for us
+#  validates_uniqueness_of :iteration_number, :scope => :project_id
   validates_numericality_of :iteration_number, :only_integer => true, :allow_blank => true, :greater_than => 0
 
   scope :last_iteration, lambda { |project|
@@ -58,23 +59,28 @@ class Iteration < ActiveRecord::Base
   end
 
   def total_hours
-    self.tasks.not_pushed.sum('total_hours')
+#    self.tasks.not_pushed.sum('total_hours')
+    self.all_tasks.find_all{|t| t.status != "pushed" }.inject(0.0){|hours, t| hours + t.total_hours}
   end
 
   def remaining_hours
-    self.tasks.sum('remaining_hours')
+#    self.tasks.sum('remaining_hours')
+    self.all_tasks.inject(0.0){|hours, t| hours + t.remaining_hours}
   end
 
   def remaining_qa_hours
-    self.tasks.qa.sum('remaining_hours')
+#    self.tasks.qa.sum('remaining_hours')
+    self.all_tasks.find_all{|t| t.qa == true }.inject(0.0){|hours, t| hours + t.remaining_hours}
   end
 
   def total_points
-    self.stories.pointed.sum('points')
+#    self.stories.pointed.sum('points')
+    self.stories.find_all{|s| s.points && s.points > 0}.inject(0){|points, s| points + s.points}
   end
 
   def total_points_delivered
-    self.stories.accepted.sum('points')
+#    self.stories.accepted.sum('points')
+    self.stories.find_all{|s| s.status == "accepted"}.inject(0){|points, s| points + s.points}
   end
 
   def calc_date day_num
@@ -126,6 +132,11 @@ class Iteration < ActiveRecord::Base
       _stories = _stories.find_all { |s| s.status != "pushed" }
     end
     _stories
+  end
+
+  # collect all tasks without using the has_many :through capability (because we've already loaded all tasks in memory)
+  def all_tasks
+    self.stories.collect{|s| s.tasks}.flatten
   end
 
   private

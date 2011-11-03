@@ -9,7 +9,8 @@ class Story < ActiveRecord::Base
   validates_presence_of :url
   validates_presence_of :status
   validates_presence_of :name
-  validates_uniqueness_of :pivotal_identifier, :scope => :iteration_id
+  # No reason to enforce uniqueness...the database index will handle it for us
+  #  validates_uniqueness_of :pivotal_identifier, :scope => :iteration_id
   validates_numericality_of :points, :only_integer => true, :allow_nil => true, :greater_than_or_equal_to => 0
   validates_numericality_of :sort, :only_integer => true, :allow_nil => true
   validates_length_of :story_type, :maximum => 10, :allow_blank => true
