@@ -1,6 +1,6 @@
 <% title "Project #{@project.name}, Iteration #{@iteration.iteration_number}" %>
 
-(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)</h1>
+(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)
 
 | <%= link_to 'Storyboard', storyboard_project_path(@project) %>
 <% if can? :refresh_project, @project %>

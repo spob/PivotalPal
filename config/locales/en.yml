@@ -25,7 +25,7 @@ en:
     pivotal_identifier: Pivotal Project ID
     pending_refresh: Pending refresh from PivotalTracker
     id_not_found: Project identifier %{pivotal_identifier} not found in PivotalTracker
-    refresh_scheduled: You have scheduled project %{project} to refresh
+    refresh_scheduled: You have successfully refreshed project %{project}
     renumbered: "Project renumbered successfully"
     renumber_failed: "Renumbering failed"
   periodic_job:

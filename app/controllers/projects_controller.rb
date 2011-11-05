@@ -78,7 +78,8 @@ class ProjectsController < ApplicationController
   def refresh
     authorize! :refresh, @project
     respond_to do |format|
-      if @project.update_attribute(:next_sync_at, Time.now)
+#      if @project.update_attribute(:next_sync_at, Time.now)
+        if @project.refresh
         format.html do
           notice = t('project.refresh_scheduled', :project => @project.name)
           if @project.latest_iteration
