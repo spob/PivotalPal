@@ -80,7 +80,7 @@ class Iteration < ActiveRecord::Base
 
   def total_points_delivered
 #    self.stories.accepted.sum('points')
-    self.stories.find_all{|s| s.status == "accepted"}.inject(0){|points, s| points + s.points}
+    self.stories.find_all{|s| s.status == "accepted" && s.points}.inject(0){|points, s| points + s.points}
   end
 
   def calc_date day_num
