@@ -70,6 +70,7 @@ class Project < ActiveRecord::Base
     ensure
       GC.enable
     end
+    save
     self.sync_status == "OK"
   end
 
@@ -96,30 +97,34 @@ class Project < ActiveRecord::Base
 
 #        puts "#{iteration.at('finish').inner_html} -- #{Date.parse(iteration.at('finish').inner_html)}"
           if @iteration
-            start_on =
-                @iteration.update_attributes!(:start_on => Date.parse(iteration.at('start').inner_html),
-                                              :end_on => Date.parse(iteration.at('finish').inner_html)-1)
-            @iteration.stories.each { |s| s.update_attributes!(:status => STATUS_PUSHED, :points => 0) }
+            @iteration.start_on = Date.parse(iteration.at('start').inner_html)
+            @iteration.end_on = Date.parse(iteration.at('finish').inner_html)-1
+            @iteration.stories.each do |s|
+              s.status = STATUS_PUSHED
+              s.points = 0
+            end
           else
             @iteration = self.iterations.create!(:iteration_number => iteration_number,
                                                  :start_on => Date.parse(iteration.at('start').inner_html),
                                                  :end_on => iteration.at('finish').inner_html-1)
           end
+#          puts "iteration id #{@iteration.id}, project: #{self.id}"
           n = 0
           (iteration.at('stories')/"story").each do |story|
             pivotal_id = story.at('id').inner_html.to_i
-            @story = @iteration.stories.find_all{|s| s.pivotal_identifier == pivotal_id}.first
+            @story = @iteration.stories.find_all { |s| s.pivotal_identifier == pivotal_id }.first
             if @story
-              @story.update_attributes!(:points => story.at('estimate').try(:inner_html),
-                                        :status => story.at('current_state').inner_html,
-                                        :name => story.at('name').inner_html[0..199],
-                                        :body => story.at('description').try(:inner_html),
-                                        :owner => story.at('owned_by').try(:inner_html),
-                                        :story_type => story.at('story_type').inner_html,
-                                        :sort => n)
+              @story.points = story.at('estimate').try(:inner_html)
+              @story.status = story.at('current_state').inner_html
+              @story.name = story.at('name').inner_html[0..199]
+              @story.body = story.at('description').try(:inner_html)
+              @story.owner = story.at('owned_by').try(:inner_html)
+              @story.story_type = story.at('story_type').inner_html
+              @story.sort = n
 
               @story.tasks.each do |t|
-                t.update_attributes!(:status => STATUS_PUSHED, :remaining_hours => 0.0)
+                t.status = STATUS_PUSHED
+                t.remaining_hours = 0.0
               end
             else
 #              puts "Points: #{story.at('estimate').try(:inner_html)}"
@@ -139,18 +144,19 @@ class Project < ActiveRecord::Base
             if tasks
               (tasks/"task").each do |task|
                 pivotal_id = task.at('id').inner_html.to_i
-                @task = @story.tasks.find_all{|t| t.pivotal_identifier == pivotal_id }.first
+                @task = @story.tasks.find_all { |t| t.pivotal_identifier == pivotal_id }.first
                 completed = (task.at('complete').inner_html == "true" || @story.status == "accepted" || @story.status == STATUS_PUSHED)
                 total_hours, remaining_hours, description, is_qa = self.parse_hours(task.at('description').inner_html, completed)
 #              puts "#{description}, QA: #{is_qa}" if is_qa
                 status = calc_status(completed, remaining_hours, total_hours, description)
 
                 if @task
-                  @task.update_attributes!(:description => description,
-                                           :total_hours => total_hours,
-                                           :remaining_hours => remaining_hours,
-                                           :status => status,
-                                           :qa => is_qa)
+#                  puts "#{description}, remaining hours #{remaining_hours}"
+                  @task.description = description
+                  @task.total_hours = total_hours
+                  @task.remaining_hours = remaining_hours
+                  @task.status = status
+                  @task.qa = is_qa
                 else
                   @task = @story.tasks.create!(:pivotal_identifier => task.at('id').inner_html,
                                                :description => description,
@@ -164,17 +170,17 @@ class Project < ActiveRecord::Base
               end
             end
 
-            @story.tasks.find_all{|t| t.status == "pushed"}.each do |t|
+            @story.tasks.find_all { |t| t.status == "pushed" }.each do |t|
               update_task_estimate(t, @iteration)
             end
 
-            @estimate = @iteration.task_estimates.find_all{|te| te.as_of == self.calc_iteration_day }.first
+            @estimate = @iteration.task_estimates.find_all { |te| te.as_of == self.calc_iteration_day }.first
             if @estimate
-              @estimate.update_attributes!(:total_hours => @iteration.total_hours,
-                                           :remaining_hours => @iteration.remaining_hours,
-                                           :remaining_qa_hours => @iteration.remaining_qa_hours,
-                                           :points_delivered => @iteration.total_points_delivered,
-                                           :velocity => @iteration.total_points)
+              @estimate.total_hours = @iteration.total_hours
+              @estimate.remaining_hours = @iteration.remaining_hours
+              @estimate.remaining_qa_hours = @iteration.remaining_qa_hours
+              @estimate.points_delivered = @iteration.total_points_delivered
+              @estimate.velocity = @iteration.total_points
             else
               @day = @iteration.task_estimates.create!(:as_of => self.calc_iteration_day,
                                                        :day_number => @iteration.calc_day_number(self.iteration_duration_weeks),
@@ -185,14 +191,26 @@ class Project < ActiveRecord::Base
                                                        :velocity => @iteration.try(:total_points))
             end
           end
-          @iteration.stories.find_all{|s| s.status == "pushed"}.each do |s|
+          @iteration.stories.find_all { |s| s.status == "pushed" }.each do |s|
             s.tasks.each do |t|
-              t.update_attributes!(:status => STATUS_PUSHED, :remaining_hours => 0.0)
+              t.status = STATUS_PUSHED
+              t.remaining_hours = 0.0
               update_task_estimate(t, @iteration)
             end
           end
 
-          @iteration.update_attributes!(:last_synced_at => Time.now)
+          @iteration.last_synced_at = Time.now
+          @iteration.save!
+          @iteration.task_estimates.each { |te| te.save! if te.changed? }
+          @iteration.stories.each do |s|
+            s.save! if s.changed?
+            s.tasks.each do |t|
+              t.save! if t.changed?
+              t.task_estimates.each do |te|
+                te.save! if te.changed?
+              end
+            end
+          end
         end
       ensure
         GC.enable
@@ -280,11 +298,11 @@ class Project < ActiveRecord::Base
   end
 
   def update_task_estimate task, iteration
-    estimate = task.task_estimates.find_all{|te| te.as_of == self.calc_iteration_day}.first
+    estimate = task.task_estimates.find_all { |te| te.as_of == self.calc_iteration_day }.first
     if estimate
-      estimate.update_attributes!(:total_hours => task.total_hours,
-                                  :remaining_hours => task.remaining_hours,
-                                  :status => task.status)
+      estimate.total_hours = task.total_hours
+      estimate.remaining_hours = task.remaining_hours
+      estimate.status = task.status
     else
       task.task_estimates.create!(:as_of => self.calc_iteration_day,
                                   :day_number => (iteration ? iteration.calc_day_number(self.iteration_duration_weeks) : nil),
