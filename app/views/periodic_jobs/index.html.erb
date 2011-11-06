@@ -3,7 +3,8 @@
 <%= link_to(
       "Execute",
       execute_periodic_jobs_path,
-      html_options = {:method => :post} ) %>
+      html_options = {:method => :post} ) %> |
+<%= link_to "Refresh", periodic_jobs_path %>
 <%= paginate @periodic_jobs %>
 <h3>Jobs</h3>
 <table>

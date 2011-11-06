@@ -19,4 +19,4 @@ RunIntervalPeriodicJob.find_by_name_or_create :name => 'SessionCleaner', :job =>
 RunIntervalPeriodicJob.find_by_name_or_create :name => 'SessionExpiry', :job => 'SessionCleaner.sweep', :interval => 1800 #once every 30 minutes
 RunIntervalPeriodicJob.find_by_name_or_create :name => 'PeriodicJobCleanup', :job => 'PeriodicJob.cleanup', :interval => 3600  #once an hour
 RunIntervalPeriodicJob.find_by_name_or_create :name => 'CardCleanup', :job => 'CardRequest.cleanup', :interval => 3600  #once an hour
-RunIntervalPeriodicJob.find_by_name_or_create :name => 'SyncProjects', :job => 'Project.sync_projects', :interval => 60  #once every minute
+RunIntervalPeriodicJob.find_by_name_or_create :name => 'SyncProjects', :job => 'Project.sync_projects', :interval => 600  #once every 10 minutes

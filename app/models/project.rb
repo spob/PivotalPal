@@ -106,7 +106,7 @@ class Project < ActiveRecord::Base
           else
             @iteration = self.iterations.create!(:iteration_number => iteration_number,
                                                  :start_on => Date.parse(iteration.at('start').inner_html),
-                                                 :end_on => iteration.at('finish').inner_html-1)
+                                                 :end_on => Date.parse(iteration.at('finish').inner_html)-1)
           end
 #          puts "iteration id #{@iteration.id}, project: #{self.id}"
           n = 0

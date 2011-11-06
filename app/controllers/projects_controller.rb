@@ -45,10 +45,11 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(params[:project])
     @project.tenant = current_user.tenant
-    @project.next_sync_at = Time.now
+    @project.next_sync_at = 5.minutes.since
 
     respond_to do |format|
       if @project.save
+        RunOncePeriodicJob.create_job("Refresh New Job", "Project.refresh(#{@project.id})", 1.minute.ago)
         format.html { redirect_to(projects_path, :notice => t('general.created', :entity => t('project.entity_name'))) }
         format.xml { render :xml => @project, :status => :created, :location => @project }
       else
