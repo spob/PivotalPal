@@ -56,7 +56,7 @@ class Project < ActiveRecord::Base
         doc = Hpricot(response.body).at('project')
 
         # Only change project name if it needs to be changed...otherwise it changes the slug
-        project_name = doc.at('name').innerHTML
+        project_name = doc.at('name').innerHTML.strip
         self.name = project_name unless self.name == project_name
 
         self.iteration_duration_weeks = doc.at('iteration_length').innerHTML
