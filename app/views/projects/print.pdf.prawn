@@ -37,18 +37,34 @@ prawn_document(
       pdf.stroke_bounds
 
       # --- Write content
-      pdf.text_box card.name, :size => 14, :at => [pdf.bounds.left+padding, pdf.bounds.top-padding], :width => cell.width-18, :height => 40
+      pdf.text_box card.name, :size => 14, :at => [pdf.bounds.left+padding, pdf.bounds.top-padding], :width => cell.width-70, :height => 40
       #      pdf.horizontal_line pdf.bounds.left+padding, pdf.bounds.left+padding + cell.width-21, :at => pdf.bounds.top-padding-31
       pdf.text_box card.body, :size => 9, :at => [pdf.bounds.left+padding, pdf.bounds.top-padding-35], :width => cell.width-18, :height => cell.height-80
-      pdf.fill_color "000000"
 
-      pdf.text_box "Points: #{card.points}",
-                   :size => 12, :at => [12, 33], :width => cell.width-18
-      pdf.text_box "Owner: #{card.owner}",
-                   :size => 8, :at => [12, 18], :width => cell.width-18
+
+      if card.points
+        pdf.draw_text (card.points == -1 ? "?" : card.points),
+                      :size => 24, :at => [pdf.bounds.right - (card.points > 9 ? 45 : 30), pdf.bounds.top-padding-18]
+        pdf.draw_text "point#{card.points == 1 ? '' : 's'}",
+                      :size => 6, :at => [pdf.bounds.right - 9, pdf.bounds.top-30],
+                      :rotate => 90, :rotate_around => :lower_left
+      end
+
+#      pdf.fill_color "000000"
+#      pdf.stroke_color = "000000"
+#      pdf.draw_text "#{card.points}",
+#                   :size => 24, :at => [pdf.bounds.left+cell.width - 50, pdf.bounds.top-padding], :width => cell.width-18
+#      pdf.fill_color "D8D8D8"
+#      pdf.stroke_color = "585858"
+#      pdf.transparent(0.5) { pdf.fill_and_stroke_rounded_rectangle [pdf.bounds.left+cell.width - 52, pdf.bounds.top-padding+5], 49, 28, 5 }
+
 
       pdf.fill_color "999999"
-      pdf.text_box card.story_type.capitalize, :size => 8, :align => :right, :at => [12, 18], :width => cell.width-18
+      pdf.text_box "Owner: #{card.owner}",
+                   :size => 8, :at => [12, 18], :width => cell.width-18, :align => :right
+
+      pdf.fill_color "999999"
+      pdf.text_box card.story_type.capitalize, :size => 8, :at => [12, 18], :width => cell.width-18
       pdf.fill_color "000000"
 
     end
