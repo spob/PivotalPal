@@ -23,8 +23,6 @@ class Project < ActiveRecord::Base
 
   scope :scheduled_to_sync, where(:next_sync_at.lt => Time.now).order(:next_sync_at)
 
-  STATUS_PUSHED = "pushed"
-
   def self.sync_projects
     Project.scheduled_to_sync.select("id").find_each do |project|
       RunOncePeriodicJob.create_job("Sync Project", "Project.refresh(#{project.id})", 1.minute.ago)
@@ -160,7 +158,7 @@ class Project < ActiveRecord::Base
               (tasks/"task").each do |task|
                 pivotal_id = task.at('id').inner_html.to_i
                 @task = @story.tasks.find_all { |t| t.pivotal_identifier == pivotal_id }.first
-                completed = (task.at('complete').inner_html == "true" || @story.status == "accepted" || @story.status == STATUS_PUSHED)
+                completed = (task.at('complete').inner_html == "true" || @story.status == STATUS_ACCEPTED || @story.status == STATUS_PUSHED)
                 total_hours, remaining_hours, description, is_qa = self.parse_hours(task.at('description').inner_html, completed)
 #              puts "#{description}, QA: #{is_qa}" if is_qa
                 status = calc_status(completed, remaining_hours, total_hours, description)
@@ -185,7 +183,7 @@ class Project < ActiveRecord::Base
               end
             end
 
-            @story.tasks.find_all { |t| t.status == "pushed" }.each do |t|
+            @story.tasks.find_all { |t| t.status == STATUS_PUSHED }.each do |t|
               update_task_estimate(t, @iteration)
             end
 
@@ -206,7 +204,7 @@ class Project < ActiveRecord::Base
                                                        :velocity => @iteration.try(:total_points))
             end
           end
-          @iteration.stories.find_all { |s| s.status == "pushed" }.each do |s|
+          @iteration.stories.find_all { |s| s.status == STATUS_PUSHED }.each do |s|
             s.tasks.each do |t|
               t.status = STATUS_PUSHED
               t.remaining_hours = 0.0

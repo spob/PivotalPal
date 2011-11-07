@@ -104,19 +104,19 @@ class IterationDecorator < ApplicationDecorator
   def sort_by_status stories
     stories.sort_by do |s|
       case s.status
-        when "accepted" then
+        when STATUS_ACCEPTED then
           1000 + (s.sort ? s.sort : 0)
-        when "delivered" then
+        when STATUS_DELIVERED then
           2000 + (s.sort ? s.sort : 0)
-        when "finished" then
+        when STATUS_FINISHED then
           3000 + (s.sort ? s.sort : 0)
-        when "rejected" then
+        when STATUS_REJECTED then
           4000 + (s.sort ? s.sort : 0)
-        when "started" then
+        when STATUS_STARTED then
           5000 + (s.sort ? s.sort : 0)
-        when "unstarted" then
+        when STATUS_UNSTARTED then
           6000 + (s.sort ? s.sort : 0)
-        when "pushed" then
+        when STATUS_PUSHED then
           7000 + (s.sort ? s.sort : 0)
       end
     end

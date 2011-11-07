@@ -11,15 +11,15 @@ class StoryDecorator < ApplicationDecorator
 
   def cell_color_by_story_status
     case model.status
-      when "accepted" then
+      when STATUS_ACCEPTED then
         "#B2EDAF"
-      when "delivered" then
+      when STATUS_DELIVERED then
         "#66CCFF"
-      when "finished" then
+      when STATUS_FINISHED then
         "#FFCC33"
-      when "rejected" then
+      when STATUS_REJECTED then
         "#FF7373"
-      when "started" then
+      when STATUS_STARTED then
         "#F5F4AB"
       else
         "grey"

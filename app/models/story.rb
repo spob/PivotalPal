@@ -19,19 +19,19 @@ class Story < ActiveRecord::Base
   validates_length_of :name, :maximum => 200, :allow_blank => true
   validates_length_of :owner, :maximum => 50, :allow_blank => true
 
-  scope :accepted, where(:status => "accepted")
-  scope :pushed, where(:status => "pushed")
+  scope :accepted, where(:status => STATUS_ACCEPTED)
+  scope :pushed, where(:status => STATUS_PUSHED)
   scope :pointed, where(:points.gte => 0)
   scope :conditional_pushed, lambda { |param| return where("") if param.nil? or param == "Y"
-  where(:status.ne => "pushed")
+  where(:status.ne => STATUS_PUSHED)
   }
   scope :conditional_not_accepted, lambda { |param| return where("") if param.nil? or param == "Y"
-  where(:status.ne => "accepted")
+  where(:status.ne => STATUS_ACCEPTED)
   }
 
   def tasks_conditional_pushed(flag)
     return self.tasks if flag.nil? or flag == "Y"
-    self.tasks.find_all { |t| t.status != "pushed" }
+    self.tasks.find_all { |t| t.status != STATUS_PUSHED }
   end
 
   def tasks_by_status v_status
