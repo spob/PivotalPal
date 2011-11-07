@@ -75,6 +75,21 @@ class Project < ActiveRecord::Base
   end
 
 
+  def save_dirty_records(iteration)
+    iteration.last_synced_at = Time.now
+    iteration.save!
+    iteration.task_estimates.each { |te| te.save! if te.changed? }
+    iteration.stories.each do |s|
+      s.save! if s.changed?
+      s.tasks.each do |t|
+        t.save! if t.changed?
+        t.task_estimates.each do |te|
+          te.save! if te.changed?
+        end
+      end
+    end
+  end
+
   def fetch_current_iteration
     logger.info("fetch_current_iteration for project #{id}")
     resource_uri = URI.parse("http://www.pivotaltracker.com/services/v3/projects/#{pivotal_identifier}/iterations/current")
@@ -199,18 +214,7 @@ class Project < ActiveRecord::Base
             end
           end
 
-          @iteration.last_synced_at = Time.now
-          @iteration.save!
-          @iteration.task_estimates.each { |te| te.save! if te.changed? }
-          @iteration.stories.each do |s|
-            s.save! if s.changed?
-            s.tasks.each do |t|
-              t.save! if t.changed?
-              t.task_estimates.each do |te|
-                te.save! if te.changed?
-              end
-            end
-          end
+          save_dirty_records(@iteration)
         end
       ensure
         GC.enable
