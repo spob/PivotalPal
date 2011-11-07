@@ -68,18 +68,30 @@ class PeriodicJob < ActiveRecord::Base
 
 # Execute jobs pending to run.
   def self.run_jobs
-    process_zombies
-    jobs_found = false
+    running_rake_count = self.write_pid_file
+    if running_rake_count > MAX_RUN_JOBS_RAKE_PROCESSES
+      log_error "Max rake jobs:run jobs running...exiting"
+      return
+    else
+      log_debug "#{running_rake_count} rakes detected"
+    end
     begin
-      log_debug("Checking for periodic jobs to run...")
-      jobs = PeriodicJob.find_jobs_to_run
-      jobs.each do |job|
-        job.run!
-        jobs_found = true
-      end
-    end while jobs.present?
-    jobs_found ? log_debug("Done") : log_debug("No jobs ready to run")
-    jobs_found
+      process_zombies
+      jobs_found = false
+      begin
+        log_debug("Checking for periodic jobs to run...")
+        jobs = PeriodicJob.find_jobs_to_run
+        jobs.each do |job|
+          job.run!
+          jobs_found = true
+        end
+      end while jobs.present?
+      jobs_found ? log_debug("Done") : log_debug("No jobs ready to run")
+      jobs_found
+    ensure
+      log_debug "Cleaning up pid file"
+      self.write_pid_file true
+    end
   end
 
 # Default behavior for calculating the next_run date, which will be generally overriden by the
@@ -163,6 +175,38 @@ class PeriodicJob < ActiveRecord::Base
   end
 
   protected
+
+  def self.write_pid_file ending=false
+    filepath = "#{File.dirname(__FILE__)}/../../tmp/pids/rake_jobs_run.pid"
+#    puts "PID FILE: #{filepath}"
+    running_instances = []
+    running_instances << $$ unless ending
+    # if the pid file exists, read it and check to see which pids are still valid
+    if File.exists?(filepath) && File.file?(filepath)
+      pid_file = File.open(filepath)
+      pid_file.each do |line|
+        begin
+          Process.kill 0, line.to_i
+#          puts "Process exists: #{line}"
+          running_instances << line.to_i if !ending || line.to_i != $$
+        rescue Errno::ESRCH
+#          puts "No such process #{line}"
+        end
+      end
+      pid_file.close
+    end
+
+    if running_instances.present?
+      # there are running rakes, so rewrite them out to the pid file
+      pid_file = File.open(filepath, 'w')
+      running_instances.each { |pid| pid_file.puts pid }
+      pid_file.close
+    else
+      # there are no running rakes, delete the pid file
+      File.delete(filepath) if File.exists?(filepath) && File.file?(filepath)
+    end
+    running_instances.size
+  end
 
   def self.log_info str
     puts str unless Rails.env.test?
