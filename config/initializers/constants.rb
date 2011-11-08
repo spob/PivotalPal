@@ -1,0 +1,8 @@
+# Status values for stories and tasks
+STATUS_PUSHED = "pushed"
+STATUS_ACCEPTED = "accepted"
+STATUS_DELIVERED = "delivered"
+STATUS_FINISHED = "finished"
+STATUS_REJECTED = "rejected"
+STATUS_STARTED = "started"
+STATUS_UNSTARTED = "unstarted"

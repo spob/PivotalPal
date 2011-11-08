@@ -1,4 +1,4 @@
-# When in development, send all eamil to this email address
+# When in development, send all email to this email address
 DEV_ALL_MAIL_ADDRESS = 'bob@sturim.org'
 
 # How long to wait for a periodic job before determining it's a zombie (in minutes)
