@@ -58,7 +58,7 @@ class PeriodicJob < ActiveRecord::Base
     # to ensure that other threads or task_schedulers won't try to run
     # the same jobs
     PeriodicJob.transaction do
-      jobs = PeriodicJob.ready_to_run.limit(3)
+      jobs = PeriodicJob.ready_to_run.limit(PERIODIC_JOB_BATCH_SIZE)
 
       # Update last_run_result to 'Running' to signal it is in process
       PeriodicJob.where(:id => jobs.collect(&:id)).update_all(:last_run_result => 'Running')
@@ -176,21 +176,30 @@ class PeriodicJob < ActiveRecord::Base
 
   protected
 
+  def self.create_dir_if_not_exists(dir)
+    unless File.exists?(dir) && File.directory?(dir)
+      log_info("#{dir} does not exist...creating")
+      Dir.mkdir(dir)
+    end
+  end
+
   def self.write_pid_file ending=false
-    filepath = "#{File.dirname(__FILE__)}/../../tmp/pids/rake_jobs_run.pid"
-#    puts "PID FILE: #{filepath}"
+    root_path = "#{File.dirname(__FILE__)}/../.."
+    filepath = "#{root_path}/tmp/pids/rake_jobs_run.pid"
     running_instances = []
     running_instances << $$ unless ending
+
+    create_dir_if_not_exists("#{root_path}/tmp")
+    create_dir_if_not_exists("#{root_path}/tmp/pids")
+    
     # if the pid file exists, read it and check to see which pids are still valid
     if File.exists?(filepath) && File.file?(filepath)
       pid_file = File.open(filepath)
       pid_file.each do |line|
         begin
           Process.kill 0, line.to_i
-#          puts "Process exists: #{line}"
           running_instances << line.to_i if !ending || line.to_i != $$
         rescue Errno::ESRCH
-#          puts "No such process #{line}"
         end
       end
       pid_file.close

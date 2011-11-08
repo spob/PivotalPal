@@ -14,6 +14,9 @@ ROLE_ADMIN = 'admin'
 # Default # of rows to display on a page
 DEFAULT_ROWS_PER_PAGE = 25
 
+# Grab batches of this size for periodic jobs to process
+PERIODIC_JOB_BATCH_SIZE = 3
+
 # If cron notices pending jobs that haven't been picked up by a rake job, it will spawn a new rake job. How many
 # rake jobs should it spawn as a max?
 MAX_RUN_JOBS_RAKE_PROCESSES = 3
