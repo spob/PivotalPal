@@ -172,7 +172,7 @@ class Project < ActiveRecord::Base
                   @task.qa = is_qa
                 else
                   @task = @story.tasks.create!(:pivotal_identifier => task.at('id').inner_html,
-                                               :description => description,
+                                               :description => description[0..199],
                                                :total_hours => total_hours,
                                                :remaining_hours => remaining_hours,
                                                :status => status,

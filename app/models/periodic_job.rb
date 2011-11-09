@@ -191,7 +191,7 @@ class PeriodicJob < ActiveRecord::Base
 
     create_dir_if_not_exists("#{root_path}/tmp")
     create_dir_if_not_exists("#{root_path}/tmp/pids")
-    
+
     # if the pid file exists, read it and check to see which pids are still valid
     if File.exists?(filepath) && File.file?(filepath)
       pid_file = File.open(filepath)
