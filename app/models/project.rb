@@ -165,7 +165,7 @@ class Project < ActiveRecord::Base
 
                 if @task
 #                  puts "#{description}, remaining hours #{remaining_hours}"
-                  @task.description = description
+                  @task.description = description[0..199]
                   @task.total_hours = total_hours
                   @task.remaining_hours = remaining_hours
                   @task.status = status
