@@ -28,6 +28,7 @@ PivotalPal::Application.routes.draw do
       post :refresh
       post :renumber
       get :select_to_print
+      get :stats
       get :storyboard
     end
   end

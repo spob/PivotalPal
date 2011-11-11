@@ -57,11 +57,19 @@ class IterationDecorator < ApplicationDecorator
 
   def completed_hours_by_day
     values_by_day(1, true) do |x|
-      if model.total_hours_for_day_number(x) && model.remaining_hours_for_day_number(x)
-        model.total_hours_for_day_number(x) - model.remaining_hours_for_day_number(x)
-      else
-        return_nil(x)
-      end
+      completed_hours_for_day x
+    end
+  end
+
+  def completed_hours
+    completed_hours_for_day(model.calc_day_number)
+  end
+
+  def completed_hours_for_day(x)
+    if model.total_hours_for_day_number(x) && model.remaining_hours_for_day_number(x)
+      model.total_hours_for_day_number(x) - model.remaining_hours_for_day_number(x)
+    else
+      return_nil(x)
     end
   end
 
@@ -93,10 +101,25 @@ class IterationDecorator < ApplicationDecorator
     (1..model.calc_day_number).collect { |d| h.content_tag(:th, "#{d}") }.join.html_safe
   end
 
+  def story_count_by_status status
+    model.stories_by_status(status).size
+  end
+
+  def task_count_by_status status
+    case status
+      when STATUS_FINISHED then
+        model.all_tasks.find_all { |t| t.remaining_hours == 0 && t.total_hours > 0 }.size
+      when STATUS_STARTED then
+        model.all_tasks.find_all { |t| t.remaining_hours < t.total_hours && t.total_hours > 0 }.size
+      when STATUS_UNSTARTED then
+        model.all_tasks.find_all { |t| t.remaining_hours == t.total_hours && t.total_hours > 0 }.size
+    end
+  end
+
   protected
 
   def calculate_ideal_hours(d)
-    max =  chart_total_hours_by_day.max
+    max = chart_total_hours_by_day.max
     daily = max/(model.project.iteration_duration_weeks * 5.0)
     max - daily * d
   end
