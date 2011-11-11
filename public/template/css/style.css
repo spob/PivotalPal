@@ -65,9 +65,7 @@ td { vertical-align: top; }
 /* ==|== primary styles =====================================================
 Author: 
 ========================================================================== */
-body {
-	margin:0 auto;
-}
+
 
 html, body, #container { height: 100%; }
 
@@ -79,23 +77,100 @@ body > #container {height: auto; min-height: 100%;}
 	background:  url('/template/images/noise.png') repeat top left;
 }
 
-header {
+header {	
 	background: transparent url('/template/images/bg-tile.jpg') repeat-x top left;
-	color:red;
+	color:#FAFAFA;
+}
+
+#header-top-row {
+	height:56px;
 }
 
 header #inner {
 	margin:0px auto;
 	height:200px;
-	outline: solid 1px red;	
+}
+
+#nameplate  {
+	background: url('/template/images/nameplate.png') no-repeat scroll top left;
+	text-indent:-3000px;
+	margin:6px 0 0 0;
+}
+
+#nameplate  a {
+	display:block;
+	width: 166px;
+	height: 43px;
+}
+
+
+ul#top-navbar {
+	margin: 16px -12px 8px 8px;
+	padding:0;
+	width:auto;
+	list-style: none;
+	text-align: right;
+}
+
+ul#top-navbar li {
+	display: inline;
+	position: relative;
+	list-style: none outside none;
+	margin: 0;
+}
+
+ul#top-navbar li a {
+	color: #F0F0F0;
+	display: inline-block;
+	padding: 8px 12px;
+	text-decoration: none;
+}
+
+ul#top-navbar li a.last {
+}
+ul#top-navbar li a:hover {
+	background-color:#2E5069;
+	border-radius:6px;
+}
+
+/*  global navbar */
+
+#global-navbar-container {
+
+}
+
+ul#global-navbar {
+	margin-top:0px;
+	padding:0;
+	width:auto;
+	list-style: none;
+}
+
+
+ul#global-navbar li {
+	display: inline;
+}
+
+ul#global-navbar li a {
+	margin:0;
+	font-weight:bold;
+	color: #F0F0F0;
+	display: inline-block;
+	padding: 10px;
+	line-height:20px;
+	text-decoration: none;
+}
+ul#global-navbar li a.selected,
+ul#global-navbar li a:hover {
+	background-color: #1C2A35;
 }
 
 #main {
-	outline: solid 1px red;
 	background:#fff;
-  min-height:200px;
-  height:auto !important;
-  height:200px;	
+	min-height:200px;
+	height:auto !important;
+	height:200px;	
+	margin-top:-48px;
 
 	-moz-border-radius:8px;
 	-webkit-border-radius:8px;
@@ -115,26 +190,16 @@ footer {
 	position: relative;
 	margin-top: -180px; 
 	clear:both;
-
 	background-image: -moz-linear-gradient(top, #cccccc, transparent);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#cccccc), to(transparent));
 	background-image: -o-linear-gradient(top, #cccccc, transparent);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc', endColorstr='transparent');
-	/*INNER ELEMENTS MUST NOT BREAK THIS ELEMENTS BOUNDARIES*/
-	/*Element must have a height (not auto)*/
-	/*All filters must be placed together*/
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc', endColorstr='transparent')";
-	/*Element must have a height (not auto)*/
-	/*All filters must be placed together*/
 	background-image: linear-gradient(top, #cccccc, transparent);
 }
 
 footer #inner {
 	margin:0px auto;
-/*	width:960px;*/
-/*	padding:16px;*/
-
-	outline: solid 1px red;	
 }
 
 
