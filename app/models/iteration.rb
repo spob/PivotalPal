@@ -93,6 +93,10 @@ class Iteration < ActiveRecord::Base
     the_date
   end
 
+  def stories_by_status status
+     self.stories.find_all { |s| s.status == status}
+  end
+
 
   def calc_day_number duration_weeks=self.project.iteration_duration_weeks, the_date=self.project.calculate_project_date
 #    puts the_date

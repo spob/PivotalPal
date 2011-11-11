@@ -3,6 +3,7 @@
 (<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)
 
 | <%= link_to 'Storyboard', storyboard_project_path(@project) %>
+| <%= link_to 'Stats', stats_project_path(@project) %>
 <% if can? :refresh_project, @project %>
     | <%= link_to 'Refresh', refresh_project_path(@project), :method => :post %>
     | <%= link_to 'Renumber', renumber_project_path(@project), :method => :post %>
