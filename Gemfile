@@ -48,5 +48,6 @@ end
 group :test do
   gem 'test-unit'
   gem 'factory_girl_rails'
+  gem "query_tracer", "~> 0.0.4"
   gem 'shoulda'
 end

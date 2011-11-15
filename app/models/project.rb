@@ -380,9 +380,27 @@ class Project < ActiveRecord::Base
     end
     next_story = next_story_number numbered_stories
     unnumbered_stories.each do |e|
-      update_story_name e[0], "#{story_prefix(story_type)}#{next_story}: #{e[1]}"
+      Story.update_pivotal self, e[0], name:"#{story_prefix(story_type)}#{next_story}: #{e[1]}"
       next_story = next_story_number(numbered_stories, next_story + 1)
     end
+  end
+
+  def self.transact_pivotal body, uri, project, action
+    resource_uri = URI.parse(uri)
+    http = Net::HTTP.new(resource_uri.host, resource_uri.port)
+    req = nil
+    params = {'Content-type' => 'application/xml', 'X-TrackerToken' => project.tenant.api_key}
+    case action
+      when :update
+        req = Net::HTTP::Put.new(resource_uri.path, params)
+      else
+        req = Net::HTTP::Post.new(resource_uri.path, params)
+    end
+    http.use_ssl = false
+    req.body = body
+    response = http.request(req)
+    logger.info "RESPONSE: #{response.code} #{response.body} #{response.message}" unless response.code == "200"
+    response
   end
 
   protected
@@ -400,19 +418,6 @@ class Project < ActiveRecord::Base
       else
         'X'
     end
-  end
-
-  def update_story_name story_id, name, description=nil
-    desc = (description ? "<description>#{description}</description>" : "")
-    body = "<story><name>#{name}</name>#{desc}</story>"
-    resource_uri = URI.parse("http://www.pivotaltracker.com/services/v3/projects/#{pivotal_identifier}/stories/#{story_id}")
-    http = Net::HTTP.new(resource_uri.host, resource_uri.port)
-    req = Net::HTTP::Put.new(resource_uri.path, {'Content-type' => 'application/xml', 'X-TrackerToken' => self.tenant.api_key})
-    http.use_ssl = false
-    req.body = body
-    response = http.request(req)
-    logger.info "RESPONSE: #{response.code} #{response.body} #{response.message}" unless response.code == "200"
-    response.code == "200"
   end
 
   def next_story_number stories, start_at=1
