@@ -51,7 +51,7 @@ class Story < ActiveRecord::Base
   def update_pivotal
     Story.update_pivotal self.iteration.project,
                          self.pivotal_identifier,
-                         name:name, description:description, estimate:points, story_type:story_type
+                         name:name, description:body, estimate:points, story_type:story_type
   end
 
   def self.build_body(params)
@@ -64,11 +64,25 @@ class Story < ActiveRecord::Base
   def self.update_pivotal project, pivotal_identifier, params
     body = build_body(params)
     uri = "http://www.pivotaltracker.com/services/v3/projects/#{project.pivotal_identifier}/stories/#{pivotal_identifier}"
-    Project.transact_pivotal body, uri, project, :update
+    project.transact_pivotal body, uri, :update
   end
 
   def split
-    copy_in_pivotal "#{parse_story_number} part #{parse_part + 1}#{parse_name}"
+    new_story = copy_in_pivotal "#{parse_story_number} part #{parse_part + 1}#{parse_name}"
+#    uri = "http://www.pivotaltracker.com/services/v3/projects/#{self.iteration.project.pivotal_identifier}/stories/#{new_story.pivotal_identifier}/moves?move\[move\]=after&move\[target\]=#{self.pivotal_identifier}"
+#    response = self.iteration.project.transact_pivotal nil, uri, :create
+#    puts "response: #{response.body}"
+    self.points = 0
+    self.update_pivotal
+    new_story
+    tasks.each do |t|
+      unless t.pivotal_complete?
+        Task.create_in_pivotal new_story, "#{t.remaining_hours}/#{t.remaining_hours} #{t.strip_description}"
+        t.status = STATUS_PUSHED
+        t.description = "X#{t.description}"
+        t.update_pivotal
+      end
+    end
   end
 
   def copy_in_pivotal p_name=self.name
@@ -78,18 +92,20 @@ class Story < ActiveRecord::Base
     new_story.body = self.body
     new_story.points = self.points
     new_story.iteration = self.iteration
-    new_story.create_in_pivotal
+    new_story.create_in_pivotal current_state:current_status
+    new_story
   end
 
-  def create_in_pivotal
-    self.pivotal_identifier = Story.create_in_pivotal self.iteration.project, name:name, description:body, estimate:points, story_type:story_type
+  def create_in_pivotal params={}
+    params = params.merge(name:name, description:body, estimate:points, story_type:story_type)
+    self.pivotal_identifier = Story.create_in_pivotal self.iteration.project, params
     self
   end
 
   def self.create_in_pivotal project, params
     body = build_body(params)
     uri = "http://www.pivotaltracker.com/services/v3/projects/#{project.pivotal_identifier}/stories"
-    response = Project.transact_pivotal body, uri, project, :create
+    response = project.transact_pivotal body, uri, :create
     puts "response: #{response.body}"
     if response.code == "200"
       GC.start
@@ -144,5 +160,14 @@ class Story < ActiveRecord::Base
 
   def adjust_points
     self.points = nil if self.points == -1
+  end
+
+  def current_status
+    case self.status
+      when STATUS_STARTED
+        then STATUS_STARTED
+      else
+        STATUS_UNSTARTED
+    end
   end
 end

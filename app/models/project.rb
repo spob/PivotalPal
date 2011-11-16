@@ -385,11 +385,11 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def self.transact_pivotal body, uri, project, action
+  def transact_pivotal body, uri, action
     resource_uri = URI.parse(uri)
     http = Net::HTTP.new(resource_uri.host, resource_uri.port)
     req = nil
-    params = {'Content-type' => 'application/xml', 'X-TrackerToken' => project.tenant.api_key}
+    params = {'Content-type' => 'application/xml', 'X-TrackerToken' => self.tenant.api_key}
     case action
       when :update
         req = Net::HTTP::Put.new(resource_uri.path, params)
@@ -397,7 +397,7 @@ class Project < ActiveRecord::Base
         req = Net::HTTP::Post.new(resource_uri.path, params)
     end
     http.use_ssl = false
-    req.body = body
+    req.body = body if body
     response = http.request(req)
     logger.info "RESPONSE: #{response.code} #{response.body} #{response.message}" unless response.code == "200"
     response
