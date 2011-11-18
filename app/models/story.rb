@@ -73,15 +73,14 @@ class Story < ActiveRecord::Base
 #    response = self.iteration.project.transact_pivotal nil, uri, :create
 #    puts "response: #{response.body}"
     self.points = 0
+    self.name = self.name[0..191] + ' (split)'
     self.update_pivotal
     new_story
-    tasks.each do |t|
-      unless t.pivotal_complete?
-        Task.create_in_pivotal new_story, "#{t.remaining_hours}/#{t.remaining_hours} #{t.strip_description}"
-        t.status = STATUS_PUSHED
-        t.description = "X#{t.description}"
-        t.update_pivotal
-      end
+    tasks.find_all{|t| t.status != STATUS_PUSHED}.each do |t|
+      Task.create_in_pivotal new_story, "#{t.remaining_hours}/#{t.remaining_hours} #{t.strip_description}" unless t.pivotal_complete?
+      t.status = STATUS_PUSHED
+      t.description = "X#{t.description}"
+      t.update_pivotal
     end
   end
 

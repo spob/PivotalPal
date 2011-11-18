@@ -12,6 +12,7 @@ class Ability
 #      can :manage_org, [User, Project]
       can [:read, :update, :create, :destroy], [User, Project], :tenant_id => user.tenant.id
       can [:refresh, :renumber], Project, :tenant_id => user.tenant.id
+      can :split, Story, :iteration => {:project => {:tenant_id => user.tenant.try(:id)}}
       can :update, Tenant, :id => user.tenant.id
     end
     can [:read, :storyboard], Project, :tenant_id => user.tenant.try(:id)

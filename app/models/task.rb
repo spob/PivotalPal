@@ -58,7 +58,7 @@ class Task < ActiveRecord::Base
   end
 
   def strip_description
-    match = self.description.match /^\s*[\d]+\/[\d]+[\s]*(.*)/i
+    match = self.description.match /^\s*X?[\d.]+\/[\d.]+[\s]*(.*)/i
     if match
       match.captures.last
     else

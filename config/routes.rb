@@ -1,4 +1,6 @@
 PivotalPal::Application.routes.draw do
+  get "stories/split"
+
   get "tenants/edit"
 
   get "tenants/update"
@@ -30,6 +32,11 @@ PivotalPal::Application.routes.draw do
       get :select_to_print
       get :stats
       get :storyboard
+    end
+  end
+  resources :stories do
+    member do
+      post :split
     end
   end
   resources :super_users, :only => [:index, :edit, :update]

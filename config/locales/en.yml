@@ -40,6 +40,7 @@ en:
   story:
     not_owned: not owned
     owned_by: owned by
+    split: Story "%{story}" split
 
     must_select_to_print: "Please select one or more stories to print"
   tenant:
