@@ -4,6 +4,10 @@ class Project < ActiveRecord::Base
   extend FriendlyId
   friendly_id :name, :use => :slugged
 
+  def should_generate_new_friendly_id?
+    new_record?
+  end
+
   belongs_to :tenant, :counter_cache => true
   belongs_to :master_project, :class_name => "Project", :foreign_key => :master_project_id, :counter_cache => :linked_projects_count
   has_many :iterations, :dependent => :destroy

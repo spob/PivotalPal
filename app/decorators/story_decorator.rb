@@ -10,7 +10,7 @@ class StoryDecorator < ApplicationDecorator
   end
 
   def split_link
-    h.link_to("split", h.split_story_path(model), :method => :post) if [STATUS_STARTED, STATUS_FINISHED, STATUS_REJECTED].index(self.status)
+    h.link_to("split", h.split_story_path(model), :method => :post) if h.can?(:split, model) && [STATUS_STARTED, STATUS_FINISHED, STATUS_REJECTED].index(self.status)
   end
 
   def cell_color_by_story_status
