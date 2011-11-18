@@ -30,14 +30,14 @@ class Task < ActiveRecord::Base
   end
 
   def update_pivotal
-    body = "<task><description>#{description}</description><complete>#{pivotal_complete?.to_s}</complete></task>"
+    body = "<task><description><![CDATA[#{description}]]></description><complete>#{pivotal_complete?.to_s}</complete></task>"
     uri = "http://www.pivotaltracker.com/services/v3/projects/#{story.iteration.project.pivotal_identifier}/stories/#{story.pivotal_identifier}/tasks/#{pivotal_identifier}"
     response = story.iteration.project.transact_pivotal body, uri, :update
     puts "response: #{response.body}"
   end
 
   def self.create_in_pivotal story, description
-    body = "<task><description>#{description}</description></task>"
+    body = "<task><description><![CDATA[#{description}]]></description></description></task>"
     uri = "http://www.pivotaltracker.com/services/v3/projects/#{story.iteration.project.pivotal_identifier}/stories/#{story.pivotal_identifier}/tasks"
     response = story.iteration.project.transact_pivotal body, uri, :create
     puts "response: #{response.body}"

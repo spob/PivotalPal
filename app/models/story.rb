@@ -56,7 +56,7 @@ class Story < ActiveRecord::Base
 
   def self.build_body(params)
     buf = ""
-    params.each { |key, val| buf = buf + "<#{key.to_s}>#{val}</#{key.to_s}>" }
+    params.each { |key, val| buf = buf + "<#{key.to_s}><![CDATA[#{val}]]></#{key.to_s}>" }
     body = "<story>#{buf}</story>"
     body
   end
@@ -75,13 +75,16 @@ class Story < ActiveRecord::Base
     self.points = 0
     self.name = self.name[0..191] + ' (split)'
     self.update_pivotal
-    new_story
     tasks.find_all{|t| t.status != STATUS_PUSHED}.each do |t|
       Task.create_in_pivotal new_story, "#{t.remaining_hours}/#{t.remaining_hours} #{t.strip_description}" unless t.pivotal_complete?
       t.status = STATUS_PUSHED
       t.description = "X#{t.description}"
       t.update_pivotal
     end
+    self.add_pivotal_comment I18n.t('story.split_into', :url => "https://www.pivotaltracker.com/story/show/#{new_story.pivotal_identifier}")
+    new_story.add_pivotal_comment I18n.t('story.split_from', :url => "https://www.pivotaltracker.com/story/show/#{pivotal_identifier}")
+
+    new_story
   end
 
   def copy_in_pivotal p_name=self.name
@@ -116,6 +119,13 @@ class Story < ActiveRecord::Base
         GC.enable
       end
     end
+  end
+
+  def add_pivotal_comment comment
+    body = "<note><text><![CDATA[#{comment}]]></text></note>"
+    uri = "http://www.pivotaltracker.com/services/v3/projects/#{self.iteration.project.pivotal_identifier}/stories/#{self.pivotal_identifier}/notes"
+    response = self.iteration.project.transact_pivotal body, uri, :create
+    puts "response: #{response.body}"
   end
 
   def parse_part

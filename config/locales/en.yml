@@ -41,6 +41,8 @@ en:
     not_owned: not owned
     owned_by: owned by
     split: Story "%{story}" split
+    split_into: This story was split into a new story at %{url}
+    split_from: This story was split from %{url}
 
     must_select_to_print: "Please select one or more stories to print"
   tenant:
