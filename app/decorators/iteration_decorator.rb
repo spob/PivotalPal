@@ -111,7 +111,7 @@ class IterationDecorator < ApplicationDecorator
         model.all_tasks.find_all { |t| t.remaining_hours == 0 && t.total_hours > 0 }.size
       when STATUS_STARTED then
         model.all_tasks.find_all { |t| t.remaining_hours < t.total_hours && t.total_hours > 0 }.size
-      when STATUS_UNSTARTED then
+      when STATUS_NOT_STARTED then
         model.all_tasks.find_all { |t| t.remaining_hours == t.total_hours && t.total_hours > 0 }.size
     end
   end
@@ -137,7 +137,7 @@ class IterationDecorator < ApplicationDecorator
           4000 + (s.sort ? s.sort : 0)
         when STATUS_STARTED then
           5000 + (s.sort ? s.sort : 0)
-        when STATUS_UNSTARTED then
+        when STATUS_NOT_STARTED then
           6000 + (s.sort ? s.sort : 0)
         when STATUS_PUSHED then
           7000 + (s.sort ? s.sort : 0)

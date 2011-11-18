@@ -2,7 +2,7 @@
   <td colspan="<%= iteration.calc_day_number + 3 %>"  style = "border: 2px solid grey; background-color: <%= story.cell_color_by_story_status %>;">
     <%= story.story_icon %>
     <strong><%= story.display_name %></strong>
-    <%= link_to "split", split_story_path(story), :method => :post %>
+    <%= story.split_link %>
   </td>
 </tr>
 <%= render :partial => 'task', :collection => story.decorated_tasks(cookies[:show_pushed_stories]), :locals => {:iteration => iteration, :story => story} %>

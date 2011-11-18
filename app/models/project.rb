@@ -386,6 +386,8 @@ class Project < ActiveRecord::Base
   end
 
   def transact_pivotal body, uri, action
+    logger.info(uri)
+    logger.info(body)
     resource_uri = URI.parse(uri)
     http = Net::HTTP.new(resource_uri.host, resource_uri.port)
     req = nil

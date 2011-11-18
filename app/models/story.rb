@@ -51,7 +51,7 @@ class Story < ActiveRecord::Base
   def update_pivotal
     Story.update_pivotal self.iteration.project,
                          self.pivotal_identifier,
-                         name:name, description:body, estimate:points, story_type:story_type
+                         name:name, description:body, estimate:points, story_type:story_type, current_state:status
   end
 
   def self.build_body(params)
@@ -74,6 +74,7 @@ class Story < ActiveRecord::Base
 #    puts "response: #{response.body}"
     self.points = 0
     self.name = self.name[0..191] + ' (split)'
+    self.status = STATUS_DELIVERED if [STATUS_NOT_STARTED, STATUS_STARTED, STATUS_FINISHED, STATUS_REJECTED].index(self.status)
     self.update_pivotal
     tasks.find_all{|t| t.status != STATUS_PUSHED}.each do |t|
       Task.create_in_pivotal new_story, "#{t.remaining_hours}/#{t.remaining_hours} #{t.strip_description}" unless t.pivotal_complete?
@@ -176,7 +177,7 @@ class Story < ActiveRecord::Base
       when STATUS_STARTED
         then STATUS_STARTED
       else
-        STATUS_UNSTARTED
+        STATUS_NOT_STARTED
     end
   end
 end

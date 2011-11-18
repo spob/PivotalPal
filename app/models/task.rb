@@ -54,7 +54,7 @@ class Task < ActiveRecord::Base
   end
 
   def pivotal_complete?
-    status == STATUS_PUSHED || status == "Done"
+    status == STATUS_PUSHED || status == "Done" || status == STATUS_ACCEPTED
   end
 
   def strip_description
