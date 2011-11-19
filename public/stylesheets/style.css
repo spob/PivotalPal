@@ -74,11 +74,15 @@ body > #container {height: auto; min-height: 100%;}
 #container { 
 	padding-bottom: 0px; 
 	text-align:left;
-	background:  url('/template/images/noise.png') repeat top left;
+	background:  url('/images/global/noise.png') repeat top left;
+}
+
+.pad-16 {
+	padding:16px;
 }
 
 header {	
-	background: transparent url('/template/images/bg-tile.jpg') repeat-x top left;
+	background: transparent url('/images/global/bg-tile.jpg') repeat-x top left;
 	color:#FAFAFA;
 }
 
@@ -92,7 +96,7 @@ header #inner {
 }
 
 #nameplate  {
-	background: url('/template/images/nameplate.png') no-repeat scroll top left;
+	background: url('/images/global/nameplate.png') no-repeat scroll top left;
 	text-indent:-3000px;
 	margin:6px 0 0 0;
 }
@@ -104,7 +108,6 @@ header #inner {
 	height: 43px;
 	background-color: transparent;
 }
-
 
 ul#top-navbar {
 	margin: 16px -12px 8px 8px;
@@ -169,6 +172,7 @@ ul#global-navbar li a:hover {
 
 #main {
 	background:#fff;
+	padding: 16px 0;
 	min-height:100px;
 	height:auto !important;
 	height:100px;	
@@ -188,6 +192,7 @@ ul#global-navbar li a:hover {
 
 .out {
 	outline: solid 1px lime;
+	margin-bottom:16px;
 }
 
 footer {
