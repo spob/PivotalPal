@@ -4,8 +4,13 @@ class StoriesController < ApplicationController
   load_and_authorize_resource
 
   def split
-    @story.split
-    @story.iteration.project.refresh
-    redirect_to(project_path(@story.iteration.project), :notice => t('story.split', :story => @story.name))
+    result = @story.split current_user
+    result = @story.iteration.project.refresh if result == "OK"
+    if result == "OK"
+      notice = t('story.split', :story => @story.name)
+    else
+      notice = t('story.split_failed', :story => @story.name, :error => result)
+    end
+      redirect_to(project_path(@story.iteration.project), :notice => notice)
   end
 end

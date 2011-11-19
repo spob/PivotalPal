@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include LoginChecker
+  include Exceptions
   protect_from_forgery
   before_filter :set_timezone
 

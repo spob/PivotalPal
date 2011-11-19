@@ -51,7 +51,9 @@ class Story < ActiveRecord::Base
   def update_pivotal
     Story.update_pivotal self.iteration.project,
                          self.pivotal_identifier,
-                         name:name, description:body, estimate:points, story_type:story_type, current_state:status
+                         :name => name, :description => body, :estimate => points, :story_type => story_type,
+                         :current_state => status
+#                         name :name, description :body, estimate :points, story_type :story_type, current_state :status
   end
 
   def self.build_body(params)
@@ -67,25 +69,20 @@ class Story < ActiveRecord::Base
     project.transact_pivotal body, uri, :update
   end
 
-  def split
-    new_story = copy_in_pivotal "#{parse_story_number} part #{parse_part + 1}#{parse_name}"
-#    uri = "http://www.pivotaltracker.com/services/v3/projects/#{self.iteration.project.pivotal_identifier}/stories/#{new_story.pivotal_identifier}/moves?move\[move\]=after&move\[target\]=#{self.pivotal_identifier}"
-#    response = self.iteration.project.transact_pivotal nil, uri, :create
-#    puts "response: #{response.body}"
-    self.points = 0
-    self.name = self.name[0..191] + ' (split)'
-    self.status = STATUS_DELIVERED if [STATUS_NOT_STARTED, STATUS_STARTED, STATUS_FINISHED, STATUS_REJECTED].index(self.status)
-    self.update_pivotal
-    tasks.find_all{|t| t.status != STATUS_PUSHED}.each do |t|
-      Task.create_in_pivotal new_story, "#{t.remaining_hours}/#{t.remaining_hours} #{t.strip_description}" unless t.pivotal_complete?
-      t.status = STATUS_PUSHED
-      t.description = "X#{t.description}"
-      t.update_pivotal
+  def split current_user
+    begin
+      tasks.find_all { |t| t.status != STATUS_PUSHED }.each do |t|
+        puts ">>>>#{t.description}  status #{t.status} complete? #{t.pivotal_complete?}"
+        Task.create_in_pivotal self, "#{t.remaining_hours}/#{t.remaining_hours} #{t.strip_description}" unless t.pivotal_complete?
+        t.status = STATUS_PUSHED
+        t.description = "X#{t.description}"
+        t.update_pivotal
+      end
+      self.add_pivotal_comment I18n.t('story.split_comment', :user => current_user.full_name)
+      "OK"
+    rescue Exceptions::PivotalActionFailed => e
+      e.message
     end
-    self.add_pivotal_comment I18n.t('story.split_into', :url => "https://www.pivotaltracker.com/story/show/#{new_story.pivotal_identifier}")
-    new_story.add_pivotal_comment I18n.t('story.split_from', :url => "https://www.pivotaltracker.com/story/show/#{pivotal_identifier}")
-
-    new_story
   end
 
   def copy_in_pivotal p_name=self.name
@@ -95,12 +92,13 @@ class Story < ActiveRecord::Base
     new_story.body = self.body
     new_story.points = self.points
     new_story.iteration = self.iteration
-    new_story.create_in_pivotal current_state:current_status
+    new_story.create_in_pivotal current_state :current_status
     new_story
   end
 
   def create_in_pivotal params={}
-    params = params.merge(name:name, description:body, estimate:points, story_type:story_type)
+#    params = params.merge(name :name, description :body, estimate :points, story_type :story_type)
+    params = params.merge(:name => name, :description => body, :estimate => points, :story_type => story_type)
     self.pivotal_identifier = Story.create_in_pivotal self.iteration.project, params
     self
   end
@@ -129,19 +127,8 @@ class Story < ActiveRecord::Base
     puts "response: #{response.body}"
   end
 
-  def parse_part
-    puts self.name
-    match = self.name.match(/^\s*[#{concat_prefixes}]\d*\s*part\s*(\d*)/i)
-    if match
-      puts ">>#{match.captures[0]}"
-      match.captures[0].to_i
-    else
-      return 1
-    end
-  end
-
   def parse_story_number
-    match = self.name.match(/^\s*[#{concat_prefixes}]\d+/)
+    match = Regexp.new("^\\s*#{story_prefix_regex}\\d+").match(name)
     if match
       match[0]
     else
@@ -149,23 +136,23 @@ class Story < ActiveRecord::Base
     end
   end
 
-  def parse_name
-    return name unless parse_story_number
-    match = self.name.match /^[\s]*[#{concat_prefixes}][\d]+[\s]*part\s[\d]+(.*)|^\s*[#{concat_prefixes}][\d]+(.*)/i
-    match = self.name.match /^\s*[#{concat_prefixes}][\d]+[\s]*(.*)/i
-    if match
-      n = match.captures.last
-      match = n.match /part\s*\d+\s*(.*)/
-      match ? match.captures.last : n
-    else
-      name
+  def parse_story_name
+    _name = self.name
+    story_number = parse_story_number
+    if story_number
+      match = self.name.match /^\s*#{story_number}[\s]*(.*)/i
+      if match
+        _name = match.captures.last
+      end
     end
+    _name.strip
   end
 
   protected
 
-  def concat_prefixes
-    "#{self.iteration.project.bug_prefix}#{self.iteration.project.feature_prefix}#{self.iteration.project.release_prefix}#{self.iteration.project.chore_prefix}"
+  def story_prefix_regex
+    regular_expression = "[#{self.iteration.project.bug_prefix}#{self.iteration.project.feature_prefix}#{self.iteration.project.release_prefix}#{self.iteration.project.chore_prefix}]"
+    regular_expression == "[]" ? "" : regular_expression
   end
 
   def adjust_points
@@ -175,7 +162,8 @@ class Story < ActiveRecord::Base
   def current_status
     case self.status
       when STATUS_STARTED
-        then STATUS_STARTED
+      then
+        STATUS_STARTED
       else
         STATUS_NOT_STARTED
     end

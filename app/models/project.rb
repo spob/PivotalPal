@@ -155,6 +155,7 @@ class Project < ActiveRecord::Base
                                                   :story_type => story.at('story_type').inner_html,
                                                   :sort => n)
             end
+            @story.parse_story_name
             n = n + 1
 
             tasks = story.at('tasks')
@@ -405,7 +406,11 @@ class Project < ActiveRecord::Base
     http.use_ssl = false
     req.body = body if body
     response = http.request(req)
-    logger.info "RESPONSE: #{response.code} #{response.body} #{response.message}" unless response.code == "200"
+    unless response.code == "200"
+      error = "RESPONSE: #{response.code} #{response.body} #{response.message}"
+      logger.info error
+      raise Exceptions::PivotalActionFailed, error
+    end
     response
   end
 

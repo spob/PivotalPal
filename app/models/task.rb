@@ -37,19 +37,17 @@ class Task < ActiveRecord::Base
   end
 
   def self.create_in_pivotal story, description
-    body = "<task><description><![CDATA[#{description}]]></description></description></task>"
+    body = "<task><description><![CDATA[#{description}]]></description></task>"
     uri = "http://www.pivotaltracker.com/services/v3/projects/#{story.iteration.project.pivotal_identifier}/stories/#{story.pivotal_identifier}/tasks"
     response = story.iteration.project.transact_pivotal body, uri, :create
     puts "response: #{response.body}"
-    if response.code == "200"
-      GC.start
-      GC.disable
-      begin
-        doc = Hpricot(response.body)
-        return doc.at('id').try(:inner_html)
-      ensure
-        GC.enable
-      end
+    GC.start
+    GC.disable
+    begin
+      doc = Hpricot(response.body)
+      return doc.at('id').try(:inner_html)
+    ensure
+      GC.enable
     end
   end
 
