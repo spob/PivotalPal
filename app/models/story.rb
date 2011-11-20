@@ -66,7 +66,7 @@ class Story < ActiveRecord::Base
   def self.update_pivotal project, pivotal_identifier, params
     body = build_body(params)
     uri = "http://www.pivotaltracker.com/services/v3/projects/#{project.pivotal_identifier}/stories/#{pivotal_identifier}"
-    project.transact_pivotal body, uri, :update
+    call_pivotal_rest project, body, uri, :update
   end
 
   def split current_user
@@ -106,7 +106,7 @@ class Story < ActiveRecord::Base
   def self.create_in_pivotal project, params
     body = build_body(params)
     uri = "http://www.pivotaltracker.com/services/v3/projects/#{project.pivotal_identifier}/stories"
-    response = project.transact_pivotal body, uri, :create
+    response = project.call_pivotal_rest body, uri, :create
     puts "response: #{response.body}"
     if response.code == "200"
       GC.start
@@ -123,7 +123,7 @@ class Story < ActiveRecord::Base
   def add_pivotal_comment comment
     body = "<note><text><![CDATA[#{comment}]]></text></note>"
     uri = "http://www.pivotaltracker.com/services/v3/projects/#{self.iteration.project.pivotal_identifier}/stories/#{self.pivotal_identifier}/notes"
-    response = self.iteration.project.transact_pivotal body, uri, :create
+    response = self.iteration.project.call_pivotal_rest body, uri, :create
     puts "response: #{response.body}"
   end
 

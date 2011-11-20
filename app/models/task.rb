@@ -32,14 +32,14 @@ class Task < ActiveRecord::Base
   def update_pivotal
     body = "<task><description><![CDATA[#{description}]]></description><complete>#{pivotal_complete?.to_s}</complete></task>"
     uri = "http://www.pivotaltracker.com/services/v3/projects/#{story.iteration.project.pivotal_identifier}/stories/#{story.pivotal_identifier}/tasks/#{pivotal_identifier}"
-    response = story.iteration.project.transact_pivotal body, uri, :update
+    response = story.iteration.project.call_pivotal_rest body, uri, :update
     puts "response: #{response.body}"
   end
 
   def self.create_in_pivotal story, description
     body = "<task><description><![CDATA[#{description}]]></description></task>"
     uri = "http://www.pivotaltracker.com/services/v3/projects/#{story.iteration.project.pivotal_identifier}/stories/#{story.pivotal_identifier}/tasks"
-    response = story.iteration.project.transact_pivotal body, uri, :create
+    response = story.iteration.project.call_pivotal_rest body, uri, :create
     puts "response: #{response.body}"
     GC.start
     GC.disable
@@ -62,6 +62,31 @@ class Task < ActiveRecord::Base
     else
       description
     end
+  end
+
+  def self.parse_hours description, completed
+    remaining_hours = 0.0
+    total_hours = 0.0
+
+    unless /^X\d/ix =~ description
+      # does description start with a B (as in blocked)
+      desc = description
+      if /^B\d/ix =~ description
+        desc = description[1..500]
+      end
+      m1 = /[\d.]*/x.match(desc)
+      # Did the match end with a slash?
+      if /\// =~ m1.post_match
+        remaining_hours = m1[0].to_f if !completed
+
+        m2 = /[\d.]*/x.match(m1.post_match[1..255])
+        total_hours = m2[0].to_f
+      end
+    end
+
+#    puts "TOTAL: #{total_hours} REMAINING: #{remaining_hours} #{description}"
+    is_qa = /\[qa\]/xi =~ description
+    return total_hours, remaining_hours, description, is_qa.present?
   end
 
   private

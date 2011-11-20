@@ -2,8 +2,10 @@ require 'net/http'
 
 class Project < ActiveRecord::Base
   extend FriendlyId
+  include Pivotal
   friendly_id :name, :use => :slugged
 
+  # only create a new slug on record creation
   def should_generate_new_friendly_id?
     new_record?
   end
@@ -48,26 +50,20 @@ class Project < ActiveRecord::Base
       # fetch project
       logger.info("Refreshing project #{name}")
       service_uri = "http://www.pivotaltracker.com/services/v3/projects/#{self.pivotal_identifier}"
-#      puts service_uri
-      resource_uri = URI.parse(service_uri)
-      response = Net::HTTP.start(resource_uri.host, resource_uri.port) do |http|
-        http.get(resource_uri.path, {'X-TrackerToken' => self.tenant.api_key})
-      end
+      response = call_pivotal_rest(nil, service_uri, :show)
 
-      if response.code == "200"
-        doc = Hpricot(response.body).at('project')
+      doc = Hpricot(response.body).at('project')
 
-        # Only change project name if it needs to be changed...otherwise it changes the slug
-        project_name = doc.at('name').innerHTML.strip
-        self.name = project_name unless self.name == project_name
+      # Only change project name if it needs to be changed...otherwise it changes the slug
+      project_name = doc.at('name').innerHTML.strip
+      self.name = project_name unless self.name == project_name
 
-        self.iteration_duration_weeks = doc.at('iteration_length').innerHTML
-        fetch_current_iteration unless self.new_record?
-        self.sync_status = I18n.t('general.ok')
-        self.last_synced_at = Time.now
-      else
-        self.sync_status = I18n.t('project.id_not_found', :pivotal_identifier => self.pivotal_identifier)
-      end
+      self.iteration_duration_weeks = doc.at('iteration_length').innerHTML
+      fetch_current_iteration unless self.new_record?
+      self.sync_status = I18n.t('general.ok')
+      self.last_synced_at = Time.now
+    rescue Exceptions::PivotalActionFailed => e
+      self.sync_status = I18n.t('project.id_not_found', :pivotal_identifier => self.pivotal_identifier)
       self.next_sync_at = self.tenant.refresh_frequency_hours.hours.since
     ensure
       GC.enable
@@ -75,7 +71,6 @@ class Project < ActiveRecord::Base
     save
     self.sync_status == "OK"
   end
-
 
   def save_dirty_records(iteration)
     iteration.last_synced_at = Time.now
@@ -94,200 +89,169 @@ class Project < ActiveRecord::Base
 
   def fetch_current_iteration
     logger.info("fetch_current_iteration for project #{id}")
-    resource_uri = URI.parse("http://www.pivotaltracker.com/services/v3/projects/#{pivotal_identifier}/iterations/current")
-    response = Net::HTTP.start(resource_uri.host, resource_uri.port) do |http|
-      http.get(resource_uri.path, {'X-TrackerToken' => self.tenant.api_key})
-    end
+    uri = "http://www.pivotaltracker.com/services/v3/projects/#{pivotal_identifier}/iterations/current"
+    begin
+      response = call_pivotal_rest(nil, uri, :show)
 
-    if response.code == "200"
       GC.start
       GC.disable
 
-      begin
-        doc = Hpricot(response.body)
+      doc = Hpricot(response.body)
 
-        (doc/"iteration").each do |iteration|
-          iteration_number = iteration.at('id').inner_html.to_i
+      (doc/"iteration").each do |iteration|
+        iteration_number = iteration.at('id').inner_html.to_i
 #        start_on = iteration.at('start').inner_html.to_date
 #        iteration_number = iteration_number - 1 if iteration_number > 1 && Project.calculate_project_date < start_on
-          @iteration = self.iterations.where(:iteration_number => iteration_number).includes(:task_estimates, :stories => {:tasks => :task_estimates}).lock.first
+        @iteration = self.iterations.where(:iteration_number => iteration_number).includes(:task_estimates, :stories => {:tasks => :task_estimates}).lock.first
 
-#        puts "#{iteration.at('finish').inner_html} -- #{Date.parse(iteration.at('finish').inner_html)}"
-          if @iteration
-            @iteration.start_on = Date.parse(iteration.at('start').inner_html)
-            @iteration.end_on = Date.parse(iteration.at('finish').inner_html)-1
-            @iteration.stories.each do |s|
-              s.status = STATUS_PUSHED
-              s.points = 0
-            end
-          else
-            @iteration = self.iterations.create!(:iteration_number => iteration_number,
-                                                 :start_on => Date.parse(iteration.at('start').inner_html),
-                                                 :end_on => Date.parse(iteration.at('finish').inner_html)-1)
+        if @iteration
+          @iteration.start_on = Date.parse(iteration.at('start').inner_html)
+          @iteration.end_on = Date.parse(iteration.at('finish').inner_html)-1
+          @iteration.stories.each do |s|
+            s.status = STATUS_PUSHED
+            s.points = 0
           end
-#          puts "iteration id #{@iteration.id}, project: #{self.id}"
-          n = 0
-          (iteration.at('stories')/"story").each do |story|
-            pivotal_id = story.at('id').inner_html.to_i
-            @story = @iteration.stories.find_all { |s| s.pivotal_identifier == pivotal_id }.first
-            if @story
-              @story.points = story.at('estimate').try(:inner_html)
-              @story.status = story.at('current_state').inner_html
-              @story.name = story.at('name').inner_html[0..199]
-              @story.body = story.at('description').try(:inner_html)
-              @story.owner = story.at('owned_by').try(:inner_html)
-              @story.story_type = story.at('story_type').inner_html
-              @story.sort = n
+        else
+          @iteration = self.iterations.create!(:iteration_number => iteration_number,
+                                               :start_on => Date.parse(iteration.at('start').inner_html),
+                                               :end_on => Date.parse(iteration.at('finish').inner_html)-1)
+        end
+        n = 0
+        (iteration.at('stories')/"story").each do |story|
+          pivotal_id = story.at('id').inner_html.to_i
+          @story = @iteration.stories.find_all { |s| s.pivotal_identifier == pivotal_id }.first
+          if @story
+            @story.points = story.at('estimate').try(:inner_html)
+            @story.status = story.at('current_state').inner_html
+            @story.name = story.at('name').inner_html[0..199]
+            @story.body = story.at('description').try(:inner_html)
+            @story.owner = story.at('owned_by').try(:inner_html)
+            @story.story_type = story.at('story_type').inner_html
+            @story.sort = n
 
-              @story.tasks.each do |t|
-                t.status = STATUS_PUSHED
-                t.remaining_hours = 0.0
-              end
-            else
-#              puts "Points: #{story.at('estimate').try(:inner_html)}"
-              @story = @iteration.stories.create!(:pivotal_identifier => story.at('id').inner_html,
-                                                  :url => story.at('url').inner_html,
-                                                  :points => story.at('estimate').try(:inner_html),
-                                                  :status => story.at('current_state').inner_html,
-                                                  :name => story.at('name').inner_html[0..199],
-                                                  :body => story.at('description').try(:inner_html),
-                                                  :owner => story.at('owned_by').try(:inner_html),
-                                                  :story_type => story.at('story_type').inner_html,
-                                                  :sort => n)
-            end
-            @story.parse_story_name
-            n = n + 1
-
-            tasks = story.at('tasks')
-            if tasks
-              (tasks/"task").each do |task|
-                pivotal_id = task.at('id').inner_html.to_i
-                @task = @story.tasks.find_all { |t| t.pivotal_identifier == pivotal_id }.first
-                completed = (task.at('complete').inner_html == "true" || @story.status == STATUS_ACCEPTED || @story.status == STATUS_PUSHED)
-                total_hours, remaining_hours, description, is_qa = self.parse_hours(task.at('description').inner_html, completed)
-#              puts "#{description}, QA: #{is_qa}" if is_qa
-                status = calc_status(completed, remaining_hours, total_hours, description)
-
-                if @task
-#                  puts "#{description}, remaining hours #{remaining_hours}"
-                  @task.description = description[0..199]
-                  @task.total_hours = total_hours
-                  @task.remaining_hours = remaining_hours
-                  @task.status = status
-                  @task.qa = is_qa
-                else
-                  @task = @story.tasks.create!(:pivotal_identifier => task.at('id').inner_html,
-                                               :description => description[0..199],
-                                               :total_hours => total_hours,
-                                               :remaining_hours => remaining_hours,
-                                               :status => status,
-                                               :qa => is_qa)
-                end
-#                puts "#{@task.description} #{total_hours} #{remaining_hours}"
-                update_task_estimate(@task, @iteration)
-              end
-            end
-
-            @story.tasks.find_all { |t| t.status == STATUS_PUSHED }.each do |t|
-              update_task_estimate(t, @iteration)
-            end
-
-            @estimate = @iteration.task_estimates.find_all { |te| te.as_of == self.calc_iteration_day }.first
-            if @estimate
-              @estimate.total_hours = @iteration.total_hours
-              @estimate.remaining_hours = @iteration.remaining_hours
-              @estimate.remaining_qa_hours = @iteration.remaining_qa_hours
-              @estimate.points_delivered = @iteration.total_points_delivered
-              @estimate.velocity = @iteration.total_points
-            else
-              @day = @iteration.task_estimates.create!(:as_of => self.calc_iteration_day,
-                                                       :day_number => @iteration.calc_day_number(self.iteration_duration_weeks),
-                                                       :total_hours => @iteration.try(:total_hours),
-                                                       :remaining_hours => @iteration.try(:remaining_hours),
-                                                       :remaining_qa_hours => @iteration.try(:remaining_qa_hours),
-                                                       :points_delivered => @iteration.try(:total_points_delivered),
-                                                       :velocity => @iteration.try(:total_points))
-            end
-          end
-          @iteration.stories.find_all { |s| s.status == STATUS_PUSHED }.each do |s|
-            s.tasks.each do |t|
+            @story.tasks.each do |t|
               t.status = STATUS_PUSHED
               t.remaining_hours = 0.0
-              update_task_estimate(t, @iteration)
+            end
+          else
+#              puts "Points: #{story.at('estimate').try(:inner_html)}"
+            @story = @iteration.stories.create!(:pivotal_identifier => story.at('id').inner_html,
+                                                :url => story.at('url').inner_html,
+                                                :points => story.at('estimate').try(:inner_html),
+                                                :status => story.at('current_state').inner_html,
+                                                :name => story.at('name').inner_html[0..199],
+                                                :body => story.at('description').try(:inner_html),
+                                                :owner => story.at('owned_by').try(:inner_html),
+                                                :story_type => story.at('story_type').inner_html,
+                                                :sort => n)
+          end
+          @story.parse_story_name
+          n = n + 1
+
+          tasks = story.at('tasks')
+          if tasks
+            (tasks/"task").each do |task|
+              pivotal_id = task.at('id').inner_html.to_i
+              @task = @story.tasks.find_all { |t| t.pivotal_identifier == pivotal_id }.first
+              completed = (task.at('complete').inner_html == "true" || @story.status == STATUS_ACCEPTED || @story.status == STATUS_PUSHED)
+              total_hours, remaining_hours, description, is_qa = Task.parse_hours(task.at('description').inner_html, completed)
+#              puts "#{description}, QA: #{is_qa}" if is_qa
+              status = calc_status(completed, remaining_hours, total_hours, description)
+
+              if @task
+#                  puts "#{description}, remaining hours #{remaining_hours}"
+                @task.description = description[0..199]
+                @task.total_hours = total_hours
+                @task.remaining_hours = remaining_hours
+                @task.status = status
+                @task.qa = is_qa
+              else
+                @task = @story.tasks.create!(:pivotal_identifier => task.at('id').inner_html,
+                                             :description => description[0..199],
+                                             :total_hours => total_hours,
+                                             :remaining_hours => remaining_hours,
+                                             :status => status,
+                                             :qa => is_qa)
+              end
+#                puts "#{@task.description} #{total_hours} #{remaining_hours}"
+              update_task_estimate(@task, @iteration)
             end
           end
 
-          save_dirty_records(@iteration)
+          @story.tasks.find_all { |t| t.status == STATUS_PUSHED }.each do |t|
+            update_task_estimate(t, @iteration)
+          end
+
+          @estimate = @iteration.task_estimates.find_all { |te| te.as_of == self.calc_iteration_day }.first
+          if @estimate
+            @estimate.total_hours = @iteration.total_hours
+            @estimate.remaining_hours = @iteration.remaining_hours
+            @estimate.remaining_qa_hours = @iteration.remaining_qa_hours
+            @estimate.points_delivered = @iteration.total_points_delivered
+            @estimate.velocity = @iteration.total_points
+          else
+            @day = @iteration.task_estimates.create!(:as_of => self.calc_iteration_day,
+                                                     :day_number => @iteration.calc_day_number(self.iteration_duration_weeks),
+                                                     :total_hours => @iteration.try(:total_hours),
+                                                     :remaining_hours => @iteration.try(:remaining_hours),
+                                                     :remaining_qa_hours => @iteration.try(:remaining_qa_hours),
+                                                     :points_delivered => @iteration.try(:total_points_delivered),
+                                                     :velocity => @iteration.try(:total_points))
+          end
         end
-      ensure
-        GC.enable
+        @iteration.stories.find_all { |s| s.status == STATUS_PUSHED }.each do |s|
+          s.tasks.each do |t|
+            t.status = STATUS_PUSHED
+            t.remaining_hours = 0.0
+            update_task_estimate(t, @iteration)
+          end
+        end
+
+        save_dirty_records(@iteration)
       end
-      nil
-    else
-      "#{pivotal_identifier} not found in pivotal tracker"
+    rescue Exceptions::PivotalActionFailed => e
+      return "#{pivotal_identifier} not found in pivotal tracker"
+    ensure
+      GC.enable
     end
+    nil
   end
 
   def fetch_story_cards(state, user)
     logger.info("fetch_current_iteration for project #{id}")
-    resource_uri = URI.parse("http://www.pivotaltracker.com/services/v3/projects/#{pivotal_identifier}/iterations/#{state}")
-    response = Net::HTTP.start(resource_uri.host, resource_uri.port) do |http|
-      http.get(resource_uri.path, {'X-TrackerToken' => self.tenant.api_key})
-    end
+    uri = "http://www.pivotaltracker.com/services/v3/projects/#{pivotal_identifier}/iterations/#{state}"
+    begin
+      response = call_pivotal_rest(nil, uri, :show)
 
-    if response.code == "200"
       GC.start
       GC.disable
 
-      begin
-        doc = Hpricot(response.body)
+      doc = Hpricot(response.body)
 
-        card_request = CardRequest.create!(:user => user)
+      card_request = CardRequest.create!(:user => user)
 
-        (doc/"iteration").each do |iteration|
-          iteration_number = iteration.at('id').inner_html.to_i
-          (iteration.at('stories')/"story").each_with_index do |story, i|
-            pivotal_id = story.at('id').inner_html.to_i
-            card_request.cards.create!(:pivotal_identifier => story.at('id').inner_html,
-                                       :url => story.at('url').inner_html,
-                                       :iteration_number => iteration_number,
-                                       :points => story.at('estimate').try(:inner_html),
-                                       :status => story.at('current_state').inner_html,
-                                       :name => story.at('name').inner_html[0..199],
-                                       :body => story.at('description').try(:inner_html),
-                                       :owner => story.at('owned_by').try(:inner_html),
-                                       :story_type => story.at('story_type').inner_html,
-                                       :sort => i)
-          end
+      (doc/"iteration").each do |iteration|
+        iteration_number = iteration.at('id').inner_html.to_i
+        (iteration.at('stories')/"story").each_with_index do |story, i|
+          pivotal_id = story.at('id').inner_html.to_i
+          card_request.cards.create!(:pivotal_identifier => story.at('id').inner_html,
+                                     :url => story.at('url').inner_html,
+                                     :iteration_number => iteration_number,
+                                     :points => story.at('estimate').try(:inner_html),
+                                     :status => story.at('current_state').inner_html,
+                                     :name => story.at('name').inner_html[0..199],
+                                     :body => story.at('description').try(:inner_html),
+                                     :owner => story.at('owned_by').try(:inner_html),
+                                     :story_type => story.at('story_type').inner_html,
+                                     :sort => i)
         end
-        card_request
       end
+      return card_request
+    rescue Exceptions::PivotalActionFailed => e
+      return nil
+    ensure
+      GC.enable
     end
-  end
-
-  def parse_hours description, completed
-    remaining_hours = 0.0
-    total_hours = 0.0
-
-    unless /^X\d/ix =~ description
-      # does description start with a B (as in blocked)
-      desc = description
-      if /^B\d/ix =~ description
-        desc = description[1..500]
-      end
-      m1 = /[\d.]*/x.match(desc)
-      # Did the match end with a slash?
-      if /\// =~ m1.post_match
-        remaining_hours = m1[0].to_f if !completed
-
-        m2 = /[\d.]*/x.match(m1.post_match[1..255])
-        total_hours = m2[0].to_f
-      end
-    end
-
-#    puts "TOTAL: #{total_hours} REMAINING: #{remaining_hours} #{description}"
-    is_qa = /\[qa\]/xi =~ description
-    return total_hours, remaining_hours, description, is_qa.present?
   end
 
   def calc_status(complete, remaining_hours, total_hours, description)
@@ -372,8 +336,8 @@ class Project < ActiveRecord::Base
     (doc/"story").each do |story|
       id = story.at('id').try(:inner_html)
       name = story.at('name').try(:inner_html)
-      stype = story.at('story_type').try(:inner_html)
-      if stype == story_type
+      _story_type = story.at('story_type').try(:inner_html)
+      if _story_type == story_type
         if (name =~ /^#{story_prefix(story_type)}\d+/ix)
           num = /\d+/x.match(name).to_s.to_i
           numbered_stories[num] = name
@@ -384,34 +348,10 @@ class Project < ActiveRecord::Base
       end
     end
     next_story = next_story_number numbered_stories
-    unnumbered_stories.each do |e|
-      Story.update_pivotal self, e[0], name:"#{story_prefix(story_type)}#{next_story}: #{e[1]}"
+    unnumbered_stories.each do |_story|
+      Story.update_pivotal(self, _story[0], name => "#{story_prefix(story_type)}#{next_story}: #{_story[1]}")
       next_story = next_story_number(numbered_stories, next_story + 1)
     end
-  end
-
-  def transact_pivotal body, uri, action
-    logger.info(uri)
-    logger.info(body)
-    resource_uri = URI.parse(uri)
-    http = Net::HTTP.new(resource_uri.host, resource_uri.port)
-    req = nil
-    params = {'Content-type' => 'application/xml', 'X-TrackerToken' => self.tenant.api_key}
-    case action
-      when :update
-        req = Net::HTTP::Put.new(resource_uri.path, params)
-      else
-        req = Net::HTTP::Post.new(resource_uri.path, params)
-    end
-    http.use_ssl = false
-    req.body = body if body
-    response = http.request(req)
-    unless response.code == "200"
-      error = "RESPONSE: #{response.code} #{response.body} #{response.message}"
-      logger.info error
-      raise Exceptions::PivotalActionFailed, error
-    end
-    response
   end
 
   protected
