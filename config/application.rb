@@ -39,5 +39,10 @@ module PivotalPal
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
+
+    # See https://github.com/plataformatec/devise/wiki/How-To:-Create-custom-layouts
+    config.to_prepare {
+      Devise::SessionsController.layout "login"
+    }
   end
 end
