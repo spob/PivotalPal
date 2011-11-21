@@ -69,6 +69,32 @@ Author:
 
 html, body, #container { height: 100%; }
 
+body {
+	color: #565656;
+	font: 12px/20px "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 12px;
+}
+
+/* Typography */
+
+a{color:inherit;text-decoration:inherit;}
+a:hover,a:focus{color:#466779;}
+h1{font-size:25px;}
+h2{font-size:24px;}
+h3{font-size:20px;}
+h4{font-size:16px;}
+h5{font-size:14px;}
+h6{font-size:12px;}
+h1,h2,h3,h4,h5,h6{margin-bottom:.5em;}
+/*h1,h2,h3{font-weight:400;}*/
+h4,h5,h6,b,strong,caption,th,thead,dt,legend{font-weight:700;}
+ol,ul{list-style:disc;padding-left:15px;margin-bottom:10px;}
+ol{list-style:decimal;}
+ol li,ul li{margin-bottom:3px;}
+p{margin-bottom:10px;}
+
+.strike {text-decoration: line-through}
+
 body > #container {height: auto; min-height: 100%;}
 
 #container { 
@@ -90,7 +116,7 @@ header {
 	height:56px;
 }
 
-header #inner {
+header .inner {
 	margin:0px auto;
 	height:200px;
 }
@@ -171,23 +197,21 @@ ul#global-navbar li a:hover {
 }
 
 #main {
-	background:#fff;
+/*	background:#fff;*/
 	padding: 16px 0;
 	min-height:100px;
 	height:auto !important;
 	height:100px;	
-
-	margin-top:-48px;
+/*	margin-top:-48px;*/
 /*	margin-top: 0px;*/
-
 /*
 	-moz-border-radius:8px;
 	-webkit-border-radius:8px;
 	border-radius:8px;
-*/
 	-moz-box-shadow:0px 0px 3px #000000;
 	-webkit-box-shadow:0px 0px 3px #000000;
 	box-shadow:0px 0px 6px rgba(80, 80, 80, 0.8);
+	*/
 }
 
 .out {
@@ -209,7 +233,7 @@ footer {
 	background-image: linear-gradient(top, #cccccc, transparent);
 }
 
-footer #inner {
+footer .inner {
 	margin:0px auto;
 }
 

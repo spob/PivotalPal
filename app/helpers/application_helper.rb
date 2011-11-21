@@ -10,7 +10,7 @@ module ApplicationHelper
 
   def strike_text(text, strike)
     return h(text) unless strike
-    "<strike>".html_safe + h(text) + "</strike>".html_safe
+    "<span class='strike'>".html_safe + h(text) + "</span>".html_safe
   end
 
   def show_link(object, prefix=nil, content=t('action.show'))

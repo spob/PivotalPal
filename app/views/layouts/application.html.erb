@@ -12,7 +12,7 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 
 
-  <%= stylesheet_link_tag "scaffold", "960/960_16_col", "style"%>
+  <%= stylesheet_link_tag "scaffold", "960/960_16_col", "style", "tables"%>
 
   <%= javascript_include_tag "libs/modernizr-2.0.6.min.js" %>
 
@@ -26,7 +26,7 @@
 <body>
 	<div id="container">
 		<header>
-			<div id="inner">
+			<div class="inner">
 				<div id="header-top-row" class="container_16">
 					<div class="grid_4">
 						<h1 id="nameplate"><a href="/">PivotalPal</a></h1>
@@ -52,27 +52,32 @@
 					<ul id="global-navbar">
 						<% if user_signed_in? %>
 								<li><%= link_to_unless_current "Projects", projects_path %></li>
+
 							<% if current_user.role? ROLE_ADMIN %>
 									<li><%= link_to_unless_current "Users", users_path %></li>
 								<% if can? :update, current_user.tenant %>
 										<li><%= link_to_unless_current "Company Info", edit_tenant_path(current_user.tenant) %></li>
 								<% end %>
 							<% end %>
+
 							<% if current_user.role? ROLE_SUPERUSER %>
 								<% if can? :manage, User %>
 										<li><%= link_to_unless_current "All Users", super_users_path %></li>
 								<% end %>
+
 								<% if can? :read, Logon %>
 									<li><%= link_to_unless_current "Logons", logons_path %></li>
 								<% end %>
+
 									<li><%= link_to_unless_current "Jobs", periodic_jobs_path %></li>
 							<% end %>
+
 						<% end %>
 					</ul>
 					</div> <!-- end grid_16 -->
 				</div> <!-- end container_16 -->
 			</div> <!-- end header#inner -->
-		</header>
+		</header> <!-- end header -->
 
 		<div id="main" role="main" class="container_16">
 
@@ -84,14 +89,14 @@
 			  <h1><%= yield(:title) %></h1>
 
 			  <%= yield %>
-			</div> 
+			</div> <!-- end .grid_16 -->
 
-		</div>
+		</div> <!-- end #main -->
 
-	</div> <!--! end of #container -->
+	</div> <!-- end of container -->
 
 	<footer>
-		<div id="inner" class="container_16">
+		<div class="inner container_16">
 			<div class="grid_5">
 					footer 1
 			</div>
@@ -102,7 +107,7 @@
 					footer 3
 			</div>
 		</div>
-	</footer>
+	</footer> <!-- end footer -->
 
 <%= javascript_include_tag "libs/jquery_ujs","plugins/highcharts", "plugins/jquery.pinned-footer.js", "application" %>
 

@@ -6,7 +6,7 @@ class StoryDecorator < ApplicationDecorator
   end
 
   def display_name
-    h.content_tag(:span, "#{h.strike_text(h.link_to(model.name, model.url, :target => '_blank'), model.status == 'pushed')} (#{model.status.titleize}), #{h.pluralize(model.points, 'point')}, #{owner_text})".html_safe, style: "font-size:125%;")
+    h.content_tag(:span, "#{h.strike_text(h.link_to(model.name, model.url, :target => '_blank'), model.status == 'pushed')} (#{model.status.titleize}), #{h.pluralize(model.points, 'point')}, #{owner_text})".html_safe)
   end
 
   def split_link
