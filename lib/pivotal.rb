@@ -1,8 +1,8 @@
 module Pivotal
 
   def call_pivotal_rest body, uri, action
-    logger.info(uri)
-    logger.info(body)
+    logger.info("PIVOTAL REQUEST: #{uri}")
+    logger.info("BODY: #{body}")
     resource_uri = URI.parse(uri)
     http = Net::HTTP.new(resource_uri.host, resource_uri.port)
     req = nil
@@ -18,7 +18,9 @@ module Pivotal
     http.use_ssl = false
     req.body = body if body
     response = http.request(req)
-    unless response.code == "200"
+    if response.code == "200"
+      logger.debug "RESPONSE: #{response.code} #{response.body} #{response.message}"
+    else
       error = "RESPONSE: #{response.code} #{response.body} #{response.message}"
       logger.error error
       raise Exceptions::PivotalActionFailed, error
