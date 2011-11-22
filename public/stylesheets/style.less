@@ -67,7 +67,7 @@ Author:
 ========================================================================== */
 
 
-html, body, #container { height: 100%; }
+html, body, #main-container { height: 100%; }
 
 body {
 	color: #565656;
@@ -81,6 +81,10 @@ a{color:inherit;text-decoration:inherit;}
 a:hover,a:focus{color:#466779;}
 h1{font-size:25px;}
 h2{font-size:24px;}
+.header h2 {
+  line-height: 24px;
+}
+
 h3{font-size:20px;}
 h4{font-size:16px;}
 h5{font-size:14px;}
@@ -95,13 +99,15 @@ p{margin-bottom:10px;}
 
 .strike {text-decoration: line-through}
 
-body > #container {height: auto; min-height: 100%;}
+body > #main-container {height: auto; min-height: 100%;}
 
-#container { 
-	padding-bottom: 0px; 
+#main-container { 
+	padding-bottom: 180px; 
 	text-align:left;
 	background:  url('/images/global/noise.png') repeat top left;
 }
+
+
 
 .pad-16 {
 	padding:16px;
@@ -197,21 +203,7 @@ ul#global-navbar li a:hover {
 }
 
 #main {
-/*	background:#fff;*/
 	padding: 16px 0;
-/*	min-height:100px;
-	height:auto !important;
-	height:100px;	
-*//*	margin-top:-48px;*/
-/*	margin-top: 0px;*/
-/*
-	-moz-border-radius:8px;
-	-webkit-border-radius:8px;
-	border-radius:8px;
-	-moz-box-shadow:0px 0px 3px #000000;
-	-webkit-box-shadow:0px 0px 3px #000000;
-	box-shadow:0px 0px 6px rgba(80, 80, 80, 0.8);
-	*/
 }
 
 .out {
@@ -219,28 +211,24 @@ ul#global-navbar li a:hover {
 	margin-bottom:16px;
 }
 
-footer {
+footer#main-footer {
 	border-top:solid 	4px #999;
-	height:180px;
+	height:176px;
 	position: relative;
-	margin-top: -180px; 
+	margin: -180px 0 0 0;
+	padding:0; 
 	clear:both;
+
 	background-image: -moz-linear-gradient(top, #cccccc, transparent);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#cccccc), to(transparent));
 	background-image: -o-linear-gradient(top, #cccccc, transparent);
 	background-image: linear-gradient(top, #cccccc, transparent);
 }
 
-footer .inner {
+footer#main-footer .inner {
 	margin:0px auto;
+	padding:0; 
 }
-
-
-
-
-
-
-
 
 
 
