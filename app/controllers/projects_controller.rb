@@ -23,6 +23,7 @@ class ProjectsController < ApplicationController
     cookies[:show_accepted_stories] = {:value => params[:show_accepted_stories], :expires => 6.month.since} if params[:show_accepted_stories]
 
     @iteration = IterationDecorator.decorate(select_iteration(@project, params))
+    @project.touch_user_project(current_user)
     respond_with @project
   end
 
@@ -33,6 +34,7 @@ class ProjectsController < ApplicationController
     end
 
     @iteration = IterationDecorator.decorate(select_iteration(@project, :iteration_id => @project.latest_iteration))
+    @project.touch_user_project(current_user)
     respond_with @project
   end
 
@@ -128,6 +130,7 @@ class ProjectsController < ApplicationController
 
   def storyboard
     @iteration = IterationDecorator.decorate(select_iteration(@project, :iteration_id => @project.latest_iteration))
+    @project.touch_user_project(current_user)
     respond_with @project
   end
 
@@ -145,6 +148,7 @@ class ProjectsController < ApplicationController
     cookies[:story_state] = {:value => params[:story_state], :expires => 6.month.since} if params[:story_state]
     cookies[:story_state] = {:value => "current", :expires => 6.month.since} unless cookies[:story_state]
     @card_request = @project.fetch_story_cards(cookies[:story_state], current_user)
+    @project.touch_user_project(current_user)
     respond_with @project
   end
 

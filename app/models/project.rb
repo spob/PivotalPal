@@ -12,6 +12,7 @@ class Project < ActiveRecord::Base
 
   belongs_to :tenant, :counter_cache => true
   belongs_to :master_project, :class_name => "Project", :foreign_key => :master_project_id, :counter_cache => :linked_projects_count
+  has_many :user_projects, :dependent => :destroy
   has_many :iterations, :dependent => :destroy
   has_many :linked_projects, :class_name => "Project", :foreign_key => :master_project_id
   has_one :latest_iteration, :class_name => "Iteration", :order => "iteration_number DESC"
@@ -222,6 +223,15 @@ class Project < ActiveRecord::Base
     unnumbered_stories.each do |_story|
       Story.update_pivotal(self, _story[0], name => "#{story_prefix(story_type)}#{next_story}: #{_story[1]}")
       next_story = next_story_number(numbered_stories, next_story + 1)
+    end
+  end
+
+  def touch_user_project user
+    user_project = self.user_projects.find_by_user_id(user.id)
+    if user_project
+      user_project.update_attribute(:read_at, Time.now)
+    else
+      self.user_projects.create(:user => user, :read_at => Time.now)
     end
   end
 

@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   before_update :create_logon, :create_tenant
 
   belongs_to :tenant, :counter_cache => true
+  has_many :user_projects, :dependent => :destroy
   has_many :logons, :dependent => :destroy
   has_one :last_logon, :class_name => "Logon", :order => "id DESC"
 
