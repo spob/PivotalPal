@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '~> 3.0.0'
+gem 'rails', '~> 3.1.1'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -14,6 +14,11 @@ gem "friendly_id", "~> 4.0.0.beta14"
 gem "hpricot", "~> 0.8.4"
 gem 'jquery-rails', '~> 1.0.12'
 gem 'kaminari', '~> 0.12.0'
+
+# BOB -- PLEASE HELP WITH THESE ....
+# gem "less-rails", "~> 2.1.0"
+# END NEW GEMS
+
 gem 'mail', '~> 2.2.0'
 gem 'meta_where', '~> 1.0.0'
 gem 'mysql2', '~> 0.2.0'
