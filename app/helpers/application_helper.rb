@@ -28,7 +28,7 @@ module ApplicationHelper
   def create_link(object, prefix=nil, content = t('action.new'))
     if can?(:create, object)
       object_class = (object.kind_of?(Class) ? object : object.class)
-      ((prefix ? prefix : "") + link_to(content, [:new, object_class.name.underscore.to_sym])).html_safe
+      ((prefix ? prefix : "") + link_to(content, [:new, object_class.name.underscore.to_sym],{:class => "btn"})).html_safe
     end
   end
 end
