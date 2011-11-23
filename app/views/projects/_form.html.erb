@@ -1,67 +1,110 @@
-<%= form_for(@project) do |f| %>
-    <% if @project.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@project.errors.count, "error") %> prohibited this project from being saved:</h2>
+<!-- <div class="grid_16"> -->
+	<h1><%= yield(:title) %></h1>
+<!-- </div> -->
 
-          <ul>
-            <% @project.errors.full_messages.each do |msg| %>
-                <li><%= msg %></li>
-            <% end %>
-          </ul>
-        </div>
-    <% end %>
-    <%= f.hidden_field :name %>
+<!-- <div class="grid_16"> -->
+	<div class="box"> 
+		<div class="content pad-16"> 
 
-    <div class="field">
-      <%= f.label :pivotal_identifier, t('project.pivotal_identifier') %>
-      <br/>
-      <%= f.text_field :pivotal_identifier %>
-    </div>
-    <div>
-      <%= f.label :time_zone %>
-      <%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones %>
-    </div>
-    <div class="field">
-      <%= f.label :renumber_features %>
-      <br/>
-      <%= f.check_box :renumber_features %>
-    </div>
-    <div class="field">
-      <%= f.label :feature_prefix %>
-      <br/>
-      <%= f.text_field :feature_prefix, :size => 5 %>
-    </div>
-    <div class="field">
-      <%= f.label :renumber_bugs %>
-      <br/>
-      <%= f.check_box :renumber_bugs %>
-    </div>
-    <div class="field">
-      <%= f.label :bug_prefix %>
-      <br/>
-      <%= f.text_field :bug_prefix, :size => 5 %>
-    </div>
-    <div class="field">
-      <%= f.label :renumber_chores %>
-      <br/>
-      <%= f.check_box :renumber_chores %>
-    </div>
-    <div class="field">
-      <%= f.label :chore_prefix %>
-      <br/>
-      <%= f.text_field :chore_prefix, :size => 5 %>
-    </div>
-    <div class="field">
-      <%= f.label :renumber_releases %>
-      <br/>
-      <%= f.check_box :renumber_releases %>
-    </div>
-    <div class="field">
-zone      <%= f.label :release_prefix %>
-      <br/>
-      <%= f.text_field :release_prefix, :size => 5 %>
-    </div>
-    <div class="actions">
-      <%= f.submit %>
-    </div>
-<% end %>
+			<%= form_for(@project) do |f| %>
+			<% if @project.errors.any? %>
+			<div id="error_explanation">
+				<h2><%= pluralize(@project.errors.count, "error") %> prohibited this project from being saved:</h2>
+				<ul>
+					<% @project.errors.full_messages.each do |msg| %>
+					<li><%= msg %></li>
+					<% end %>
+				</ul>
+			</div>
+			<% end %>
+			<%= f.hidden_field :name %>
+
+
+			<fieldset>
+
+				<div class="grid_8">
+					<div class="clearfix">
+						<%= f.label :pivotal_identifier, t('project.pivotal_identifier') %>
+						<div class="input">
+							<%= f.text_field :pivotal_identifier %>
+						</div>
+					</div><!-- /clearfix -->
+
+					<div class="clearfix">
+						<%= f.label :time_zone %>
+						<div class="input">
+							<%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones,{}, {:class => 'xlarge'} %>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<%= f.label :feature_prefix %>
+						<div class="input">
+							<%= f.text_field :feature_prefix, :size => 5 %>
+						</div>
+					</div>
+
+
+					<div class="clearfix">
+						<%= f.label :bug_prefix %>
+						<div class="input">
+							<%= f.text_field :bug_prefix, :size => 5 %>
+						</div>
+					</div>
+
+
+					<div class="clearfix">
+						<%= f.label :chore_prefix %>
+						<div class="input">
+							<%= f.text_field :chore_prefix, :size => 5 %>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<%= f.label :release_prefix %>
+						<div class="input">
+							<%= f.text_field :release_prefix, :size => 5 %>
+						</div>
+					</div>
+				</div> <!-- end .grid_8 -->
+
+				<div class="grid_8">
+					<h6>Renumbering options</h6>
+					<div class="pad-8">
+						<ul class="inputs-list">
+							<li>
+								<%= f.check_box :renumber_features %>
+								<%= f.label :renumber_features %>
+							</li>
+
+							<li>
+								<%= f.check_box :renumber_bugs %>
+								<%= f.label :renumber_bugs %>
+							</li>
+							<li>
+								<%= f.check_box :renumber_chores %>
+								<%= f.label :renumber_chores %>
+							</li>
+
+							<li>
+								<%= f.check_box :renumber_releases %>
+								<%= f.label :renumber_releases %>
+							</li>
+						</ul>
+					</div>
+				</div> <!-- end .grid_8 -->
+
+				<div class="actions grid_16 ">
+						<%= f.submit %>
+						<span class="pad-8">
+							<%= link_to 'Show', @project %> |
+							<%= link_to 'Back', projects_path %>
+						</span>	
+					</div> <!-- end .grid_16 -->
+			</fieldset>
+
+			<% end %>
+		</div> <!-- end .content -->
+	</div> <!-- end .box -->
+<!-- </div> --> <!-- end .grid_12 -->
+

@@ -11,10 +11,7 @@
 	<meta name="description" content="PivotPal helps your Pivotal Tracker projects">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 
-
-
-  <%= stylesheet_link_tag "scaffold", "bootstrap/bootstrap.css", "960/960_fluid", "style", "tables"%>
-
+  <%= stylesheet_link_tag "H5BPx", "bootstrap/bootstrap.css", "960/960_fluid", "style", "tables"%>
   <%= javascript_include_tag "libs/modernizr-2.0.6.min.js" %>
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
@@ -86,11 +83,9 @@
 					<%= content_tag :div, msg, :id => "flash_#{name}", :class => "strong clearfix" %>
 				<% end %>
 
-			<div class="grid_16">
-			  <h1><%= yield(:title) %></h1>
 
 			  <%= yield %>
-			</div> <!-- end .grid_16 -->
+
 
 		</div> <!-- end #main -->
 
