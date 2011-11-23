@@ -1,204 +1,217 @@
+<!--Rich, I know we won't want this here permanently, but this is to show how we could use this to create tabs for the
+last x projects the user has accessed-->
+<% Project.last_read(6, current_user).each do |project| %>
+    <%= link_to project.name, project_path(project) %>&nbsp;&nbsp;&nbsp;
+<% end %>
+
 <% title "Project #{@project.name}, Iteration #{@iteration.iteration_number}" %>
 
 <!-- START Burndown Chart -->
-<div class="box"> 
-	<div class="header">
-		<h2>Burndown Chart</h2>
-		<span class="draggable">move</span> 
-		<span class="toggle">toggle</span> 
-	</div> <!-- end .header -->
+<div class="box">
+  <div class="header">
+    <h2>Burndown Chart</h2>
+    <span class="draggable">move</span>
+    <span class="toggle">toggle</span>
+  </div>
+  <!-- end .header -->
 
-	<div class="content clearfix"> 
-		<div id="burndown_chart" class="padding" style="width: 100%; height: 500px;"></div> <!-- end #burndown_chart -->
-	</div> <!-- end .content -->
-</div> 	<!-- end .box-->
+  <div class="content clearfix">
+    <div id="burndown_chart" class="padding" style="width: 100%; height: 500px;"></div>
+    <!-- end #burndown_chart -->
+  </div>
+  <!-- end .content -->
+</div>     <!-- end .box-->
 <!-- END Burndown Chart -->
 
 
-<div class="box"> 
-	<div class="header">
-		<h2>Project NAME, Iteration NUMBER </h2>
-		<span class="draggable">move</span> 
-		<span class="toggle">toggle</span> 
-	</div> <!-- end .header -->
+<div class="box">
+  <div class="header">
+    <h2>Project NAME, Iteration NUMBER </h2>
+    <span class="draggable">move</span>
+    <span class="toggle">toggle</span>
+  </div>
+  <!-- end .header -->
 
-	<div class="content clearfix"> 
-		<div class="dataTables_wrapper"> 
-			<div class="dataTables_length"> 
+  <div class="content clearfix">
+    <div class="dataTables_wrapper">
+      <div class="dataTables_length">
 
-				(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)
+        (<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)
 
-				| <%= link_to 'Storyboard', storyboard_project_path(@project) %>
-				| <%= link_to 'Stats', stats_project_path(@project) %>
-				<% if can? :refresh_project, @project %>
-				| <%= link_to 'Refresh', refresh_project_path(@project), :method => :post %>
-				| <%= link_to 'Renumber', renumber_project_path(@project), :method => :post %>
-				<% end %>
+        | <%= link_to 'Storyboard', storyboard_project_path(@project) %>
+        | <%= link_to 'Stats', stats_project_path(@project) %>
+        <% if can? :refresh_project, @project %>
+            | <%= link_to 'Refresh', refresh_project_path(@project), :method => :post %>
+            | <%= link_to 'Renumber', renumber_project_path(@project), :method => :post %>
+        <% end %>
 
-				<%= form_tag(project_path(@project), :id => 'select_iteration', :method => :get, :name => 'search') do -%>
-					<strong>Iteration:</strong>
-					<%= select_tag :iteration_id,
-						options_from_collection_for_select(
-						@project.iterations.select("id, iteration_number"),
-						"id",
-						"iteration_name",
-						@iteration.id),
-						html_options = {:onchange => 'document.search.submit();'} %>
-					<br/><br/>
-					<strong>Show Pushed Items:</strong> 
-						<%= radio_button_tag "show_pushed_stories", "Y", cookies[:show_pushed_stories] != "N",
-							html_options = {:onchange => 'document.search.submit();'} %>
-						Yes&nbsp;&nbsp;
-					
-						<%= radio_button_tag "show_pushed_stories", "N", cookies[:show_pushed_stories] == "N",
-							html_options = {:onchange => 'document.search.submit();'} %>
-						No &nbsp;&nbsp;&nbsp;&nbsp;
-					
-						<strong>Show Accepted Stories:</strong> 
-						<%= radio_button_tag "show_accepted_stories", "Y", cookies[:show_accepted_stories] != "N",
-							html_options = {:onchange => 'document.search.submit();'} %>
-					
-						Yes&nbsp;&nbsp;
-					
-						<%= radio_button_tag "show_accepted_stories", "N", cookies[:show_accepted_stories] == "N",
-							html_options = {:onchange => 'document.search.submit();'} %>
-						No
-					<% end %>
+        <%= form_tag(project_path(@project), :id => 'select_iteration', :method => :get, :name => 'search') do -%>
+            <strong>Iteration:</strong>
+            <%= select_tag :iteration_id,
+                           options_from_collection_for_select(
+                                   @project.iterations.select("id, iteration_number"),
+                                   "id",
+                                   "iteration_name",
+                                   @iteration.id),
+                           html_options = {:onchange => 'document.search.submit();'} %>
+            <br/><br/>
+            <strong>Show Pushed Items:</strong>
+            <%= radio_button_tag "show_pushed_stories", "Y", cookies[:show_pushed_stories] != "N",
+                                 html_options = {:onchange => 'document.search.submit();'} %>
+            Yes&nbsp;&nbsp;
 
-					<p>Synced at <%= l(@iteration.last_synced_at) if @iteration.last_synced_at %></p>
+            <%= radio_button_tag "show_pushed_stories", "N", cookies[:show_pushed_stories] == "N",
+                                 html_options = {:onchange => 'document.search.submit();'} %>
+            No &nbsp;&nbsp;&nbsp;&nbsp;
 
-				</div> <!-- end .dataTables_wrapper -->
-			</div> <!-- end .dataTables_length -->
+            <strong>Show Accepted Stories:</strong>
+            <%= radio_button_tag "show_accepted_stories", "Y", cookies[:show_accepted_stories] != "N",
+                                 html_options = {:onchange => 'document.search.submit();'} %>
 
-				<table>
-					<thead>
-						<tr>
-							<th rowspan="2">Story</th>
-							<th rowspan="2">Status</th>
-							<th rowspan="2">Estimate<br/>(hours)</th>
-							<th colspan="<%= @iteration.calc_day_number %>">Day</th>
-						</tr>
-						<tr>
-							<%= @iteration.day_headings %>
-						</tr>
-					</thead>
-					
-					<tbody>
-						
-						<%= render :partial => 'story', :collection => @iteration.decorated_stories(cookies[:show_accepted_stories], cookies[:show_pushed_stories]), :locals => {:iteration => @iteration} %>
+            Yes&nbsp;&nbsp;
 
-						<tr>
-							<td colspan="<%= @iteration.calc_day_number + 3 %>">&nbsp;</td>
-						</tr>
-						<tr>
-							<td><strong>REMAINING HOURS:</strong></td>
-							<%= @iteration.remaining_hours_by_day %>
-						</tr>
-						<tr>
-							<td><strong>REMAINING QA HOURS:</strong></td>
-							<%= @iteration.remaining_qa_hours_by_day %>
-						</tr>
-						<tr>
-							<td><strong>TOTAL HOURS:</strong></td>
-							<%= @iteration.total_hours_by_day %>
-						</tr>
+            <%= radio_button_tag "show_accepted_stories", "N", cookies[:show_accepted_stories] == "N",
+                                 html_options = {:onchange => 'document.search.submit();'} %>
+            No
+        <% end %>
 
-						<tr>
-							<td><strong>COMPLETED HOURS:</strong></td>
-							<%= @iteration.completed_hours_by_day %>
-						</tr>
+        <p>Synced at <%= l(@iteration.last_synced_at) if @iteration.last_synced_at %></p>
 
-						<tr>
-							<td><strong>VELOCITY:</strong></td>
-							<%= @iteration.velocity_by_day %>
-						</tr>
+      </div>
+      <!-- end .dataTables_wrapper -->
+    </div>
+    <!-- end .dataTables_length -->
 
-						<tr>
-							<td><strong>POINTS DELIVERED:</strong></td>
-							<%= @iteration.points_delivered_by_day %>
-						</tr>
-						</tbody>
+    <table>
+      <thead>
+      <tr>
+        <th rowspan="2">Story</th>
+        <th rowspan="2">Status</th>
+        <th rowspan="2">Estimate<br/>(hours)</th>
+        <th colspan="<%= @iteration.calc_day_number %>">Day</th>
+      </tr>
+      <tr>
+        <%= @iteration.day_headings %>
+      </tr>
+      </thead>
 
-					</table>
+      <tbody>
 
+      <%= render :partial => 'story', :collection => @iteration.decorated_stories(cookies[:show_accepted_stories], cookies[:show_pushed_stories]), :locals => {:iteration => @iteration} %>
 
-				</div> 	<!-- end .content-->
+      <tr>
+        <td colspan="<%= @iteration.calc_day_number + 3 %>">&nbsp;</td>
+      </tr>
+      <tr>
+        <td><strong>REMAINING HOURS:</strong></td>
+        <%= @iteration.remaining_hours_by_day %>
+      </tr>
+      <tr>
+        <td><strong>REMAINING QA HOURS:</strong></td>
+        <%= @iteration.remaining_qa_hours_by_day %>
+      </tr>
+      <tr>
+        <td><strong>TOTAL HOURS:</strong></td>
+        <%= @iteration.total_hours_by_day %>
+      </tr>
 
-			</div> 	<!-- end .box-->
+      <tr>
+        <td><strong>COMPLETED HOURS:</strong></td>
+        <%= @iteration.completed_hours_by_day %>
+      </tr>
+
+      <tr>
+        <td><strong>VELOCITY:</strong></td>
+        <%= @iteration.velocity_by_day %>
+      </tr>
+
+      <tr>
+        <td><strong>POINTS DELIVERED:</strong></td>
+        <%= @iteration.points_delivered_by_day %>
+      </tr>
+      </tbody>
+
+    </table>
 
 
-			<%= link_to 'Back', projects_path %>
+  </div>
+  <!-- end .content-->
 
-			<script>
-			$(function () {
-				new Highcharts.Chart({
-					chart: { renderTo: 'burndown_chart' },
-					colors: [
-					'#4572A7',
-					'#DB843D',
-					'#3D96AE',
-					'#AA4643',
-					'#80699B',
-					'#89A54E',
-					'#92A8CD',
-					'#A47D7C',
-					'#B5CA92'
-					],
-					title: { text: 'Burn Down for Iteration <%= @iteration.iteration_number %>' },
-					xAxis: { title: { text: 'Day #'},
-					allowDecimals: false},
-					yAxis: [
-					{
-						title: { text: 'Task Hours'},
-						min: 0
-					},
-					{
-						title: { text: 'Story Points'},
-						min: 0,
-						opposite: true
-					}
-					],
-					tooltip: {
-						formatter: function () {
-							return '<b>Day ' + this.x  +
-							'</b>: ' + Highcharts.numberFormat(this.y, 1) + " " + this.series.name;
-						}
-					},
-					series: [
+</div>     <!-- end .box-->
 
-					{
-						name: "Target Velocity",
-						type: 'column',
-						yAxis: 1,
-						data: <%= @iteration.chart_velocity_by_day.inspect %>
-					},
-					{
-						name: "Points Delivered",
-						type: 'column',
-						yAxis: 1,
-						data: <%= @iteration.chart_points_delivered_by_day.inspect %>
-					},
-					{
-						name: "Total Hours",
-						type: 'spline',
-						data: <%= @iteration.chart_total_hours_by_day.inspect %>
-					},
-					{
-						name: "Remaining Hours",
-						type: 'spline',
-						data: <%= @iteration.chart_remaining_hours_by_day.inspect %>
-					},
-					{
-						name: "Remaining QA Hours",
-						type: 'spline',
-						data: <%= @iteration.chart_remaining_qa_hours_by_day.inspect %>
-					},
-					{
-						name: "Ideal Hours",
-						type: 'line',
-						data: <%= @iteration.chart_ideal_hours_by_day.inspect %>
-					}
-					]
-				});
-			});
-			</script>
+
+<%= link_to 'Back', projects_path %>
+
+<script>
+    $(function () {
+        new Highcharts.Chart({
+            chart: { renderTo: 'burndown_chart' },
+            colors: [
+                '#4572A7',
+                '#DB843D',
+                '#3D96AE',
+                '#AA4643',
+                '#80699B',
+                '#89A54E',
+                '#92A8CD',
+                '#A47D7C',
+                '#B5CA92'
+            ],
+            title: { text: 'Burn Down for Iteration <%= @iteration.iteration_number %>' },
+            xAxis: { title: { text: 'Day #'},
+                allowDecimals: false},
+            yAxis: [
+                {
+                    title: { text: 'Task Hours'},
+                    min: 0
+                },
+                {
+                    title: { text: 'Story Points'},
+                    min: 0,
+                    opposite: true
+                }
+            ],
+            tooltip: {
+                formatter: function () {
+                    return '<b>Day ' + this.x +
+                            '</b>: ' + Highcharts.numberFormat(this.y, 1) + " " + this.series.name;
+                }
+            },
+            series: [
+
+                {
+                    name: "Target Velocity",
+                    type: 'column',
+                    yAxis: 1,
+                    data: <%= @iteration.chart_velocity_by_day.inspect %>
+                },
+                {
+                    name: "Points Delivered",
+                    type: 'column',
+                    yAxis: 1,
+                    data: <%= @iteration.chart_points_delivered_by_day.inspect %>
+                },
+                {
+                    name: "Total Hours",
+                    type: 'spline',
+                    data: <%= @iteration.chart_total_hours_by_day.inspect %>
+                },
+                {
+                    name: "Remaining Hours",
+                    type: 'spline',
+                    data: <%= @iteration.chart_remaining_hours_by_day.inspect %>
+                },
+                {
+                    name: "Remaining QA Hours",
+                    type: 'spline',
+                    data: <%= @iteration.chart_remaining_qa_hours_by_day.inspect %>
+                },
+                {
+                    name: "Ideal Hours",
+                    type: 'line',
+                    data: <%= @iteration.chart_ideal_hours_by_day.inspect %>
+                }
+            ]
+        });
+    });
+</script>

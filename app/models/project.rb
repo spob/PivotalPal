@@ -226,6 +226,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def self.last_read(limit, user)
+    projects = Project.joins("LEFT OUTER JOIN user_projects ON user_projects.project_id = projects.id and user_projects.user_id = #{user.id}").where(:tenant_id => user.tenant.id).order('user_projects.read_at').order(:name).limit(limit).sort_by{|p| p.name}
+  end
+
   def touch_user_project user
     user_project = self.user_projects.find_by_user_id(user.id)
     if user_project
