@@ -3,7 +3,7 @@ require 'test_helper'
 class UserTest < ActiveSupport::TestCase
   context "Given an existing user record" do
     setup do
-      @user = Factory.create(:user)
+      @user = FactoryGirl.create(:user)
     end
     subject { @user }
 
@@ -23,7 +23,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   context "Given an existing user with a hired_at value of 1 year" do
-    @user = Factory.create(:user, :hired_at => 400.days.ago)
+    @user = FactoryGirl.create(:user, :hired_at => 400.days.ago)
 
     should "calculate tenure years" do
       assert_equal(1, @user.years_tenure)
@@ -31,7 +31,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   context "Given an existing user with a hired_at value of less than a year" do
-    @user = Factory.create(:user, :hired_at => 400.days.ago)
+    @user = FactoryGirl.create(:user, :hired_at => 400.days.ago)
 
     should "calculate tenure years" do
       assert_equal(0, @user.years_tenure)

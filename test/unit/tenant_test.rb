@@ -3,7 +3,7 @@ require 'test_helper'
 class TenantTest < ActiveSupport::TestCase
   context "Given an existing tenant record" do
     setup do
-      @tenant = Factory.create(:tenant)
+      @tenant = FactoryGirl.build(:tenant)
     end
     subject { @tenant }
 

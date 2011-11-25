@@ -3,7 +3,7 @@ require 'test_helper'
 class ProjectTest < ActiveSupport::TestCase
   context "Given an existing project record" do
     setup do
-      @project = Factory.create(:project)
+      @project = FactoryGirl.create(:project)
     end
     subject { @project }
 

@@ -7,10 +7,10 @@ class Task < ActiveRecord::Base
   validates_length_of :status, :maximum => 20, :allow_blank => true
 
   scope :pushed, where(:status => STATUS_PUSHED)
-  scope :not_pushed, where(:status.ne => STATUS_PUSHED)
+  scope :not_pushed, where{{status.not_eq => STATUS_PUSHED}}
   scope :qa, where(:qa => true)
   scope :conditional_pushed, lambda { |param| return where("") if param.nil? or param == "Y"
-  where(:status.ne => STATUS_PUSHED)
+  where{{:status.not_eq => STATUS_PUSHED}}
   }
 
   @estimates = nil

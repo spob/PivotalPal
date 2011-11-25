@@ -46,4 +46,16 @@ PivotalPal::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+
+  # Compress Javascripts and CSS
+  config.assets.compress = true
+
+  # Don't fall back to the assets pipeline if a precompiled asset is missed
+  config.assets.compile = false
+
+  # Expands the lines which load the assets
+  config.assets.debug = false
+
+  # Generate digests for assets URLs
+  config.assets.digest = true
 end

@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
 
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0 "} }
   scope :unconfirmed, where(:confirmed_at => nil)
-  scope :confirmed, where(:confirmed_at ^ nil)
+  scope :confirmed, where{{confirmed_at.not_eq => nil}}
 
   def roles=(roles)
     self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum

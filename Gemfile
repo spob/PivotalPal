@@ -5,25 +5,29 @@ gem 'rails', '~> 3.1.1'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'cancan', '~> 1.6.0'
-gem 'devise', '~> 1.2.0'
-gem 'devise_invitable', '~> 0.4.0'
+gem 'cancan'#, '~> 1.6.0'
+gem 'devise', '~> 1.5.1'
+gem 'devise_invitable', '~> 0.6.0'
 gem 'draper', '~>0.8.1'
 gem 'foreigner', '~> 1.1.0'
 gem "friendly_id", "~> 4.0.0.beta14"
 gem "hpricot", "~> 0.8.4"
-gem 'jquery-rails', '~> 1.0.12'
+gem 'jquery-rails'
 gem 'kaminari', '~> 0.12.0'
-
-# BOB -- PLEASE HELP WITH THESE ....
-# gem "less-rails", "~> 2.1.0"
-# END NEW GEMS
-
-gem 'mail', '~> 2.2.0'
-gem 'meta_where', '~> 1.0.0'
-gem 'mysql2', '~> 0.2.0'
+gem "less-rails", "~> 2.1.0"
+gem 'mail', '~> 2.3.0'
+gem "squeel"
+gem 'mysql2', '~> 0.3.0'
 gem 'prawn', '~>0.12.0'
 gem 'prawn_rails'
+
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails', " ~> 3.1.0"
+  gem 'coffee-rails', " ~> 3.1.0"
+  gem 'uglifier'
+end
 
 
 # Use unicorn as the web server

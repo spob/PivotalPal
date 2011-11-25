@@ -8,3 +8,4 @@ tmp/
 Gemfile.lock
 schema.rb
 config/initializers/config.rb
+.sass-cache/

@@ -21,12 +21,12 @@ class Story < ActiveRecord::Base
 
   scope :accepted, where(:status => STATUS_ACCEPTED)
   scope :pushed, where(:status => STATUS_PUSHED)
-  scope :pointed, where(:points.gte => 0)
+  scope :pointed, where({:points => 0})
   scope :conditional_pushed, lambda { |param| return where("") if param.nil? or param == "Y"
-  where(:status.ne => STATUS_PUSHED)
+  where{{status.not_eq => STATUS_PUSHED}}
   }
   scope :conditional_not_accepted, lambda { |param| return where("") if param.nil? or param == "Y"
-  where(:status.ne => STATUS_ACCEPTED)
+  where{{status.not_eq => STATUS_ACCEPTED}}
   }
 
   def tasks_conditional_pushed(flag)
