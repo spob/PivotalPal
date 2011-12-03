@@ -23,10 +23,10 @@ class Story < ActiveRecord::Base
   scope :pushed, where(:status => STATUS_PUSHED)
   scope :pointed, where({:points => 0})
   scope :conditional_pushed, lambda { |param| return where("") if param.nil? or param == "Y"
-  where{{status.not_eq => STATUS_PUSHED}}
+  where { {status.not_eq => STATUS_PUSHED} }
   }
   scope :conditional_not_accepted, lambda { |param| return where("") if param.nil? or param == "Y"
-  where{{status.not_eq => STATUS_ACCEPTED}}
+  where { {status.not_eq => STATUS_ACCEPTED} }
   }
 
   def tasks_conditional_pushed(flag)
@@ -71,9 +71,9 @@ class Story < ActiveRecord::Base
 
   def split current_user
     begin
-      tasks.find_all { |t| t.status != STATUS_PUSHED }.each do |t|
-        puts ">>>>#{t.description}  status #{t.status} complete? #{t.pivotal_complete?}"
-        Task.create_in_pivotal self, "#{t.remaining_hours}/#{t.remaining_hours} #{t.strip_description}" unless t.pivotal_complete?
+      tasks.find_all { |t| t.status != STATUS_PUSHED && t.remaining_hours != t.total_hours }.each do |t|
+        #puts ">>>>#{t.description}  status #{t.status} complete? #{t.pivotal_complete?}"
+        Task.create_in_pivotal self, "#{t.status == "Blocked" ? "B" : "" }#{t.remaining_hours}/#{t.remaining_hours} #{t.strip_description}" unless t.pivotal_complete?
         t.status = STATUS_PUSHED
         t.description = "X#{t.description}"
         t.update_pivotal
