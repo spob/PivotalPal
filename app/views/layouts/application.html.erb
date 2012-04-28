@@ -54,7 +54,7 @@
 							<% if current_user.role? ROLE_ADMIN %>
 									<li><%= link_to_unless_current "Users", users_path %></li>
 								<% if can? :update, current_user.tenant %>
-										<li><%= link_to_unless_current "Company Info", edit_tenant_path(current_user.tenant) %></li>
+										<li><%= link_to_unless_current "Company Settings", edit_tenant_path(current_user.tenant) %></li>
 								<% end %>
 							<% end %>
 

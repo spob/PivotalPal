@@ -71,7 +71,7 @@ class Project < ActiveRecord::Base
       GC.enable
     end
     save
-    self.sync_status == "OK"
+    self.sync_status
   end
 
   def save_dirty_records(iteration)

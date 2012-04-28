@@ -92,7 +92,8 @@ class ProjectsController < ApplicationController
     authorize! :refresh, @project
     respond_to do |format|
 #      if @project.update_attribute(:next_sync_at, Time.now)
-        if @project.refresh
+      refresh_result =  @project.refresh
+      if refresh_result == "OK"
         format.html do
           notice = t('project.refresh_scheduled', :project => @project.name)
           if @project.latest_iteration
@@ -104,11 +105,7 @@ class ProjectsController < ApplicationController
         format.xml { head :ok }
       else
         format.html do
-          if @project.latest_iteration
-            render :action => "show"
-          else
-            redirect_to(projects_path, "Internal error: update project failed")
-          end
+          redirect_to(projects_path, :alert => "Update project failed: #{refresh_result}")
         end
         format.xml { render :xml => @project.errors, :status => :unprocessable_entity }
       end
