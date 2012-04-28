@@ -71,14 +71,16 @@ class Story < ActiveRecord::Base
 
   def split current_user
     begin
+      task_pushed = false
       tasks.find_all { |t| t.status != STATUS_PUSHED && t.remaining_hours != t.total_hours }.each do |t|
         #puts ">>>>#{t.description}  status #{t.status} complete? #{t.pivotal_complete?}"
         Task.create_in_pivotal self, "#{t.status == "Blocked" ? "B" : "" }#{t.remaining_hours}/#{t.remaining_hours} #{t.strip_description}" unless t.pivotal_complete?
         t.status = STATUS_PUSHED
         t.description = "X#{t.description}"
         t.update_pivotal
+        task_pushed = true
       end
-      self.add_pivotal_comment I18n.t('story.split_comment', :user => current_user.full_name)
+      self.add_pivotal_comment I18n.t('story.split_comment', :user => current_user.full_name) if task_pushed
       "OK"
     rescue Exceptions::PivotalActionFailed => e
       e.message
