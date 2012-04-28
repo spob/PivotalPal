@@ -110,7 +110,7 @@ body > #main-container {
   padding: 16px;
 }
 header {
-  background: transparent url('/images/global/bg-tile.jpg') repeat-x top left;
+  background: transparent url(<%= asset_path 'global/bg-tile.jpg' %>) repeat-x top left;
   color: #FAFAFA;
 }
 #header-top-row {
@@ -121,7 +121,7 @@ header .inner {
   height: 200px;
 }
 #nameplate {
-  background: url('/images/global/nameplate.png') no-repeat scroll top left;
+  background: url(<%= asset_path 'global/nameplate.png' %>) no-repeat scroll top left;
   text-indent: -3000px;
   margin: 6px 0 0 0;
 }
