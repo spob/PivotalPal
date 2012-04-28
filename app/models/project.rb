@@ -10,6 +10,7 @@ class Project < ActiveRecord::Base
     new_record?
   end
 
+
   belongs_to :tenant, :counter_cache => true
   belongs_to :master_project, :class_name => "Project", :foreign_key => :master_project_id, :counter_cache => :linked_projects_count
   has_many :user_projects, :dependent => :destroy
@@ -185,10 +186,10 @@ class Project < ActiveRecord::Base
       GC.disable
 
       begin
-        walk_stories_to_renumber Hpricot(response.body), 'feature' if self.renumber_features
-        walk_stories_to_renumber Hpricot(response.body), 'chore' if self.renumber_chores
-        walk_stories_to_renumber Hpricot(response.body), 'release' if self.renumber_releases
-        walk_stories_to_renumber Hpricot(response.body), 'bug' if self.renumber_bugs
+        walk_stories_to_renumber Hpricot(response.body), 'feature' if self.renumber_features == Constants::RENUMBER_NO
+        walk_stories_to_renumber Hpricot(response.body), 'chore' if self.renumber_chores == Constants::RENUMBER_NO
+        walk_stories_to_renumber Hpricot(response.body), 'release' if self.renumber_releases == Constants::RENUMBER_NO
+        walk_stories_to_renumber Hpricot(response.body), 'bug' if self.renumber_bugs == Constants::RENUMBER_NO
       ensure
         GC.enable
       end

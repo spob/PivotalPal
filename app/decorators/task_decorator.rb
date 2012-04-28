@@ -2,7 +2,7 @@ class TaskDecorator < ApplicationDecorator
   decorates :task
 
   def display_description
-    h.strike_text(model.description, model.status == STATUS_PUSHED)
+    h.strike_text(model.description, model.status == Constants::STATUS_PUSHED)
   end
 
   def display_status
@@ -52,14 +52,14 @@ class TaskDecorator < ApplicationDecorator
 
   def task_estimate_for_day estimate
     #puts "#{estimate ? "not null" : "nil"}::#{estimate} #{estimate.try(:status)}"
-    (estimate && estimate.status != STATUS_PUSHED ? '%.2f' % estimate.remaining_hours : "-")
+    (estimate && estimate.status != Constants::STATUS_PUSHED ? '%.2f' % estimate.remaining_hours : "-")
   end
 
 
   def cell_color_by_hours estimate, task=estimate.task, story=estimate.task.story
     if estimate && ((estimate.total_hours > 0.0 && estimate.remaining_hours != estimate.total_hours) ||
-        story.status == STATUS_ACCEPTED || estimate.status == "Blocked") && task.status != STATUS_PUSHED
-      if estimate.remaining_hours == 0.0 && task.status != STATUS_PUSHED
+        story.status == Constants::STATUS_ACCEPTED || estimate.status == "Blocked") && task.status != Constants::STATUS_PUSHED
+      if estimate.remaining_hours == 0.0 && task.status != Constants::STATUS_PUSHED
         "#B2EDAF"
       elsif estimate.status == "Blocked"
         "#FF7373"

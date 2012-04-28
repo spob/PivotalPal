@@ -107,11 +107,11 @@ class IterationDecorator < ApplicationDecorator
 
   def task_count_by_status status
     case status
-      when STATUS_FINISHED then
+      when Constants::STATUS_FINISHED then
         model.all_tasks.find_all { |t| t.remaining_hours == 0 && t.total_hours > 0 }.size
-      when STATUS_STARTED then
+      when Constants::STATUS_STARTED then
         model.all_tasks.find_all { |t| t.remaining_hours < t.total_hours && t.total_hours > 0 }.size
-      when STATUS_NOT_STARTED then
+      when Constants::STATUS_NOT_STARTED then
         model.all_tasks.find_all { |t| t.remaining_hours == t.total_hours && t.total_hours > 0 }.size
     end
   end
@@ -127,19 +127,19 @@ class IterationDecorator < ApplicationDecorator
   def sort_by_status stories
     stories.sort_by do |s|
       case s.status
-        when STATUS_ACCEPTED then
+        when Constants::STATUS_ACCEPTED then
           1000 + (s.sort ? s.sort : 0)
-        when STATUS_DELIVERED then
+        when Constants::STATUS_DELIVERED then
           2000 + (s.sort ? s.sort : 0)
-        when STATUS_FINISHED then
+        when Constants::STATUS_FINISHED then
           3000 + (s.sort ? s.sort : 0)
-        when STATUS_REJECTED then
+        when Constants::STATUS_REJECTED then
           4000 + (s.sort ? s.sort : 0)
-        when STATUS_STARTED then
+        when Constants::STATUS_STARTED then
           5000 + (s.sort ? s.sort : 0)
-        when STATUS_NOT_STARTED then
+        when Constants::STATUS_NOT_STARTED then
           6000 + (s.sort ? s.sort : 0)
-        when STATUS_PUSHED then
+        when Constants::STATUS_PUSHED then
           7000 + (s.sort ? s.sort : 0)
       end
     end
