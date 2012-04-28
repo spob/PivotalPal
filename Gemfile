@@ -14,7 +14,8 @@ gem "friendly_id", "~> 4.0.0.beta14"
 gem "hpricot", "~> 0.8.4"
 gem 'jquery-rails'
 gem 'kaminari', '~> 0.12.0'
-# gem "less-rails", "~> 2.2.2"
+gem "less-rails", "~> 2.2.2"
+gem "therubyracer", :require => 'v8'
 gem 'mail', '~> 2.3.0'
 gem "squeel"
 gem 'mysql2', '~> 0.3.0'
