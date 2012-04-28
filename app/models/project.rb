@@ -130,7 +130,7 @@ class Project < ActiveRecord::Base
   def calc_status(complete, remaining_hours, total_hours, description)
     status = "Not Started"
     if description =~ /^x/ix
-      status = STATUS_PUSHED
+      status = Constants::STATUS_PUSHED
     elsif description =~ /^b/ix
       status = "Blocked"
     elsif complete || (total_hours > 0.0 && remaining_hours == 0.0)
@@ -286,7 +286,7 @@ class Project < ActiveRecord::Base
           @iteration.start_on = start_on
           @iteration.end_on = end_on
           @iteration.stories.each do |s|
-            s.status = STATUS_PUSHED
+            s.status = Constants::STATUS_PUSHED
             s.points = 0
           end
         else
@@ -308,7 +308,7 @@ class Project < ActiveRecord::Base
             @story.sort = n
 
             @story.tasks.each do |t|
-              t.status = STATUS_PUSHED
+              t.status = Constants::STATUS_PUSHED
               t.remaining_hours = 0.0
             end
           else
@@ -331,7 +331,7 @@ class Project < ActiveRecord::Base
             (tasks/"task").each do |task|
               pivotal_id = task.at('id').inner_html.to_i
               @task = @story.tasks.find_all { |t| t.pivotal_identifier == pivotal_id }.first
-              completed = (task.at('complete').inner_html == "true" || @story.status == STATUS_ACCEPTED || @story.status == STATUS_PUSHED)
+              completed = (task.at('complete').inner_html == "true" || @story.status == Constants::STATUS_ACCEPTED || @story.status == Constants::STATUS_PUSHED)
               total_hours, remaining_hours, description, is_qa = Task.parse_hours(task.at('description').inner_html, completed)
 #              puts "#{description}, QA: #{is_qa}" if is_qa
               status = calc_status(completed, remaining_hours, total_hours, description)
@@ -356,7 +356,7 @@ class Project < ActiveRecord::Base
             end
           end
 
-          @story.tasks.find_all { |t| t.status == STATUS_PUSHED }.each do |t|
+          @story.tasks.find_all { |t| t.status == Constants::STATUS_PUSHED }.each do |t|
             update_task_estimate(t, @iteration)
           end
 
@@ -377,9 +377,9 @@ class Project < ActiveRecord::Base
                                                      :velocity => @iteration.try(:total_points))
           end
         end
-        @iteration.stories.find_all { |s| s.status == STATUS_PUSHED }.each do |s|
+        @iteration.stories.find_all { |s| s.status == Constants::STATUS_PUSHED }.each do |s|
           s.tasks.each do |t|
-            t.status = STATUS_PUSHED
+            t.status = Constants::STATUS_PUSHED
             t.remaining_hours = 0.0
             update_task_estimate(t, @iteration)
           end
