@@ -66,7 +66,7 @@ class Story < ActiveRecord::Base
   def self.update_pivotal project, pivotal_identifier, params
     body = build_body(params)
     uri = "http://www.pivotaltracker.com/services/v3/projects/#{project.pivotal_identifier}/stories/#{pivotal_identifier}"
-    call_pivotal_rest project, body, uri, :update
+    project.call_pivotal_rest body, uri, :update
   end
 
   def split current_user

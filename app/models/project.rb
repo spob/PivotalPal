@@ -173,6 +173,14 @@ class Project < ActiveRecord::Base
 #    the_date
   end
 
+  def renumber_by_story_type(doc, story_type, renumber_mode)
+    if renumber_mode == Constants::RENUMBER_BY_PIVOTALPAL
+      walk_stories_to_renumber doc, story_type
+    elsif renumber_mode == Constants::RENUMBER_BY_JIRA
+      walk_stories_to_renumber_to_jira doc, story_type
+    end
+  end
+
 
   def renumber
     logger.info("renumber for project #{id}")
@@ -186,10 +194,10 @@ class Project < ActiveRecord::Base
       GC.disable
 
       begin
-        walk_stories_to_renumber Hpricot(response.body), 'feature' if self.renumber_features == Constants::RENUMBER_NO
-        walk_stories_to_renumber Hpricot(response.body), 'chore' if self.renumber_chores == Constants::RENUMBER_NO
-        walk_stories_to_renumber Hpricot(response.body), 'release' if self.renumber_releases == Constants::RENUMBER_NO
-        walk_stories_to_renumber Hpricot(response.body), 'bug' if self.renumber_bugs == Constants::RENUMBER_NO
+        renumber_by_story_type Hpricot(response.body), 'feature', self.renumber_features
+        renumber_by_story_type Hpricot(response.body), 'chore', self.renumber_chores
+        renumber_by_story_type Hpricot(response.body), 'bug', self.renumber_bugs
+        renumber_by_story_type Hpricot(response.body), 'release', self.renumber_releases
       ensure
         GC.enable
       end
@@ -222,13 +230,25 @@ class Project < ActiveRecord::Base
     end
     next_story = next_story_number numbered_stories
     unnumbered_stories.each do |_story|
-      Story.update_pivotal(self, _story[0], name => "#{story_prefix(story_type)}#{next_story}: #{_story[1]}")
+      Story.update_pivotal(self, _story[0], :name => "#{story_prefix(story_type)}#{next_story}: #{_story[1]}")
       next_story = next_story_number(numbered_stories, next_story + 1)
     end
   end
 
+  def walk_stories_to_renumber_to_jira doc, story_type
+    (doc/"story").each do |story|
+      id = story.at('id').try(:inner_html)
+      name = story.at('name').try(:inner_html)
+      _story_type = story.at('story_type').try(:inner_html)
+      _jira_number = story.at('jira_id').try(:inner_html)
+      if _story_type == story_type and _jira_number && !(name =~ /^#{_jira_number}/)
+        Story.update_pivotal(self, id, :name => "#{_jira_number}: #{name}")
+      end
+    end
+  end
+
   def self.last_read(limit, user)
-    projects = Project.joins("LEFT OUTER JOIN user_projects ON user_projects.project_id = projects.id and user_projects.user_id = #{user.id}").where(:tenant_id => user.tenant.id).order('user_projects.read_at').order(:name).limit(limit).sort_by{|p| p.name}
+    projects = Project.joins("LEFT OUTER JOIN user_projects ON user_projects.project_id = projects.id and user_projects.user_id = #{user.id}").where(:tenant_id => user.tenant.id).order('user_projects.read_at').order(:name).limit(limit).sort_by { |p| p.name }
   end
 
   def touch_user_project user
@@ -305,6 +325,7 @@ class Project < ActiveRecord::Base
             @story.body = story.at('description').try(:inner_html)
             @story.owner = story.at('owned_by').try(:inner_html)
             @story.story_type = story.at('story_type').inner_html
+            @story.jira_number = story.at('jira_id').try(:inner_html)
             @story.sort = n
 
             @story.tasks.each do |t|
