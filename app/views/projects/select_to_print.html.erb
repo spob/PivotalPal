@@ -10,8 +10,7 @@
     <%= radio_button_tag "story_state", "done", cookies[:story_state] == "done",
                                            html_options = {:onchange => 'document.search.submit();'} %>Done
 <% end %>
-
-<% form_tag print_project_path(:format => :pdf), :method => :post do %>
+<%= form_tag print_project_path(:format => :pdf), :method => :post do %>
     <%= submit_tag "Create Story Cards" %>
     <!--<%= hidden_field_tag(:card_request_id, @card_request.id) %>-->
     <table>
