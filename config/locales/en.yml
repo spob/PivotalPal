@@ -40,7 +40,7 @@ en:
   story:
     not_owned: not owned
     owned_by: owned by
-    split: Story "%{story}" split
+    split: Story "%{story}" successfully split. Refresh the project to see the changes.
     split_failed: Splitting Story "%{story}" failed, internal error %{error}
     split_comment: Story split by %{user}
 

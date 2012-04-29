@@ -10,6 +10,7 @@ class Project < ActiveRecord::Base
     new_record?
   end
 
+
   belongs_to :tenant, :counter_cache => true
   belongs_to :master_project, :class_name => "Project", :foreign_key => :master_project_id, :counter_cache => :linked_projects_count
   has_many :user_projects, :dependent => :destroy
@@ -129,7 +130,7 @@ class Project < ActiveRecord::Base
   def calc_status(complete, remaining_hours, total_hours, description)
     status = "Not Started"
     if description =~ /^x/ix
-      status = STATUS_PUSHED
+      status = Constants::STATUS_PUSHED
     elsif description =~ /^b/ix
       status = "Blocked"
     elsif complete || (total_hours > 0.0 && remaining_hours == 0.0)
@@ -172,6 +173,14 @@ class Project < ActiveRecord::Base
 #    the_date
   end
 
+  def renumber_by_story_type(doc, story_type, renumber_mode)
+    if renumber_mode == Constants::RENUMBER_BY_PIVOTALPAL
+      walk_stories_to_renumber doc, story_type
+    elsif renumber_mode == Constants::RENUMBER_BY_JIRA
+      walk_stories_to_renumber_to_jira doc, story_type
+    end
+  end
+
 
   def renumber
     logger.info("renumber for project #{id}")
@@ -185,10 +194,10 @@ class Project < ActiveRecord::Base
       GC.disable
 
       begin
-        walk_stories_to_renumber Hpricot(response.body), 'feature' if self.renumber_features
-        walk_stories_to_renumber Hpricot(response.body), 'chore' if self.renumber_chores
-        walk_stories_to_renumber Hpricot(response.body), 'release' if self.renumber_releases
-        walk_stories_to_renumber Hpricot(response.body), 'bug' if self.renumber_bugs
+        renumber_by_story_type Hpricot(response.body), 'feature', self.renumber_features
+        renumber_by_story_type Hpricot(response.body), 'chore', self.renumber_chores
+        renumber_by_story_type Hpricot(response.body), 'bug', self.renumber_bugs
+        renumber_by_story_type Hpricot(response.body), 'release', self.renumber_releases
       ensure
         GC.enable
       end
@@ -221,13 +230,25 @@ class Project < ActiveRecord::Base
     end
     next_story = next_story_number numbered_stories
     unnumbered_stories.each do |_story|
-      Story.update_pivotal(self, _story[0], name => "#{story_prefix(story_type)}#{next_story}: #{_story[1]}")
+      Story.update_pivotal(self, _story[0], :name => "#{story_prefix(story_type)}#{next_story}: #{_story[1]}")
       next_story = next_story_number(numbered_stories, next_story + 1)
     end
   end
 
+  def walk_stories_to_renumber_to_jira doc, story_type
+    (doc/"story").each do |story|
+      id = story.at('id').try(:inner_html)
+      name = story.at('name').try(:inner_html)
+      _story_type = story.at('story_type').try(:inner_html)
+      _jira_number = story.at('jira_id').try(:inner_html)
+      if _story_type == story_type and _jira_number && !(name =~ /^#{_jira_number}/)
+        Story.update_pivotal(self, id, :name => "#{_jira_number}: #{name}")
+      end
+    end
+  end
+
   def self.last_read(limit, user)
-    projects = Project.joins("LEFT OUTER JOIN user_projects ON user_projects.project_id = projects.id and user_projects.user_id = #{user.id}").where(:tenant_id => user.tenant.id).order('user_projects.read_at').order(:name).limit(limit).sort_by{|p| p.name}
+    projects = Project.joins("LEFT OUTER JOIN user_projects ON user_projects.project_id = projects.id and user_projects.user_id = #{user.id}").where(:tenant_id => user.tenant.id).order('user_projects.read_at').order(:name).limit(limit).sort_by { |p| p.name }
   end
 
   def touch_user_project user
@@ -285,7 +306,7 @@ class Project < ActiveRecord::Base
           @iteration.start_on = start_on
           @iteration.end_on = end_on
           @iteration.stories.each do |s|
-            s.status = STATUS_PUSHED
+            s.status = Constants::STATUS_PUSHED
             s.points = 0
           end
         else
@@ -304,10 +325,11 @@ class Project < ActiveRecord::Base
             @story.body = story.at('description').try(:inner_html)
             @story.owner = story.at('owned_by').try(:inner_html)
             @story.story_type = story.at('story_type').inner_html
+            @story.jira_number = story.at('jira_id').try(:inner_html)
             @story.sort = n
 
             @story.tasks.each do |t|
-              t.status = STATUS_PUSHED
+              t.status = Constants::STATUS_PUSHED
               t.remaining_hours = 0.0
             end
           else
@@ -330,7 +352,7 @@ class Project < ActiveRecord::Base
             (tasks/"task").each do |task|
               pivotal_id = task.at('id').inner_html.to_i
               @task = @story.tasks.find_all { |t| t.pivotal_identifier == pivotal_id }.first
-              completed = (task.at('complete').inner_html == "true" || @story.status == STATUS_ACCEPTED || @story.status == STATUS_PUSHED)
+              completed = (task.at('complete').inner_html == "true" || @story.status == Constants::STATUS_ACCEPTED || @story.status == Constants::STATUS_PUSHED)
               total_hours, remaining_hours, description, is_qa = Task.parse_hours(task.at('description').inner_html, completed)
 #              puts "#{description}, QA: #{is_qa}" if is_qa
               status = calc_status(completed, remaining_hours, total_hours, description)
@@ -355,7 +377,7 @@ class Project < ActiveRecord::Base
             end
           end
 
-          @story.tasks.find_all { |t| t.status == STATUS_PUSHED }.each do |t|
+          @story.tasks.find_all { |t| t.status == Constants::STATUS_PUSHED }.each do |t|
             update_task_estimate(t, @iteration)
           end
 
@@ -376,9 +398,9 @@ class Project < ActiveRecord::Base
                                                      :velocity => @iteration.try(:total_points))
           end
         end
-        @iteration.stories.find_all { |s| s.status == STATUS_PUSHED }.each do |s|
+        @iteration.stories.find_all { |s| s.status == Constants::STATUS_PUSHED }.each do |s|
           s.tasks.each do |t|
-            t.status = STATUS_PUSHED
+            t.status = Constants::STATUS_PUSHED
             t.remaining_hours = 0.0
             update_task_estimate(t, @iteration)
           end

@@ -13,7 +13,7 @@
   display: none;
 }
 .box .content .separator {
-  background: url(/images/global/tables/separator.png) repeat-x center center;
+  background: url(<%= asset_path 'global/tables/separator.png' %>) repeat-x center center;
 }
 .box .content.padding {
   padding: 20px;
@@ -26,7 +26,7 @@
   -webkit-border-top-left-radius: 3px;
   -moz-border-radius-topleft: 3px;
   -moz-border-radius-topright: 3px;
-  background-image: url(/images/global/tables/bg_box.png);
+  background-image: url(<%= asset_path 'global/tables/bg_box.png' %>);
 }
 .box.hidden .header {
   border-radius: 3px;
@@ -45,7 +45,7 @@
   margin-right: 20px;
   width: 25px;
   height: 20px;
-  background-image: url(/images/global/tables/draggable.png);
+  background-image: url(<%= asset_path 'global/tables/draggable.png' %>);
   float: right;
   cursor: move;
   text-indent: -3000px;
@@ -55,7 +55,7 @@
   margin-top: 6px;
   margin-right: 10px;
   width: 20px;
-  background-image: url(/images/global/tables/toggle.png);
+  background-image: url(<%= asset_path 'global/tables/toggle.png' %>);
   background-repeat: no-repeat;
   float: right;
   cursor: pointer;
@@ -63,10 +63,10 @@
   height: 22px;
 }
 .box .header .toggle:hover {
-  background-image: url(/images/global/tables/toggle_hover.png);
+  background-image: url(<%= asset_path 'global/tables/toggle_hover.png' %>);
 }
 .box .header .toggle:focus {
-  background-image: url(/images/global/tables/toggle_hover.png);
+  background-image: url( <%= asset_path 'global/tables/toggle_hover.png' %>);
 }
 table {
   width: 100%;
@@ -176,7 +176,7 @@ table th.middle {
   border-radius: 4px;
   -webkit-border-radius: 4px;
   color: #393939;
-  background: url(/images/global/tables/bg_buttonalt.png) repeat-x top;
+  background: url(<%= asset_path 'global/tables/bg_buttonalt.png' %>) repeat-x top;
   border: 1px solid #bbb;
   box-shadow: 0 1px 3px #6f6f6f;
   -webkit-box-shadow: 0 1px 3px #6f6f6f;
@@ -193,7 +193,7 @@ table th.middle {
   font-weight: 700;
   color: #FFF;
   border: 1px solid #464b4f;
-  background: url(/images/global/tables/bg_button.png) repeat-x top;
+  background: url(<%= asset_path 'global/tables/bg_button.png' %>) repeat-x top;
   -moz-border-radius: 4px;
   border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -214,7 +214,7 @@ table th.middle {
   border-radius: 4px;
   -webkit-border-radius: 4px;
   color: #393939;
-  background: url(/images/global/tables/bg_buttonalt.png) repeat-x top;
+  background: url(<%= asset_path '/global/tables/bg_buttonalt.png' %>) repeat-x top;
   border: 1px solid #bbb;
   box-shadow: 0 1px 3px #6f6f6f;
   -webkit-box-shadow: 0 1px 3px #6f6f6f;
@@ -231,7 +231,7 @@ table th.middle {
   font-weight: 700;
   color: #FFF;
   border: 1px solid #464b4f;
-  background: url(/images/global/tables/bg_button.png) repeat-x top;
+  background: url(<%= asset_path 'global/tables/bg_button.png' %>) repeat-x top;
   -moz-border-radius: 4px;
   border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -250,7 +250,7 @@ table th.middle {
   font-weight: 700;
   color: #FFF;
   border: 1px solid #464b4f;
-  background: url(/images/global/tables/bg_button.png) repeat-x top;
+  background: url(<%= asset_path 'global/tables/bg_button.png' %>) repeat-x top;
   -moz-border-radius: 4px;
   border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -269,7 +269,7 @@ table th.middle {
   font-weight: 700;
   color: #FFF;
   border: 1px solid #464b4f;
-  background: url(/images/global/tables/bg_button.png) repeat-x top;
+  background: url(<%= asset_path 'global/tables/bg_button.png' %>) repeat-x top;
   -moz-border-radius: 4px;
   border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -277,23 +277,23 @@ table th.middle {
   -webkit-box-shadow: 0 1px 3px #A7A7A7;
   -moz-box-shadow: 0 1px 3px #A7A7A7;
   text-shadow: 0 -1px 0 #252628;
-  background-image: url(/images/global/tables/bg_button_hover.png);
+  background-image: url(<%= asset_path 'global/tables/bg_button_hover.png' %>);
   padding: 0 6px;
 }
 .paginate_disabled_previous:hover {
-  background-image: url(/images/global/tables/bg_buttonalt_hover.png);
+  background-image: url(<%= asset_path 'global/tables/bg_buttonalt_hover.png' %>);
 }
 .paginate_enabled_previous:hover {
-  background-image: url(/images/global/tables/bg_button_hover.png);
+  background-image: url(<%= asset_path 'global/tables/bg_button_hover.png' %>);
 }
 .paginate_disabled_next:hover {
-  background-image: url(/images/global/tables/bg_buttonalt_hover.png);
+  background-image: url(<%= asset_path 'global/tables/bg_buttonalt_hover.png' %>);
 }
 .paginate_enabled_next:hover {
-  background-image: url(/images/global/tables/bg_button_hover.png);
+  background-image: url(<%= asset_path 'global/tables/bg_button_hover.png' %>);
 }
 .paginate_button:hover {
-  background-image: url(/images/global/tables/bg_button_hover.png);
+  background-image: url(<%= asset_path 'global/tables/bg_button_hover.png' %>);
 }
 .paginate_disabled_previous:before {
   content: "<";

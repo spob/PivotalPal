@@ -10,20 +10,20 @@ class StoryDecorator < ApplicationDecorator
   end
 
   def split_link
-    h.link_to("split", h.split_story_path(model), :method => :post) if h.can?(:split, model) && [STATUS_STARTED, STATUS_FINISHED, STATUS_REJECTED].index(self.status)
+    h.link_to("split", h.split_story_path(model), :method => :post) if h.can?(:split, model) && [Constants::STATUS_STARTED, Constants::STATUS_FINISHED, Constants::STATUS_REJECTED].index(self.status)
   end
 
   def cell_color_by_story_status
     case model.status
-      when STATUS_ACCEPTED then
+      when Constants::STATUS_ACCEPTED then
         "#B2EDAF"
-      when STATUS_DELIVERED then
+      when Constants::STATUS_DELIVERED then
         "#66CCFF"
-      when STATUS_FINISHED then
+      when Constants::STATUS_FINISHED then
         "#FFCC33"
-      when STATUS_REJECTED then
+      when Constants::STATUS_REJECTED then
         "#FF7373"
-      when STATUS_STARTED then
+      when Constants::STATUS_STARTED then
         "#F5F4AB"
       else
         "grey"

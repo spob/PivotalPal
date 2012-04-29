@@ -19,19 +19,19 @@ class Story < ActiveRecord::Base
   validates_length_of :name, :maximum => 200, :allow_blank => true
   validates_length_of :owner, :maximum => 50, :allow_blank => true
 
-  scope :accepted, where(:status => STATUS_ACCEPTED)
-  scope :pushed, where(:status => STATUS_PUSHED)
+  scope :accepted, where(:status => Constants::STATUS_ACCEPTED)
+  scope :pushed, where(:status => Constants::STATUS_PUSHED)
   scope :pointed, where({:points => 0})
   scope :conditional_pushed, lambda { |param| return where("") if param.nil? or param == "Y"
-  where { {status.not_eq => STATUS_PUSHED} }
+  where { {status.not_eq => Constants::STATUS_PUSHED} }
   }
   scope :conditional_not_accepted, lambda { |param| return where("") if param.nil? or param == "Y"
-  where { {status.not_eq => STATUS_ACCEPTED} }
+  where { {status.not_eq => Constants::STATUS_ACCEPTED} }
   }
 
   def tasks_conditional_pushed(flag)
     return self.tasks if flag.nil? or flag == "Y"
-    self.tasks.find_all { |t| t.status != STATUS_PUSHED }
+    self.tasks.find_all { |t| t.status != Constants::STATUS_PUSHED }
   end
 
   def tasks_by_status v_status
@@ -66,16 +66,16 @@ class Story < ActiveRecord::Base
   def self.update_pivotal project, pivotal_identifier, params
     body = build_body(params)
     uri = "http://www.pivotaltracker.com/services/v3/projects/#{project.pivotal_identifier}/stories/#{pivotal_identifier}"
-    call_pivotal_rest project, body, uri, :update
+    project.call_pivotal_rest body, uri, :update
   end
 
   def split current_user
     begin
       task_pushed = false
-      tasks.find_all { |t| t.status != STATUS_PUSHED && t.remaining_hours != t.total_hours }.each do |t|
+      tasks.find_all { |t| t.status != Constants::STATUS_PUSHED && t.remaining_hours != t.total_hours }.each do |t|
         #puts ">>>>#{t.description}  status #{t.status} complete? #{t.pivotal_complete?}"
         Task.create_in_pivotal self, "#{t.status == "Blocked" ? "B" : "" }#{t.remaining_hours}/#{t.remaining_hours} #{t.strip_description}" unless t.pivotal_complete?
-        t.status = STATUS_PUSHED
+        t.status = Constants::STATUS_PUSHED
         t.description = "X#{t.description}"
         t.update_pivotal
         task_pushed = true
@@ -163,11 +163,11 @@ class Story < ActiveRecord::Base
 
   def current_status
     case self.status
-      when STATUS_STARTED
+      when Constants::STATUS_STARTED
       then
-        STATUS_STARTED
+        Constants::STATUS_STARTED
       else
-        STATUS_NOT_STARTED
+        Constants::STATUS_NOT_STARTED
     end
   end
 end

@@ -60,7 +60,7 @@ class Iteration < ActiveRecord::Base
 
   def total_hours
 #    self.tasks.not_pushed.sum('total_hours')
-    self.all_tasks.find_all { |t| t.status != STATUS_PUSHED }.inject(0.0) { |hours, t| hours + t.total_hours }
+    self.all_tasks.find_all { |t| t.status != Constants::STATUS_PUSHED }.inject(0.0) { |hours, t| hours + t.total_hours }
   end
 
   def remaining_hours
@@ -80,7 +80,7 @@ class Iteration < ActiveRecord::Base
 
   def total_points_delivered
 #    self.stories.accepted.sum('points')
-    self.stories.find_all { |s| s.status == STATUS_ACCEPTED && s.points }.inject(0) { |points, s| points + s.points }
+    self.stories.find_all { |s| s.status == Constants::STATUS_ACCEPTED && s.points }.inject(0) { |points, s| points + s.points }
   end
 
   def calc_date day_num
@@ -132,10 +132,10 @@ class Iteration < ActiveRecord::Base
   def stories_filtered(not_accepted_flag, pushed_flag)
     _stories = self.stories
     unless not_accepted_flag.nil? or not_accepted_flag == "Y"
-      _stories = _stories.find_all { |s| s.status != STATUS_ACCEPTED }
+      _stories = _stories.find_all { |s| s.status != Constants::STATUS_ACCEPTED }
     end
     unless pushed_flag.nil? or pushed_flag == "Y"
-      _stories = _stories.find_all { |s| s.status != STATUS_PUSHED }
+      _stories = _stories.find_all { |s| s.status != Constants::STATUS_PUSHED }
     end
     _stories
   end
