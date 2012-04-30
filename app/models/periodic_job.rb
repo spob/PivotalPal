@@ -157,9 +157,9 @@ class PeriodicJob < ActiveRecord::Base
 
   def self.find_by_name_or_create(arg)
     if arg.is_a? String
-      where(:next_run_at ^ nil, :name >> arg).first
+      where(:next_run_at.not_eq => nil, :name.eq => arg).first
     elsif arg.is_a? Hash
-      where(:next_run_at ^ nil, :name >> arg[:name]).first || create(arg)
+      where(:next_run_at.not_eq => nil, :name.eq => arg[:name]).first || create(arg)
     end
   end
 
