@@ -1,6 +1,6 @@
 <% title "Invite User to #{current_user.tenant.name}" %>
 
-<% form_for(@user, :url => org_users_path(@user)) do |f| %>
+<%= form_for(@user, :url => org_users_path(@user)) do |f| %>
 
     <% if @user.errors.any? %>
         <div id="error_explanation">
