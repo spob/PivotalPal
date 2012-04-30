@@ -61,13 +61,13 @@
           <ul id="global-navbar">
             <% if user_signed_in? %>
                 <li><%= link_to_unless_current "Projects", projects_path %></li>
-                <% if current_user.role? ROLE_ADMIN %>
+                <% if current_user.role? Constants::ROLE_ADMIN %>
                     <li><%= link_to_unless_current "Users", users_path %></li>
                     <% if can? :update, current_user.tenant %>
                         <li><%= link_to_unless_current "Company Info", edit_tenant_path(current_user.tenant) %></li>
                     <% end %>
                 <% end %>
-                <% if current_user.role? ROLE_SUPERUSER %>
+                <% if current_user.role? Constants::ROLE_SUPERUSER %>
                     <% if can? :manage, User %>
                         <li><%= link_to_unless_current "All Users", super_users_path %></li>
                     <% end %>

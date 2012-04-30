@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable,
          :timeoutable, :lockable
 
-  ROLES = [ROLE_SUPERUSER, ROLE_ADMIN]
+  ROLES = [Constants::ROLE_SUPERUSER, Constants::ROLE_ADMIN]
 
   before_validation :strip_company_name
   before_update :create_logon, :create_tenant

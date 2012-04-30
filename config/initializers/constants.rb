@@ -13,4 +13,8 @@ class Constants
   RENUMBER_BY_PIVOTALPAL = 1
   RENUMBER_BY_JIRA = 2
 
+
+  # Roles
+  ROLE_SUPERUSER = 'superuser'
+  ROLE_ADMIN = 'admin'
 end
