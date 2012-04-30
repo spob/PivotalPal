@@ -299,6 +299,8 @@ class Project < ActiveRecord::Base
       (doc/"iteration").each do |iteration|
         iteration_number = iteration.at('id').inner_html.to_i
 
+        # Bug in the pivotal api by which sometimes fetching the current sprint returns the last one. So return two sprints
+        # and search for the right sprint number
         if (iteration_number == current_iteration_number)
 #        start_on = iteration.at('start').inner_html.to_date
 #        iteration_number = iteration_number - 1 if iteration_number > 1 && Project.calculate_project_date < start_on
