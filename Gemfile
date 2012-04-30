@@ -51,6 +51,7 @@ end
 # and rake tasks are available in development mode:
 group :development do
   gem 'wirble'
+  gem 'capistrano'
   gem "query_tracer", "~> 0.0.4"
   gem 'whenever', :require => false
   gem 'factory_girl_rails'
