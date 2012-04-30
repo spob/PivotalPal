@@ -58,4 +58,22 @@ PivotalPal::Application.configure do
 
   # Generate digests for assets URLs
   config.assets.digest = true
+
+  # Don't care if the mailer can't send
+  config.action_mailer.raise_delivery_errors = true
+
+  # Only use best-standards-support built into browsers
+  config.action_dispatch.best_standards_support = :builtin
+
+  config.action_mailer.default_url_options = {:host => 'pivotalpal.sturim.org'}
+
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+      :address => "smtp.gmail.com",
+      :port => 587,
+      :domain => 'sturim.org',
+      :user_name => 'pivotalpal@sturim.org',
+      :password => 'P1votalP@l',
+      :authentication => 'plain',
+      :enable_starttls_auto => true}
 end
