@@ -22,7 +22,8 @@ role :db,  "pivotalpal.sturim.org", :primary => true # This is where Rails migra
 after "deploy", "deploy:bundle_gems"
 after "deploy:bundle_gems", "deploy:migrate"
 after "deploy:migrate", "deploy:cleanup"
-after "deploy:cleanup", "deploy:restart"
+after "deploy:cleanup", "deploy:precompile"
+after "deploy:precompile", "deploy:restart"
 
 # If you are using Passenger mod_rails uncomment this:
 namespace :deploy do
@@ -31,7 +32,12 @@ namespace :deploy do
      run "ln -nfs #{shared_path}/gems #{current_path}/vendor/bundle"
      run "cd #{deploy_to}/current && bundle install --deployment"
    end
+   task :precompile do
+     #load 'deploy/assets'
+    run "cd #{deploy_to}/current && rake assets:precompile"
+   end
    task :migrate do
+     run "cp #{shared_path}/config.rb #{current_path}/config/initializers/config.rb"
      run "cp #{shared_path}/database.yml #{current_path}/config/database.yml"
      run "cd #{deploy_to}/current && rake db:migrate"
    end
