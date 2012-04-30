@@ -90,7 +90,7 @@ class User < ActiveRecord::Base
       self.company_name = nil
       self.api_key = nil
       # set the user to be the admin for that org
-      self.roles_mask = 2**ROLES.index(ROLE_ADMIN)
+      self.roles_mask = 2**ROLES.index(Constant::ROLE_ADMIN)
     end
   end
 
