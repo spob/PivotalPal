@@ -68,9 +68,9 @@ class Project < ActiveRecord::Base
       self.last_synced_at = Time.now
     rescue Exceptions::PivotalActionFailed => e
       self.sync_status = I18n.t('project.id_not_found', :pivotal_identifier => self.pivotal_identifier)
-      self.next_sync_at = self.tenant.refresh_frequency_hours.hours.since
     ensure
       GC.enable
+      self.next_sync_at = self.tenant.refresh_frequency_hours.hours.since
     end
     save
     self.sync_status
