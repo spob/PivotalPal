@@ -17,4 +17,14 @@ class ApplicationController < ActionController::Base
   def set_timezone
     Time.zone = current_user.try(:time_zone) || 'Eastern Time (US & Canada)'
   end
+
+  def after_sign_in_path_for(resource)
+    puts("=============================================")
+    projects = Project.last_read(1, current_user)
+    if resource.is_a?(User) && !projects.empty?
+      project_path(projects.first)
+    else
+      super
+    end
+  end
 end

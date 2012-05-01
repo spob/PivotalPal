@@ -69,13 +69,6 @@ class User < ActiveRecord::Base
     r
   end
 
-  def years_tenure
-    if self.hired_at
-      years = (Date.today.jd - self.hired_at.jd)/365
-      (years < 0 ? 0 : years)
-    end
-  end
-
   protected
 
   def need_tenant?

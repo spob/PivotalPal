@@ -1,7 +1,7 @@
 <!--Rich, I know we won't want this here permanently, but this is to show how we could use this to create tabs for the
 last x projects the user has accessed-->
 <% Project.last_read(6, current_user).each do |project| %>
-    <%= link_to project.name, project_path(project) %>&nbsp;&nbsp;&nbsp;
+    <%= link_to_unless_current project.name, project_path(project) %>&nbsp;&nbsp;&nbsp;
 <% end %>
 
 <% title "Project #{@project.name}, Iteration #{@iteration.iteration_number}" %>
