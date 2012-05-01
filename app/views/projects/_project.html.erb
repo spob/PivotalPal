@@ -1,19 +1,12 @@
 <tr>
-  <td><%= project.name %></td>
+  <td><%= link_to_if(project.latest_iteration.present?, project.name, project_path(project)) %></td>
   <td><%= link_to project.pivotal_identifier, "https://www.pivotaltracker.com/projects/#{project.pivotal_identifier}", :target => "_blank" %></td>
   <td><%= l(project.last_synced_at) if project.last_synced_at %></td>
   <td><%= l(project.next_sync_at) if project.next_sync_at %></td>
   <td><%= project.sync_status %></td>
   <td>
-    <%= show_link project if project.latest_iteration %>
-    <%= "|" if project.latest_iteration %>
-    <%= link_to 'Storyboard', storyboard_project_path(project) if project.latest_iteration %>
-    <%= edit_link project, (project.latest_iteration ? " | " : "") %>
+    <%= edit_link project %>
     <%= destroy_link project, " | " %>
-    <% if can? :refresh, project %>
-        | <%= link_to 'Refresh', refresh_project_path(project), :method => :post %>
-        | <%= link_to 'Renumber', renumber_project_path(project), :method => :post %>
-    <% end %>
     | <%= link_to 'Print Cards', select_to_print_project_path(project) %>
   </td>
 </tr>
