@@ -10,8 +10,7 @@ last x projects the user has accessed-->
 </h3>
 <br/>
 
-(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)
-| <%= link_to_unless_current 'Burndown', burndown_project_path(@project) %>
+<%= link_to_unless_current 'Burndown', burndown_project_path(@project) %>
 | <%= link_to_unless_current 'Taskboard', project_path(@project) %>
 | <%= link_to_unless_current 'Storyboard', storyboard_project_path(@project) %>
 | <%= link_to_unless_current 'Stats', stats_project_path(@project) %>

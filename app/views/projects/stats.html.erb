@@ -2,20 +2,36 @@
 
 <%= render :partial => 'navigation' %>
 <br/><br/>
+<div class="box">
+  <div class="header">
+    <h2>Project <%= @project.name %>, Iteration <%= @iteration.iteration_number %>: <%= l(@iteration.start_on) %>
+      to <%= l(@iteration.end_on) %> </h2>
+    <span class="draggable">move</span>
+    <span class="toggle">toggle</span>
+  </div>
+  <p>Synced at <%= l(@iteration.last_synced_at) if @iteration.last_synced_at %></p>
 
-<p>Synced at <%= l(@iteration.last_synced_at) if @iteration.last_synced_at %></p>
+  <p>Stories Not Started: <%= @iteration.story_count_by_status Constants::STATUS_NOT_STARTED %> </p>
 
-<p>Stories Not Started: <%= @iteration.story_count_by_status Constants::STATUS_NOT_STARTED %> </p>
-<p>Stories Started: <%= @iteration.story_count_by_status Constants::STATUS_STARTED %> </p>
-<p>Stories Rejected: <%= @iteration.story_count_by_status Constants::STATUS_REJECTED %> </p>
-<p>Stories Finished: <%= @iteration.story_count_by_status Constants::STATUS_FINISHED %> </p>
-<p>Stories Delivered: <%= @iteration.story_count_by_status Constants::STATUS_DELIVERED %> </p>
-<p>Stories Accepted: <%= @iteration.story_count_by_status Constants::STATUS_ACCEPTED %> </p>
-==============
-<p>Tasks Not Started: <%= @iteration.task_count_by_status Constants::STATUS_NOT_STARTED%></p>
-<p>Tasks Started: <%= @iteration.task_count_by_status Constants::STATUS_STARTED%></p>
-<p>Tasks Completed: <%= @iteration.task_count_by_status Constants::STATUS_FINISHED%></p>
-==============
-<p>Hours Work Completed: <%= @iteration.completed_hours %></p>
-<p>Hours Work Remaining: <%= @iteration.remaining_hours %></p>
-<p>Total Hours Work: <%= @iteration.total_hours %></p>
+  <p>Stories Started: <%= @iteration.story_count_by_status Constants::STATUS_STARTED %> </p>
+
+  <p>Stories Rejected: <%= @iteration.story_count_by_status Constants::STATUS_REJECTED %> </p>
+
+  <p>Stories Finished: <%= @iteration.story_count_by_status Constants::STATUS_FINISHED %> </p>
+
+  <p>Stories Delivered: <%= @iteration.story_count_by_status Constants::STATUS_DELIVERED %> </p>
+
+  <p>Stories Accepted: <%= @iteration.story_count_by_status Constants::STATUS_ACCEPTED %> </p>
+  ==============
+  <p>Tasks Not Started: <%= @iteration.task_count_by_status Constants::STATUS_NOT_STARTED %></p>
+
+  <p>Tasks Started: <%= @iteration.task_count_by_status Constants::STATUS_STARTED %></p>
+
+  <p>Tasks Completed: <%= @iteration.task_count_by_status Constants::STATUS_FINISHED %></p>
+  ==============
+  <p>Hours Work Completed: <%= @iteration.completed_hours %></p>
+
+  <p>Hours Work Remaining: <%= @iteration.remaining_hours %></p>
+
+  <p>Total Hours Work: <%= @iteration.total_hours %></p>
+</div>

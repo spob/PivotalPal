@@ -19,7 +19,6 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    puts("=============================================")
     projects = Project.last_read(1, current_user)
     if resource.is_a?(User) && !projects.empty?
       burndown_project_path(projects.first)
