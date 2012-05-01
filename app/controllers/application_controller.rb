@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
     puts("=============================================")
     projects = Project.last_read(1, current_user)
     if resource.is_a?(User) && !projects.empty?
-      project_path(projects.first)
+      burndown_project_path(projects.first)
     else
       super
     end
