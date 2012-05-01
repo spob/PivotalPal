@@ -7,7 +7,7 @@ class Project < ActiveRecord::Base
 
   # only create a new slug on record creation
   def should_generate_new_friendly_id?
-    new_record?
+    self.friendly_id.nil? || self.friendly_id.include?("pending") && !self.name.include?("pending")
   end
 
 
