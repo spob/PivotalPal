@@ -26,6 +26,7 @@ PivotalPal::Application.routes.draw do
   resources :profile, :only => [:edit, :update]
   resources :projects do
     member do
+      get :burndown
       post :print
       post :refresh
       post :renumber

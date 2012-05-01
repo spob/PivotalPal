@@ -1,13 +1,6 @@
 <% title "Project #{@project.name}, Iteration #{@iteration.iteration_number}" %>
 
-(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)
-| <%= link_to_unless_current 'Taskboard', project_path(@project) %>
-| <%= link_to_unless_current 'Storyboard', storyboard_project_path(@project) %>
-| <%= link_to_unless_current 'Stats', stats_project_path(@project) %>
-<% if can? :refresh_project, @project %>
-    | <%= link_to 'Refresh', refresh_project_path(@project), :method => :post %>
-    | <%= link_to 'Renumber', renumber_project_path(@project), :method => :post %>
-<% end %>
+<%= render :partial => 'navigation' %>
 <br/><br/>
 
 <p>Synced at <%= l(@iteration.last_synced_at) if @iteration.last_synced_at %></p>

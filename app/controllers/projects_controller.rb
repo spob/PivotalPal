@@ -38,6 +38,17 @@ class ProjectsController < ApplicationController
     respond_with @project
   end
 
+  def burndown
+    unless @project.latest_iteration
+      redirect_to(projects_path)
+      return
+    end
+
+    @iteration = IterationDecorator.decorate(select_iteration(@project, :iteration_id => @project.latest_iteration))
+    @project.touch_user_project(current_user)
+    respond_with @project
+  end
+
 # GET /projects/new
 # GET /projects/new.xml
   def new

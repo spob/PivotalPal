@@ -1,0 +1,26 @@
+<!--Rich, I know we won't want this here permanently, but this is to show how we could use this to create tabs for the
+last x projects the user has accessed-->
+<h3>
+  <% Project.last_read(6, current_user).each do |project| %>
+      <% if project == @project %>*<% end %>
+      <%= link_to_unless_current project.name, project_path(project) %>
+      <% if project == @project %>*<% end %>
+      &nbsp;&nbsp;&nbsp;
+  <% end %>
+</h3>
+<br/>
+
+(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)
+| <%= link_to_unless_current 'Burndown', burndown_project_path(@project) %>
+| <%= link_to_unless_current 'Taskboard', project_path(@project) %>
+| <%= link_to_unless_current 'Storyboard', storyboard_project_path(@project) %>
+| <%= link_to_unless_current 'Stats', stats_project_path(@project) %>
+<% if can? :refresh_project, @project %>
+    <!--yeah, I know this is ugly, but I wanted to hack getting the buttons aligned and I didn't want to muck up your css-->
+    <div style="text-align: right;">
+      <UL>
+        <li style="display: inline-block;"><%= button_to 'Refresh', refresh_project_path(@project), :method => :post %></li>
+        <li style="display: inline-block;"><%= button_to 'Renumber', renumber_project_path(@project), :method => :post %></li>
+      </UL>
+    </div>
+<% end %>
