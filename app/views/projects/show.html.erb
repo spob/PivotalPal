@@ -6,10 +6,20 @@ last x projects the user has accessed-->
 
 <% title "Project #{@project.name}, Iteration #{@iteration.iteration_number}" %>
 
+
+(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)
+| <%= link_to_unless_current 'Taskboard', project_path(@project) %>
+| <%= link_to_unless_current 'Storyboard', storyboard_project_path(@project) %>
+| <%= link_to_unless_current 'Stats', stats_project_path(@project) %>
+<% if can? :refresh_project, @project %>
+    | <%= link_to 'Refresh', refresh_project_path(@project), :method => :post %>
+    | <%= link_to 'Renumber', renumber_project_path(@project), :method => :post %>
+<% end %>
+
 <!-- START Burndown Chart -->
 <div class="box">
   <div class="header">
-    <h2>Burndown Chart</h2>
+    <h2>Burndown Chart for <%= @project.name %></h2>
     <span class="draggable">move</span>
     <span class="toggle">toggle</span>
   </div>
@@ -26,7 +36,7 @@ last x projects the user has accessed-->
 
 <div class="box">
   <div class="header">
-    <h2>Project NAME, Iteration NUMBER </h2>
+    <h2>Project <%= @project.name %>, Iteration <%= @iteration.iteration_number %> </h2>
     <span class="draggable">move</span>
     <span class="toggle">toggle</span>
   </div>
@@ -35,15 +45,6 @@ last x projects the user has accessed-->
   <div class="content clearfix">
     <div class="dataTables_wrapper">
       <div class="dataTables_length">
-
-        (<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)
-
-        | <%= link_to 'Storyboard', storyboard_project_path(@project) %>
-        | <%= link_to 'Stats', stats_project_path(@project) %>
-        <% if can? :refresh_project, @project %>
-            | <%= link_to 'Refresh', refresh_project_path(@project), :method => :post %>
-            | <%= link_to 'Renumber', renumber_project_path(@project), :method => :post %>
-        <% end %>
 
         <%= form_tag(project_path(@project), :id => 'select_iteration', :method => :get, :name => 'search') do -%>
             <strong>Iteration:</strong>

@@ -1,7 +1,21 @@
 <% title "Project #{@project.name}, Iteration #{@iteration.iteration_number}" %>
+<!--Rich, I know we won't want this here permanently, but this is to show how we could use this to create tabs for the
+last x projects the user has accessed-->
+<% Project.last_read(6, current_user).each do |project| %>
+    <%= link_to_unless_current project.name, storyboard_project_path(project) %>&nbsp;&nbsp;&nbsp;
+<% end %>
 
-(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)</h1>
-| <%= link_to 'Details', project_path(@project) %>
+<br />
+<br />
+(<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)
+| <%= link_to_unless_current 'Taskboard', project_path(@project) %>
+| <%= link_to_unless_current 'Storyboard', storyboard_project_path(@project) %>
+| <%= link_to_unless_current 'Stats', stats_project_path(@project) %>
+<% if can? :refresh_project, @project %>
+    | <%= link_to 'Refresh', refresh_project_path(@project), :method => :post %>
+    | <%= link_to 'Renumber', renumber_project_path(@project), :method => :post %>
+<% end %>
+<br/><br/>
 
 <table>
   <tr>

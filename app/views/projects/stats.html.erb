@@ -1,26 +1,27 @@
 <% title "Project #{@project.name}, Iteration #{@iteration.iteration_number}" %>
 
 (<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %>)
-
-| <%= link_to 'Details', project_path(@project) %>
-| <%= link_to 'Storyboard', storyboard_project_path(@project) %>
+| <%= link_to_unless_current 'Taskboard', project_path(@project) %>
+| <%= link_to_unless_current 'Storyboard', storyboard_project_path(@project) %>
+| <%= link_to_unless_current 'Stats', stats_project_path(@project) %>
 <% if can? :refresh_project, @project %>
     | <%= link_to 'Refresh', refresh_project_path(@project), :method => :post %>
     | <%= link_to 'Renumber', renumber_project_path(@project), :method => :post %>
 <% end %>
+<br/><br/>
 
 <p>Synced at <%= l(@iteration.last_synced_at) if @iteration.last_synced_at %></p>
 
-<p>Stories Not Started: <%= @iteration.story_count_by_status STATUS_NOT_STARTED %> </p>
-<p>Stories Started: <%= @iteration.story_count_by_status STATUS_STARTED %> </p>
-<p>Stories Rejected: <%= @iteration.story_count_by_status STATUS_REJECTED %> </p>
-<p>Stories Finished: <%= @iteration.story_count_by_status STATUS_FINISHED %> </p>
-<p>Stories Delivered: <%= @iteration.story_count_by_status STATUS_DELIVERED %> </p>
-<p>Stories Accepted: <%= @iteration.story_count_by_status STATUS_ACCEPTED %> </p>
+<p>Stories Not Started: <%= @iteration.story_count_by_status Constants::STATUS_NOT_STARTED %> </p>
+<p>Stories Started: <%= @iteration.story_count_by_status Constants::STATUS_STARTED %> </p>
+<p>Stories Rejected: <%= @iteration.story_count_by_status Constants::STATUS_REJECTED %> </p>
+<p>Stories Finished: <%= @iteration.story_count_by_status Constants::STATUS_FINISHED %> </p>
+<p>Stories Delivered: <%= @iteration.story_count_by_status Constants::STATUS_DELIVERED %> </p>
+<p>Stories Accepted: <%= @iteration.story_count_by_status Constants::STATUS_ACCEPTED %> </p>
 ==============
-<p>Tasks Not Started: <%= @iteration.task_count_by_status STATUS_NOT_STARTED%></p>
-<p>Tasks Started: <%= @iteration.task_count_by_status STATUS_STARTED%></p>
-<p>Tasks Completed: <%= @iteration.task_count_by_status STATUS_FINISHED%></p>
+<p>Tasks Not Started: <%= @iteration.task_count_by_status Constants::STATUS_NOT_STARTED%></p>
+<p>Tasks Started: <%= @iteration.task_count_by_status Constants::STATUS_STARTED%></p>
+<p>Tasks Completed: <%= @iteration.task_count_by_status Constants::STATUS_FINISHED%></p>
 ==============
 <p>Hours Work Completed: <%= @iteration.completed_hours %></p>
 <p>Hours Work Remaining: <%= @iteration.remaining_hours %></p>
