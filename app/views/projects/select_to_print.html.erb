@@ -11,7 +11,8 @@
                                            html_options = {:onchange => 'document.search.submit();'} %>Done
 <% end %>
 <%= form_tag print_project_path(:format => :pdf), :method => :post do %>
-    <%= submit_tag "Create Story Cards" %>
+     <%= submit_tag "Create Story Cards" %>
+      <%= link_to "Cancel", project_path(@path) %>
     <%= hidden_field_tag(:id, @project) %>
     <table>
       <tr>
