@@ -4,7 +4,7 @@
 
 <div class="box">
   <div class="header">
-    <h2>Project <%= @project.name %>, Iteration <%= @iteration.iteration_number %>: <%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %> </h2>
+    <h2>Taskboard for  <%= @project.name %>&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbspIteration <%= @iteration.iteration_number %>:&nbsp;&nbsp;&nbsp;<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Synced on <%= @iteration.last_synced_at ? l(@iteration.last_synced_at) : "<NEVER>" %> </h2>
     <span class="draggable">move</span>
     <span class="toggle">toggle</span>
   </div>
@@ -43,8 +43,6 @@
                                  html_options = {:onchange => 'document.search.submit();'} %>
             No
         <% end %>
-
-        <p>Synced at <%= l(@iteration.last_synced_at) if @iteration.last_synced_at %></p>
 
       </div>
       <!-- end .dataTables_wrapper -->
