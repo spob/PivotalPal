@@ -2,8 +2,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    # Define abilities for the passed in user here. For example:
-    #
+    # Define abilities for the passed in user here.
     user ||= User.new # guest user (not logged in)
 
     if user.role? :superuser
@@ -15,7 +14,7 @@ class Ability
       can :split, Story, :iteration => {:project => {:tenant_id => user.tenant.try(:id)}}
       can :update, Tenant, :id => user.tenant.id
     end
-    can [:read, :storyboard], Project, :tenant_id => user.tenant.try(:id)
+    can [:read, :storyboard, :burndown, :stats, :select_to_print, :print], Project, :tenant_id => user.tenant.try(:id)
     can :read, Story, :iteration => {:project => {:tenant_id => user.tenant.try(:id)}}
     can :read, [CardRequest, Card], :user_id => user.try(:id)
     can :update, User, :id => user.id

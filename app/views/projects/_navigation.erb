@@ -14,12 +14,17 @@ last x projects the user has accessed-->
 | <%= link_to_unless_current 'Taskboard', project_path(@project) %>
 | <%= link_to_unless_current 'Storyboard', storyboard_project_path(@project) %>
 | <%= link_to_unless_current 'Stats', stats_project_path(@project) %>
-<% if can? :refresh_project, @project %>
     <!--yeah, I know this is ugly, but I wanted to hack getting the buttons aligned and I didn't want to muck up your css-->
     <div style="text-align: right;">
       <UL>
+        <% if can? :refresh, @project %>
         <li style="display: inline-block;"><%= button_to 'Refresh', refresh_project_path(@project), :method => :post %></li>
+        <% end %>
+        <% if can? :renumber, @project %>
         <li style="display: inline-block;"><%= button_to 'Renumber', renumber_project_path(@project), :method => :post %></li>
+        <% end %>
+        <% if can? :select_to_print, @project %>
+        <li style="display: inline-block;"><%= button_to 'Print Cards', select_to_print_project_path(@project), :method => :get %></li>
+        <% end %>
       </UL>
     </div>
-<% end %>

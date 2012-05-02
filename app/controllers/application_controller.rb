@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_timezone
 
   rescue_from CanCan::AccessDenied do |exception|
+    Rails.logger.warn "Access denied on #{exception.action} #{exception.subject.inspect}"
     redirect_to root_url, :alert => exception.message
   end
 

@@ -33,9 +33,9 @@ PivotalPal::Application.configure do
   config.action_mailer.smtp_settings = {
       :address => "smtp.gmail.com",
       :port => 587,
-      :domain => 'firehoze.com',
-      :user_name => 'mailer@firehoze.com',
-      :password => 'F1reh0ze',
+      :domain => 'sturim.org',
+      :user_name => 'pivotalpal@sturim.org',
+      :password => 'P1votalP@l',
       :authentication => 'plain',
       :enable_starttls_auto => true}
 
