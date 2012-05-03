@@ -94,7 +94,7 @@ class Iteration < ActiveRecord::Base
   end
 
   def stories_by_status status
-     self.stories.find_all { |s| s.status == status}
+    self.stories.find_all { |s| s.status == status }
   end
 
 
@@ -113,7 +113,7 @@ class Iteration < ActiveRecord::Base
   @estimates = nil
 
   def fetch_estimate_by_day_number day_number
-    self.task_estimates.find_all{|te| te.day_number == day_number}.first
+    self.task_estimates.find_all { |te| te.day_number == day_number }.first
 #    fetch_estimate_by_date(self.calc_date(day_number))
   end
 
@@ -129,13 +129,18 @@ class Iteration < ActiveRecord::Base
     end
   end
 
-  def stories_filtered(not_accepted_flag, pushed_flag)
+  def stories_filtered(not_accepted_flag, pushed_flag, owner)
     _stories = self.stories
     unless not_accepted_flag.nil? or not_accepted_flag == "Y"
       _stories = _stories.find_all { |s| s.status != Constants::STATUS_ACCEPTED }
     end
     unless pushed_flag.nil? or pushed_flag == "Y"
       _stories = _stories.find_all { |s| s.status != Constants::STATUS_PUSHED }
+    end
+    if owner == "Unowned"
+      _stories = _stories.find_all { |s| s.owner.nil? }
+    elsif owner != "All"
+      _stories = _stories.find_all { |s| s.owner == owner }
     end
     _stories
   end

@@ -93,8 +93,8 @@ class IterationDecorator < ApplicationDecorator
     chart_data_by_day(true) { |x| model.points_delivered_for_day_number(x) }
   end
 
-  def decorated_stories show_accepted, show_pushed
-    sort_by_status(model.stories_filtered(show_accepted, show_pushed).map { |s| StoryDecorator.decorate(s) })
+  def decorated_stories show_accepted, show_pushed, owner
+    sort_by_status(model.stories_filtered(show_accepted, show_pushed, owner).map { |s| StoryDecorator.decorate(s) })
   end
 
   def day_headings

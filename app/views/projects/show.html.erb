@@ -4,7 +4,10 @@
 
 <div class="box">
   <div class="header">
-    <h2>Taskboard for  <%= @project.name %>&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbspIteration <%= @iteration.iteration_number %>:&nbsp;&nbsp;&nbsp;<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Synced on <%= @iteration.last_synced_at ? l(@iteration.last_synced_at) : "<NEVER>" %> </h2>
+    <h2>Taskboard
+      for  <%= @project.name %>&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbspIteration <%= @iteration.iteration_number %>
+      :&nbsp;&nbsp;&nbsp;<%= l(@iteration.start_on) %> to <%= l(@iteration.end_on) %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Synced
+      on <%= @iteration.last_synced_at ? l(@iteration.last_synced_at) : "<NEVER>" %> </h2>
     <span class="draggable">move</span>
     <span class="toggle">toggle</span>
   </div>
@@ -23,7 +26,13 @@
                                    "iteration_name",
                                    @iteration.id),
                            html_options = {:onchange => 'document.search.submit();'} %>
-            <br/><br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <Strong>Owner:</Strong>
+            <%= select_tag :owner,
+                           options_for_select(Hash[@iteration.stories.collect(&:owner).map { |name| name.nil? ? "xxxxxxx" : name }.group_by { |x| x }.map { |k, v| [k, v.count] }].keys.sort.map { |name| name == "xxxxxxx" ? "Unowned" : name }.insert(0, "All"),
+                                              @owner),
+                           html_options = {:onchange => 'document.search.submit();'} %>
+            &nbsp;&nbsp;&nbsp;&nbsp;
             <strong>Show Pushed Items:</strong>
             <%= radio_button_tag "show_pushed_stories", "Y", cookies[:show_pushed_stories] != "N",
                                  html_options = {:onchange => 'document.search.submit();'} %>
@@ -64,7 +73,7 @@
 
       <tbody>
 
-      <%= render :partial => 'story', :collection => @iteration.decorated_stories(cookies[:show_accepted_stories], cookies[:show_pushed_stories]), :locals => {:iteration => @iteration} %>
+      <%= render :partial => 'story', :collection => @iteration.decorated_stories(cookies[:show_accepted_stories], cookies[:show_pushed_stories], cookies[:owner]), :locals => {:iteration => @iteration} %>
 
       <tr>
         <td colspan="<%= @iteration.calc_day_number + 3 %>">&nbsp;</td>

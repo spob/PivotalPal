@@ -19,9 +19,12 @@ class ProjectsController < ApplicationController
       redirect_to(projects_path)
       return
     end
+
+    cookies[:owner] = {:value => params[:owner], :expires => 6.month.since} if params[:owner]
     cookies[:show_pushed_stories] = {:value => params[:show_pushed_stories], :expires => 6.month.since} if params[:show_pushed_stories]
     cookies[:show_accepted_stories] = {:value => params[:show_accepted_stories], :expires => 6.month.since} if params[:show_accepted_stories]
 
+    @owner = cookies[:owner]
     @iteration = IterationDecorator.decorate(select_iteration(@project, params))
     @project.touch_user_project(current_user)
     respond_with @project
