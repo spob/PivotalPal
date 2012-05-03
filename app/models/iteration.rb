@@ -139,7 +139,7 @@ class Iteration < ActiveRecord::Base
     end
     if owner == "Unowned"
       _stories = _stories.find_all { |s| s.owner.nil? }
-    elsif owner != "All"
+    elsif owner.present? && owner != "All"
       _stories = _stories.find_all { |s| s.owner == owner }
     end
     _stories
