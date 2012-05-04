@@ -25,6 +25,13 @@ module ApplicationHelper
     ((prefix ? prefix : "") + link_to(content, object, :method => :delete, :confirm => "Are you sure?")).html_safe if can?(:destroy, object)
   end
 
+  def create_button(object, prefix=nil, content = t('action.new'))
+    if can?(:create, object)
+      object_class = (object.kind_of?(Class) ? object : object.class)
+      ((prefix ? prefix : "") + button_to(content, [:new, object_class.name.underscore.to_sym], {:method => :get, :class => "btn"})).html_safe
+    end
+  end
+
   def create_link(object, prefix=nil, content = t('action.new'))
     if can?(:create, object)
       object_class = (object.kind_of?(Class) ? object : object.class)
