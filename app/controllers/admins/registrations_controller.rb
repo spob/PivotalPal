@@ -20,6 +20,7 @@ class Admins::RegistrationsController < Devise::SessionsController
 
     session_secret = params['session_secret'] # in this case, using Rails
     ayah = AYAH::Integration.new(captcha_publisher_key, captcha_scoring_key)
+    @ayah_conversion_html = ayah.record_conversion(session_secret)
     ayah_passed = ayah.score_result(session_secret, request.remote_ip)
 
     if !ayah_passed && Rails.env.production?
