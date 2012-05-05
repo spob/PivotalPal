@@ -7,8 +7,6 @@ class Admins::RegistrationsController < Devise::SessionsController
   def new
     resource = build_resource({})
 
-    # Get info for captcha
-    ayah = AYAH::Integration.new(captcha_publisher_key, captcha_scoring_key)
     @captcha_html = get_captcha
     respond_with_navigational(resource) { render_with_scope :new }
   end
