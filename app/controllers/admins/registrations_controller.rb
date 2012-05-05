@@ -14,22 +14,6 @@ class Admins::RegistrationsController < Devise::SessionsController
     respond_with_navigational(resource) { render_with_scope :new }
   end
 
-  def captcha_publisher_key
-    if Rails.env.production?
-      "a40b79eadbff6c5e0884c908aafb1e20c9ef8486"
-    else
-      "b3df1e946e9d8503b0e0ab633f2b0e76490023ce"
-    end
-  end
-
-  def captcha_scoring_key
-    if Rails.env.production?
-      "9d696f15ec84757f61f8836c4503bc5ba9bf3dae"
-    else
-      "50d6bbafa49a4ffb70dae5209a5477c6242b9976"
-    end
-  end
-
   # POST /resource
   def create
     build_resource
@@ -38,7 +22,7 @@ class Admins::RegistrationsController < Devise::SessionsController
     ayah = AYAH::Integration.new(captcha_publisher_key, captcha_scoring_key)
     ayah_passed = ayah.score_result(session_secret, request.remote_ip)
 
-    if !ayah_passed
+    if !ayah_passed && Rails.env.production?
       resource.errors[:base] << "Are you sure you are human?"
       clean_up_passwords(resource)
       respond_with_navigational(resource) { render_with_scope :new }
@@ -98,6 +82,22 @@ class Admins::RegistrationsController < Devise::SessionsController
   end
 
   protected
+
+  def captcha_publisher_key
+    if Rails.env.production?
+      "a40b79eadbff6c5e0884c908aafb1e20c9ef8486"
+    else
+      "b3df1e946e9d8503b0e0ab633f2b0e76490023ce"
+    end
+  end
+
+  def captcha_scoring_key
+    if Rails.env.production?
+      "9d696f15ec84757f61f8836c4503bc5ba9bf3dae"
+    else
+      "50d6bbafa49a4ffb70dae5209a5477c6242b9976"
+    end
+  end
 
   # Build a devise resource passing in the session. Useful to move
   # temporary session data to the newly created user.
