@@ -31,6 +31,9 @@ GEM
     activesupport (3.1.3)
       multi_json (~> 1.0)
     arel (2.2.1)
+    ayah_integration (0.6.3)
+      json
+      rest-client
     bcrypt-ruby (3.0.1)
     builder (3.0.0)
     cancan (1.6.7)
@@ -138,6 +141,8 @@ GEM
     rake (0.9.2.2)
     rdoc (3.11)
       json (~> 1.4)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     sass (3.1.10)
     sass-rails (3.1.5)
       actionpack (~> 3.1.0)
@@ -177,6 +182,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ayah_integration (~> 0.6.3)
   cancan
   capistrano
   coffee-rails (~> 3.1.0)

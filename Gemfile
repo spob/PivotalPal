@@ -5,6 +5,7 @@ gem 'rails', '~> 3.1.1'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
+gem "ayah_integration", "~> 0.6.3" # playthru captcha
 gem 'cancan'#, '~> 1.6.0'
 gem 'devise', '~> 1.5.1'
 gem 'devise_invitable', '~> 0.6.0'

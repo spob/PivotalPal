@@ -1,8 +1,8 @@
-if User.find_by_email("admin@timeout.com")
+if User.find_by_email("admins@timeout.com")
   puts "Admin user already exists...skipping"
 else
-  puts "Creating admin user..."
-  admin_user = User.create!(:email => 'admin@timeout.com',
+  puts "Creating admins user..."
+  admin_user = User.create!(:email => 'admins@timeout.com',
                             :password => "changeme",
                             :failed_attempts => 0,
                             :company_name => "TIMEOUT",

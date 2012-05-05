@@ -8,7 +8,7 @@ class Ability
     if user.role? :superuser
       can :manage, :all
       can :split, Story
-    elsif user.role? :admin
+    elsif user.role? :admins
       can [:read, :update, :create, :destroy], [User, Project], :tenant_id => user.tenant.id
       can [:refresh, :renumber], Project, :tenant_id => user.tenant.id
       can :split, Story, :iteration => {:project => {:tenant_id => user.tenant.try(:id)}}

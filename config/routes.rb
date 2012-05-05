@@ -9,7 +9,7 @@ PivotalPal::Application.routes.draw do
 
   get "profile/update"
 
-  devise_for :users
+  devise_for :users, :controllers => { :registrations => "admins/registrations" }
 
   resources :logons, :only => [:index]
   resources :org_users, :only => [:new, :create, :index]
@@ -89,9 +89,9 @@ PivotalPal::Application.routes.draw do
   #   end
 
   # Sample resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
+  #   namespace :admins do
+  #     # Directs /admins/products/* to Admin::ProductsController
+  #     # (app/controllers/admins/products_controller.rb)
   #     resources :products
   #   end
 

@@ -38,9 +38,9 @@ class LogonsControllerTest < ActionController::TestCase
       end
     end
 
-    context "when logged in as an admin user" do
+    context "when logged in as an admins user" do
       setup do
-        sign_in Factory.create(:admin)
+        sign_in Factory.create(:admins)
       end
 
       context "on GET to :index" do

@@ -16,5 +16,5 @@ class Constants
 
   # Roles
   ROLE_SUPERUSER = 'superuser'
-  ROLE_ADMIN = 'admin'
+  ROLE_ADMIN = 'admins'
 end

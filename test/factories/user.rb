@@ -9,7 +9,7 @@ Factory.define :user do |user|
   user.confirmed_at { 2.days.ago }
 end
 
-Factory.define :admin, :parent => :user do |user|
+Factory.define :admins, :parent => :user do |user|
   user.roles_mask 2
 end
 

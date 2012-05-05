@@ -82,7 +82,7 @@ class User < ActiveRecord::Base
       self.tenant = Tenant.create!(:name => self.company_name, :api_key => self.api_key)
       self.company_name = nil
       self.api_key = nil
-      # set the user to be the admin for that org
+      # set the user to be the admins for that org
       self.roles_mask = 2**ROLES.index(Constants::ROLE_ADMIN)
     end
   end
@@ -95,8 +95,8 @@ class User < ActiveRecord::Base
 
   def validates_unique_tenant
     if Tenant.find_by_name(self.company_name)
-      # Ignore admin@timeout.com as this means it's a seeding operation
-      errors.add(:company_name, I18n.t('user.tenant_taken')) unless email == "admin@timeout.com"
+      # Ignore admins@timeout.com as this means it's a seeding operation
+      errors.add(:company_name, I18n.t('user.tenant_taken')) unless email == "admins@timeout.com"
     end
   end
 
