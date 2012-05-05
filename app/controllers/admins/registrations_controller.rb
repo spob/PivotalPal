@@ -9,8 +9,7 @@ class Admins::RegistrationsController < Devise::SessionsController
 
     # Get info for captcha
     ayah = AYAH::Integration.new(captcha_publisher_key, captcha_scoring_key)
-
-    @captcha_html = ayah.get_publisher_html
+    @captcha_html = get_captcha
     respond_with_navigational(resource) { render_with_scope :new }
   end
 
@@ -25,6 +24,7 @@ class Admins::RegistrationsController < Devise::SessionsController
 
     if !ayah_passed && Rails.env.production?
       resource.errors[:base] << "Are you sure you are human?"
+      @captcha_html = get_captcha
       clean_up_passwords(resource)
       respond_with_navigational(resource) { render_with_scope :new }
     elsif resource.save
@@ -38,6 +38,7 @@ class Admins::RegistrationsController < Devise::SessionsController
         respond_with resource, :location => after_inactive_sign_up_path_for(resource)
       end
     else
+      @captcha_html = get_captcha
       clean_up_passwords(resource)
       respond_with_navigational(resource) { render_with_scope :new }
     end
@@ -83,6 +84,12 @@ class Admins::RegistrationsController < Devise::SessionsController
   end
 
   protected
+
+  def get_captcha
+    # Get info for captcha
+    ayah = AYAH::Integration.new(captcha_publisher_key, captcha_scoring_key)
+    ayah.get_publisher_html
+  end
 
   def captcha_publisher_key
     if Rails.env.production?
