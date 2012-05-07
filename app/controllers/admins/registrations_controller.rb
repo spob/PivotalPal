@@ -5,7 +5,7 @@ class Admins::RegistrationsController < Devise::SessionsController
 
   # GET /resource/sign_up
   def new
-    resource = build_resource({})
+    resource ||= build_resource({})
 
     @captcha_html = get_captcha
     respond_with_navigational(resource) { render_with_scope :new }
