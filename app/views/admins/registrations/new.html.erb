@@ -24,8 +24,7 @@
     <p><%= f.label :api_key, t('tenant.api_key') %><br />
       <%= f.text_field :api_key, :size => 32 %></p>
 
-    <%= @captcha_html.try(:html_safe) %>
-    <%= @ayah_conversion_html.try(:html_safe) %>
+    <p><%= @captcha_html.try(:html_safe) %></p>
     <p><%= f.submit "Sign up" %></p>
 <% end %>
 
