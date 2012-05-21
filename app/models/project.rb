@@ -287,7 +287,7 @@ class Project < ActiveRecord::Base
 
   def fetch_current_iteration iteration_start_day_of_week, current_iteration_number
     logger.info("fetch_current_iteration for project #{id}")
-    uri = "http://www.pivotaltracker.com/services/v3/projects/#{pivotal_identifier}/iterations/current_backlog?offset=0&limit=2"
+    uri = "http://www.pivotaltracker.com/services/v3/projects/#{pivotal_identifier}/iterations?offset=2&limit=2"
     begin
       response = call_pivotal_rest(nil, uri, :show)
 
