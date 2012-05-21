@@ -1,0 +1,24 @@
+<h2>Tracking Status</h2>
+
+<p>PivotalPal infers the status of a task by determine the work remaining for that task.
+For example, PivotalPal will interpret the task:</p>
+
+<p><b>3/3 Add navigation</b></p>
+
+<p>As not yet started. The task:</p>
+
+<p><b>1/3 Add navigation</b></p>
+
+<p>is in progress, with one hour remaining on the 3 hour task.</p>
+
+<p>PivotalPal will interpret a task as complete if the remaining hours is zero or the task
+has been marked as complete in PivotalTracker.</p>
+
+<p>Lastly, you can mark a task as blocked by prefixing the task with a “B”. For example,
+the task:</p>
+
+<p><b>B1/3 Add navigation</b></p>
+
+<p>is currently blocked.</p>
+
+<%= button_to "Previous", page_path("tour2") %>&nbsp;&nbsp;&nbsp;<%= button_to "Next", page_path("tour4") %>

@@ -12,6 +12,7 @@ gem 'devise_invitable', '~> 0.6.0'
 gem 'draper', '~>0.8.1'
 gem 'foreigner', '~> 1.1.0'
 gem "friendly_id", "~> 4.0.0.beta14"
+gem "high_voltage"
 gem "hpricot", "~> 0.8.4"
 gem 'jquery-rails'
 gem 'kaminari', '~> 0.12.0'

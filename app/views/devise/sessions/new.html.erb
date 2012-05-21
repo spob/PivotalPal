@@ -1,5 +1,8 @@
 <% title "Sign in" %>
 
+<table><!-- Yeah, I know using a table is totally hoky. Rich, make it look pretty :) -->
+  <tr>
+    <td>
 <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
   <p><%= f.label :email %><br />
   <%= f.text_field :email %></p>
@@ -15,3 +18,21 @@
 <% end %>
 
 <%= render :partial => "devise/shared/links" %>
+    </td>
+    <td>
+      <h2>Welcome to PivotalPal</h2>
+
+      <p>PivotalPal enhances PivotalTracker, adding several key features:</p>
+      <ul>
+      <li><%= link_to "Allows teams to define hour estimates against tasks", page_path("tour1") %></li>
+      <li><%= link_to "Tracks QA tasks versus developer tasks", page_path("tour2") %></li>
+      <li><%= link_to "Tracks status of tasks – Not Started, In Progress, Done, Blocked", page_path("tour3") %></li>
+      <li><%= link_to "Provides a sprint burndown chart", page_path("tour4") %></li>
+      <li><%= link_to "Prints story cards", page_path("tour5") %></li>
+      <li><%= link_to "Split stories at are not completed at sprint end", page_path("tour6") %></li>
+      <li><%= link_to "Number stories", page_path("tour7") %></li>
+      </ul>
+      <h3><%= link_to "Take a Tour!", page_path("tour1") %></h3>
+    </td>
+  </tr>
+</table>

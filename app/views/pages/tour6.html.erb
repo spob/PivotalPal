@@ -1,0 +1,38 @@
+<h2>Split Stories</h2>
+
+<p>Ideally all stories are successfully finished, delivered and accepted before the sprint
+ends. Often some stories may not be completed when the sprint ends and will be
+brought into the next new sprint. This can provide a misleading view of progress.
+Consider the following example:</p>
+
+<b>0/5 Task A</br>
+2/3 Task B</br>
+2/2 Task C[qa]</b>
+
+<p>In this example, the developer completed Task A and completed 2 of 3 hours of
+work on Task B. Task C has not yet been started. If this story pushes into the next
+sprint, it gives the illusion of progress in the new sprint. In this case, it appears that
+there are 4 hours remaining of 10 hours, signifying that 6 hours were completed on
+the first day of the sprint.</p>
+
+<p>To address this issue, PivotalPal allows the Scrum Master to split the story. Splitting
+the story will mark the completed portion of the work as pushed and will not be
+counted by PivotalPal. Pushed tasked are indicated with a prefix of “X”.</p>
+
+<p>Clicking the “split” link on a story in PivotalPal for the example above will update the tasks to be:</p>
+
+<b>X0/5 Task A</br>
+X2/3 Task B</br>
+2/2 Task B</br>
+2/2 Task C</b>
+
+<p>Task A was prefixed with an “X”. Since this work was completed last sprint, the “X”
+will cause PivotalPal to ignore this task for the current sprint.</p>
+
+<p>The original Task B was also marked with an “X”. PivotalPal created a new task
+representing just the work remaining on Task B. Task C was unchanged. The result
+is that PivotalPal will report 4 hours of work remaining against 4 total hours – a
+much more accurate representation of state at the start of the new sprint.</p>
+
+
+<%= button_to "Previous", page_path("tour5") %>&nbsp;&nbsp;&nbsp;<%= button_to "Next", page_path("tour7") %>

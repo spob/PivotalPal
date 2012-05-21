@@ -1,0 +1,38 @@
+<h2>Burndown Chart</h2>
+
+<p>The burndown chart is one of the most powerful features of PivotalPal. The
+following is a sample burndown chart from PivotalPal:</p>
+
+<%= image_tag "doc/burndown1.png" %>
+
+<p>The burndown chart conveys a lot of information concisely, including:</p>
+
+<ul>
+<li>The blue bars represent target velocity. This bar represents the Target
+Velocity as defined by the sum of the story points for the current sprint in
+Pivotal Tracker. If the bar goes up as the sprint progresses, the team has
+pulled stories into scope.</li>
+<li>The orange bars represent Points Delivered. Ideally, stories will be delivered
+throughout the course of a release, indicated by the orange bars going up
+through the course of the sprint.</li>
+<li>The green line shows the ideal hours of work remaining at the end of each
+day of the sprint. For example, if there are 100 hours of work to perform
+in a 10 day sprint, at the end of the first day the team will have 90 hours
+remaining, 80 hours at the end of day 2, etc.</li>
+<li>The blue line shows total hours as defined by the sum of the estimated hours
+for all the tasks for all stories within a sprint. Frequently this line will go up
+through the sprint, reflecting either a) the team has pulled additional stories
+into the sprint or b) the team has added new tasks or increased the estimate
+on existing tasks for stories in the sprint.</li>
+<li>The red line shows the work remaining. In an ideal work, this line will follow
+the green line. If this line is above the green line, the team is behind schedule.
+If this line is below the green line the team is ahead of schedule.</li>
+<li>The purple line shows the work remaining for testing tasks. Sometimes
+engineers work on stories for the majority of a sprint, and deliver stories
+to QA on the last day or two remaining in a sprint. The purple line helps to
+illuminate situations in which the QA team may be overloaded.</li>
+
+</ul>
+
+
+<%= button_to "Previous", page_path("tour3") %>&nbsp;&nbsp;&nbsp;<%= button_to "Next", page_path("tour5") %>
