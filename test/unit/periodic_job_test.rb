@@ -4,7 +4,7 @@ class PeriodicJobTest < ActiveSupport::TestCase
 
   context "given a job running" do
     setup do
-      @job = Factory.create(:run_once_periodic_job, :last_run_at => 1.days.ago,
+      @job = FactoryGirl.create(:run_once_periodic_job, :last_run_at => 1.days.ago,
               :last_run_result => 'Running')
     end
 
@@ -34,7 +34,7 @@ class PeriodicJobTest < ActiveSupport::TestCase
 
   context "given a job ready to run" do
     setup do
-      @job = Factory.create(:run_once_periodic_job)
+      @job = FactoryGirl.create(:run_once_periodic_job)
       @job.update_attribute(:next_run_at, 1.days.ago)
     end
 
@@ -46,13 +46,13 @@ class PeriodicJobTest < ActiveSupport::TestCase
 
   context "given there are jobs ready to run" do
     setup do
-      @run_once_job_null_next_run = Factory.create(:run_once_periodic_job, :last_run_at => 1.days.ago)
+      @run_once_job_null_next_run = FactoryGirl.create(:run_once_periodic_job, :last_run_at => 1.days.ago)
       @run_once_job_null_next_run.update_attribute(:next_run_at, nil)
 
-      @run_once_job_future_next_run = Factory.create(:run_once_periodic_job)
+      @run_once_job_future_next_run = FactoryGirl.create(:run_once_periodic_job)
       @run_once_job_future_next_run.update_attribute(:next_run_at, 5.seconds.since)
 
-      @run_once_job_past_next_run = Factory.create(:run_once_periodic_job)
+      @run_once_job_past_next_run = FactoryGirl.create(:run_once_periodic_job)
       @run_once_job_past_next_run.update_attribute(:next_run_at, 5.seconds.ago)
     end
 
@@ -81,7 +81,7 @@ class PeriodicJobTest < ActiveSupport::TestCase
 
   context "given a job that errors when running" do
     setup do
-      @job = Factory.create(:run_once_periodic_job, :job => "1/0")
+      @job = FactoryGirl.create(:run_once_periodic_job, :job => "1/0")
       @job.update_attribute(:next_run_at, 5.seconds.ago)
     end
 
@@ -112,7 +112,7 @@ class PeriodicJobTest < ActiveSupport::TestCase
 
   context "given an interval job that runs every 30 minutes" do
     setup do
-      @job = Factory.create(:run_interval_periodic_job, :last_run_at => 5.minutes.ago)
+      @job = FactoryGirl.create(:run_interval_periodic_job, :last_run_at => 5.minutes.ago)
       @job.update_attribute(:next_run_at, nil)
       @next_job = @job.calc_next_run
       @next_job.save
@@ -128,7 +128,7 @@ class PeriodicJobTest < ActiveSupport::TestCase
 
   context "given a run at job" do
     setup do
-      @job = Factory.create(:run_at_periodic_job)
+      @job = FactoryGirl.create(:run_at_periodic_job)
       # set current time to 13:00 PM
       @now = Time.parse("13:00")
       @job.set_now @now

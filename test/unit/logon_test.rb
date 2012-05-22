@@ -3,7 +3,7 @@ require 'test_helper'
 class LogonTest < ActiveSupport::TestCase
   context "Given an existing logon record" do
     setup do
-      @logon = Factory.create(:logon)
+      @logon = FactoryGirl.create(:logon)
     end
     subject { @logon }
 
