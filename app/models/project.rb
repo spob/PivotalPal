@@ -175,10 +175,9 @@ class Project < ActiveRecord::Base
   end
 
   def renumber_by_story_type(doc, story_type, renumber_mode)
+    walk_stories_to_renumber_to_jira doc, story_type
     if renumber_mode == Constants::RENUMBER_BY_PIVOTALPAL
       walk_stories_to_renumber doc, story_type
-    elsif renumber_mode == Constants::RENUMBER_BY_JIRA
-      walk_stories_to_renumber_to_jira doc, story_type
     end
   end
 
@@ -219,7 +218,7 @@ class Project < ActiveRecord::Base
       id = story.at('id').try(:inner_html)
       name = story.at('name').try(:inner_html)
       _story_type = story.at('story_type').try(:inner_html)
-      if _story_type == story_type
+      if _story_type == story_type && !story.at('jira_id').try(:inner_html)
         if (name =~ /^#{story_prefix(story_type)}\d+/ix)
           num = /\d+/x.match(name).to_s.to_i
           numbered_stories[num] = name
@@ -242,7 +241,7 @@ class Project < ActiveRecord::Base
       name = story.at('name').try(:inner_html)
       _story_type = story.at('story_type').try(:inner_html)
       _jira_number = story.at('jira_id').try(:inner_html)
-      if _story_type == story_type and _jira_number && !(name =~ /^#{_jira_number}/)
+      if _story_type == story_type && _jira_number && !(name =~ /^#{_jira_number}/)
         Story.update_pivotal(self, id, :name => "#{_jira_number}: #{name}")
       end
     end

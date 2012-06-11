@@ -76,46 +76,16 @@
             <div class="pad-8">
               <ul class="inputs-list">
                 <li>
-                  <%= f.label :renumber_features %>:
-                  <br />
-                  <%= f.radio_button :renumber_features, Constants::RENUMBER_NO  %>
-                  No&nbsp;&nbsp;
-                  <%= f.radio_button :renumber_features, Constants::RENUMBER_BY_PIVOTALPAL  %>
-                  Assigned by Pivotal Pal&nbsp;&nbsp;
-                  <%= f.radio_button :renumber_features, Constants::RENUMBER_BY_JIRA  %>
-                  Assigned by Jira
-                </li>
-
-                <li>
-                  <%= f.label :renumber_bugs %>:
-                  <br />
-                  <%= f.radio_button :renumber_bugs, Constants::RENUMBER_NO  %>
-                  No&nbsp;&nbsp;
-                  <%= f.radio_button :renumber_bugs, Constants::RENUMBER_BY_PIVOTALPAL  %>
-                  Assigned by Pivotal Pal&nbsp;&nbsp;
-                  <%= f.radio_button :renumber_bugs, Constants::RENUMBER_BY_JIRA  %>
-                  Assigned by Jira
+                  <%= f.check_box :renumber_features %>&nbsp;<%= f.label :renumber_features %>
                 </li>
                 <li>
-                  <%= f.label :renumber_chores %>:
-                  <br />
-                  <%= f.radio_button :renumber_chores, Constants::RENUMBER_NO  %>
-                  No&nbsp;&nbsp;
-                  <%= f.radio_button :renumber_chores, Constants::RENUMBER_BY_PIVOTALPAL  %>
-                  Assigned by Pivotal Pal&nbsp;&nbsp;
-                  <%= f.radio_button :renumber_chores, Constants::RENUMBER_BY_JIRA  %>
-                  Assigned by Jira
+                  <%= f.check_box :renumber_bugs %>&nbsp;<%= f.label :renumber_bugs %>
                 </li>
-
                 <li>
-                  <%= f.label :renumber_releases %>:
-                  <br />
-                  <%= f.radio_button :renumber_releases, Constants::RENUMBER_NO  %>
-                  No&nbsp;&nbsp;
-                  <%= f.radio_button :renumber_releases, Constants::RENUMBER_BY_PIVOTALPAL  %>
-                  Assigned by Pivotal Pal&nbsp;&nbsp;
-                  <%= f.radio_button :renumber_releases, Constants::RENUMBER_BY_JIRA  %>
-                  Assigned by Jira
+                  <%= f.check_box :renumber_chores %>&nbsp;<%= f.label :renumber_chores %>
+                </li>
+                <li>
+                  <%= f.check_box :renumber_releases %>&nbsp;<%= f.label :renumber_releases %>
                 </li>
               </ul>
             </div>

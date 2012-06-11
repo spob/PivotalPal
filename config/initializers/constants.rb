@@ -9,7 +9,6 @@ class Constants
   STATUS_STARTED = "started"
   STATUS_NOT_STARTED = "unstarted"
 
-  RENUMBER_NO = 0
   RENUMBER_BY_PIVOTALPAL = 1
   RENUMBER_BY_JIRA = 2
 
