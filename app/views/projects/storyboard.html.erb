@@ -19,7 +19,7 @@
         <th width="15%">Blocked</th>
       </tr>
       </thead>
-      <% @iteration.decorated_stories("N", "N").each do |story| %>
+      <% @iteration.decorated_stories("N", "N", "All").each do |story| %>
           <tr>
             <td><strong><%= h story.name %></strong>
               <br/>
