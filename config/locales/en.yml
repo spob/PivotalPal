@@ -28,6 +28,8 @@ en:
     refresh_scheduled: You have successfully refreshed project %{project}
     renumbered: "Project renumbered successfully"
     renumber_failed: "Renumbering failed"
+    split: Project successfully split
+    split_failed: Splitting failed, internal error %{error}
   periodic_job:
     one_time_job_scheduled: Job schedule to run one time
     run_now: Job scheduled to run immediately
@@ -40,8 +42,6 @@ en:
   story:
     not_owned: not owned
     owned_by: owned by
-    split: Story "%{story}" successfully split. Refresh the project to see the changes.
-    split_failed: Splitting Story "%{story}" failed, internal error %{error}
     split_comment: Story split by %{user}
 
     must_select_to_print: "Please select one or more stories to print"

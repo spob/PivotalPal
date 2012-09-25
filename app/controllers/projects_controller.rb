@@ -89,7 +89,6 @@ class ProjectsController < ApplicationController
 # PUT /projects/1
 # PUT /projects/1.xml
   def update
-
     respond_to do |format|
       if @project.save && @project.update_attributes(params[:project])
         format.html { redirect_to(@project,
@@ -102,6 +101,17 @@ class ProjectsController < ApplicationController
         format.xml { render :xml => @project.errors, :status => :unprocessable_entity }
       end
     end
+  end
+
+  def split
+    result = @project.latest_iteration.split current_user
+    if result == "OK"
+      @project.refresh
+      notice = t('project.split')
+    else
+      notice = t('project.split_failed', :error => result)
+    end
+    redirect_to(project_path(@project), :notice => notice)
   end
 
   def refresh

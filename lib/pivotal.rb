@@ -3,10 +3,12 @@ module Pivotal
   def call_pivotal_rest body, uri, action
     logger.info("PIVOTAL REQUEST: #{uri}")
     logger.info("BODY: #{body}")
+    logger.info("ACTION: #{action}")
+    logger.info("API KEY: \"#{self.tenant.api_key.strip}\"")
     resource_uri = URI.parse(uri)
     http = Net::HTTP.new(resource_uri.host, resource_uri.port)
     req = nil
-    params = {'Content-type' => 'application/xml', 'X-TrackerToken' => self.tenant.api_key}
+    params = {'Content-type' => 'application/xml', 'X-TrackerToken' => self.tenant.api_key.strip}
     case action
       when :update
         req = Net::HTTP::Put.new(resource_uri.path, params)

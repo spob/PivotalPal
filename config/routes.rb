@@ -29,17 +29,14 @@ PivotalPal::Application.routes.draw do
       get :burndown
       post :print
       post :refresh
+      post :split
       post :renumber
       get :select_to_print
       get :stats
       get :storyboard
     end
   end
-  resources :stories do
-    member do
-      post :split
-    end
-  end
+  resources :stories
   resources :super_users, :only => [:index, :edit, :update]
   resources :tenants, :only => [:edit, :update]
   resources :users, :except => [:destroy, :create] do

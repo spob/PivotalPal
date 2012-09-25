@@ -83,6 +83,14 @@ class Iteration < ActiveRecord::Base
     self.stories.find_all { |s| s.status == Constants::STATUS_ACCEPTED && s.points }.inject(0) { |points, s| points + s.points }
   end
 
+  def split current_user
+    self.stories.find_all { |s| s.status != Constants::STATUS_ACCEPTED && s.points }.foreach do |story|
+      result = story.split current_user
+      return result if (result != "OK")
+    end
+    "OK"
+  end
+
   def calc_date day_num
     the_date = self.end_on
     (day_num..10).each do

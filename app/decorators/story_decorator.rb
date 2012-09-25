@@ -9,10 +9,6 @@ class StoryDecorator < ApplicationDecorator
     h.content_tag(:span, "#{h.strike_text(h.link_to(model.name, model.url, :target => '_blank'), model.status == 'pushed')} (#{model.status.titleize}), #{h.pluralize(model.points, 'point')}, #{owner_text})".html_safe)
   end
 
-  def split_link
-    h.link_to("split", h.split_story_path(model), :method => :post) if h.can?(:split, model) && [Constants::STATUS_STARTED, Constants::STATUS_FINISHED, Constants::STATUS_REJECTED].index(self.status)
-  end
-
   def cell_color_by_story_status
     case model.status
       when Constants::STATUS_ACCEPTED then

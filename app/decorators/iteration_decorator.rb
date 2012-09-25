@@ -145,6 +145,10 @@ class IterationDecorator < ApplicationDecorator
     end
   end
 
+  def split_link
+    h.link_to("split", h.split_projectpath(model), :method => :post) if h.can?(:split, model)
+  end
+
   def values_by_day(start_day_number, format_as_hours=true, &block)
     buf = h.content_tag(:td, "-")
     buf = buf + h.content_tag(:td, "-") if start_day_number == 1
