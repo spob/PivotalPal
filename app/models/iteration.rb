@@ -84,7 +84,7 @@ class Iteration < ActiveRecord::Base
   end
 
   def split current_user
-    self.stories.find_all { |s| s.status != Constants::STATUS_ACCEPTED && s.points }.foreach do |story|
+    self.stories.find_all { |s| s.status != Constants::STATUS_ACCEPTED }.each do |story|
       result = story.split current_user
       return result if (result != "OK")
     end
