@@ -11,7 +11,7 @@ class Ability
     elsif user.role? :admins
       can [:read, :update, :create, :destroy], [User, Project], :tenant_id => user.tenant.id
       can [:refresh, :renumber], Project, :tenant_id => user.tenant.id
-      can :split, Story, :iteration => {:project => {:tenant_id => user.tenant.try(:id)}}
+      can :split, Iteration, :project => {:tenant_id => user.tenant.try(:id)}
       can :update, Tenant, :id => user.tenant.id
     end
     can [:read, :storyboard, :burndown, :stats, :select_to_print, :print], Project, :tenant_id => user.tenant.try(:id)
