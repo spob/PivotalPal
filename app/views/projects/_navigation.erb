@@ -27,7 +27,7 @@ last x projects the user has accessed-->
         <li style="display: inline-block;"><%= button_to 'Print Cards', select_to_print_project_path(@project), :method => :get %></li>
         <% end %>
         <% if can? :split, @project %>
-            <li style="display: inline-block;"><%= button_to 'Split', split_project_path(@project.latest_iteration), :method => :post %></li>
+            <li style="display: inline-block;"><%= button_to 'Split', split_project_path(@project), :method => :post %></li>
         <% end %>
       </UL>
     </div>

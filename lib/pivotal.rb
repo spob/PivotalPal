@@ -4,7 +4,7 @@ module Pivotal
     logger.info("PIVOTAL REQUEST: #{uri}")
     logger.info("BODY: #{body}")
     logger.info("ACTION: #{action}")
-    logger.info("API KEY: \"#{self.tenant.api_key.strip}\"")
+    #logger.info("API KEY: \"#{self.tenant.api_key.strip}\"")
     resource_uri = URI.parse(uri)
     http = Net::HTTP.new(resource_uri.host, resource_uri.port)
     req = nil
